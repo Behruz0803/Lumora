@@ -1,15 +1,24 @@
 """Shared FastAPI dependencies."""
 from __future__ import annotations
 
-from fastapi import Depends, HTTPException, Query, status
+from fastapi import Depends, Header, HTTPException, Query, status
 from fastapi.security import OAuth2PasswordBearer
 from sqlalchemy.orm import Session
 
+from app.core.i18n import resolve_language
 from app.core.security import decode_access_token
 from app.database.session import get_db
 from app.models import User
 
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/api/auth/login", auto_error=False)
+
+
+def response_language(
+    accept_language: str | None = Header(default=None, alias="Accept-Language"),
+    lang: str | None = Query(default=None, description="Optional explicit language (en|uz|ru)"),
+) -> str:
+    """Language for generated text: explicit ?lang= first, then Accept-Language."""
+    return resolve_language(lang or accept_language)
 
 
 def get_current_user(

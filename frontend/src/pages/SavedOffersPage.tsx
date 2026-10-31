@@ -21,8 +21,10 @@ import { Badge, DemoBadge, Rating, VerifiedBadge } from '../components/ui/Badge'
 import { DemoNotice } from '../components/DemoNotice'
 import { ProductThumb } from '../components/ProductThumb'
 import { totalCost } from '../utils/cost'
-import { formatDate, formatPercent, formatQuantity, formatUZS, statusLabel, statusTone } from '../utils/format'
+import { formatDate, formatPercent, formatQuantity, formatUZS, statusText, statusTone } from '../utils/format'
 import { cn } from '../utils/cn'
+import { tr } from '../i18n/core'
+import { pluralize } from '../utils/format'
 
 export function SavedOffersPage() {
   const toast = useToast()
@@ -66,9 +68,9 @@ export function SavedOffersPage() {
   return (
     <div className="space-y-6">
       <PageHeader
-        eyebrow="Workspace"
-        title="Saved Offers"
-        description="Offers you bookmarked, with price and availability changes since you saved them."
+        eyebrow={tr("Workspace")}
+        title={tr("Saved Offers")}
+        description={tr("Offers you bookmarked, with price and availability changes since you saved them.")}
         actions={
           <>
             <DemoBadge />
@@ -77,10 +79,10 @@ export function SavedOffersPage() {
               onClick={() => setCompareOpen(true)}
               disabled={!comparable}
               className="btn-secondary"
-              title={comparable ? 'Compare selected offers' : 'Select at least two offers to compare'}
+              title={comparable ? tr("Compare selected offers") : tr("Select at least two offers to compare")}
             >
               <GitCompare className="h-4 w-4" />
-              Compare selected
+              {tr("Compare selected")}
               {selected.length > 0 && (
                 <span className="rounded-full bg-brand-500 px-1.5 text-[10px] font-semibold text-white">
                   {selected.length}
@@ -92,16 +94,16 @@ export function SavedOffersPage() {
       />
 
       {error && <ErrorState message={error} onRetry={refetch} />}
-      {loading && !data && <LoadingBlock rows={3} label="Loading saved offers…" />}
+      {loading && !data && <LoadingBlock rows={3} label={tr("Loading saved offers…")} />}
 
       {data && saved.length === 0 && (
         <EmptyState
           icon={<Bookmark className="h-5 w-5" />}
-          title="No saved offers yet"
-          message="Save offers while comparing suppliers to track their price and availability over time."
+          title={tr("No saved offers yet")}
+          message={tr("Save offers while comparing suppliers to track their price and availability over time.")}
           action={
             <Link to="/compare" className="btn-primary">
-              Compare supplier offers
+              {tr("Compare supplier offers")}
               <ArrowRight className="h-4 w-4" />
             </Link>
           }
@@ -112,9 +114,11 @@ export function SavedOffersPage() {
         <div className="space-y-3">
           <div className="flex flex-wrap items-center justify-between gap-2">
             <p className="text-xs text-ink-muted">
-              <span className="font-semibold text-ink">{saved.length}</span> saved offer
-              {saved.length === 1 ? '' : 's'} ·{' '}
-              {selected.length > 0 ? `${selected.length} selected` : 'select two or more to compare'}
+              <span className="font-semibold text-ink">{saved.length}</span>{' '}
+              {pluralize(saved.length, 'saved offer')} ·{' '}
+              {selected.length > 0
+                ? tr('{count} selected', { count: selected.length })
+                : tr('select two or more to compare')}
             </p>
             {selected.length > 0 && (
               <button
@@ -122,7 +126,7 @@ export function SavedOffersPage() {
                 onClick={() => setSelected([])}
                 className="text-xs font-semibold text-brand-700 hover:underline"
               >
-                Clear selection
+                {tr("Clear selection")}
               </button>
             )}
           </div>
@@ -167,16 +171,16 @@ export function SavedOffersPage() {
                           {item.offer.product?.name}
                         </Link>
                         <Badge tone={statusTone[item.offer.status]}>
-                          {statusLabel[item.offer.status]}
+                          {statusText(item.offer.status)}
                         </Badge>
                         {item.status_changed && (
                           <Badge tone="amber">
-                            Status changed: {statusLabel[item.status_at_save].toLowerCase()}
+                            {tr("Status changed:")} {statusText(item.status_at_save).toLowerCase()}
                           </Badge>
                         )}
                       </div>
                       <p className="mt-0.5 truncate text-[11px] text-ink-muted">
-                        {item.offer.supplier?.name} · {item.offer.supplier?.location} · saved{' '}
+                        {item.offer.supplier?.name} · {item.offer.supplier?.location} {tr("· saved")}{' '}
                         {formatDate(item.created_at)}
                       </p>
                       <div className="mt-1.5 flex flex-wrap items-center gap-2">
@@ -189,8 +193,8 @@ export function SavedOffersPage() {
                       onClick={() => void handleRemove(item.id, item.offer.product?.name ?? 'this')}
                       disabled={removingId === item.id}
                       className="rounded-lg p-1.5 text-ink-muted transition hover:bg-danger/5 hover:text-danger"
-                      aria-label="Remove saved offer"
-                      title="Remove"
+                      aria-label={tr("Remove saved offer")}
+                      title={tr("Remove")}
                     >
                       {removingId === item.id ? (
                         <Loader2 className="h-4 w-4 animate-spin" />
@@ -202,15 +206,15 @@ export function SavedOffersPage() {
 
                   <dl className="mt-3 grid grid-cols-3 gap-2 rounded-xl border border-line/70 bg-canvas/50 p-3 text-[11px]">
                     <div>
-                      <dt className="text-ink-muted">Saved price</dt>
+                      <dt className="text-ink-muted">{tr("Saved price")}</dt>
                       <dd className="mt-0.5 font-semibold text-ink">{formatUZS(item.price_at_save)}</dd>
                     </div>
                     <div>
-                      <dt className="text-ink-muted">Current price</dt>
+                      <dt className="text-ink-muted">{tr("Current price")}</dt>
                       <dd className="mt-0.5 font-semibold text-ink">{formatUZS(item.offer.unit_price)}</dd>
                     </div>
                     <div>
-                      <dt className="text-ink-muted">Change</dt>
+                      <dt className="text-ink-muted">{tr("Change")}</dt>
                       <dd
                         className={cn(
                           'mt-0.5 inline-flex items-center gap-1 font-semibold',
@@ -219,7 +223,7 @@ export function SavedOffersPage() {
                       >
                         {change !== 0 &&
                           (up ? <TrendingUp className="h-3 w-3" /> : <TrendingDown className="h-3 w-3" />)}
-                        {change === 0 ? 'No change' : formatPercent(item.price_change_pct)}
+                        {change === 0 ? tr("No change") : formatPercent(item.price_change_pct)}
                       </dd>
                     </div>
                   </dl>
@@ -227,19 +231,19 @@ export function SavedOffersPage() {
                   <div className="mt-3 flex items-center justify-between gap-2">
                     <p className="text-[11px] text-ink-muted">
                       {formatUZS(item.offer.unit_price)} +{' '}
-                      {item.offer.delivery_cost === 0 ? 'free delivery' : formatUZS(item.offer.delivery_cost)} ={' '}
+                      {item.offer.delivery_cost === 0 ? tr("free delivery") : formatUZS(item.offer.delivery_cost)} ={' '}
                       <span className="font-semibold text-ink">
                         {formatUZS(
                           totalCost(item.offer.unit_price, referenceQuantity, item.offer.delivery_cost),
                         )}
                       </span>{' '}
-                      for {formatQuantity(referenceQuantity, unit)}
+                      {tr("for")} {formatQuantity(referenceQuantity, unit)}
                     </p>
                     <Link
                       to={`/compare?product=${item.offer.product_id}&qty=${referenceQuantity}`}
                       className="btn-secondary shrink-0 px-3 py-1.5 text-xs"
                     >
-                      Compare
+                      {tr("Compare")}
                     </Link>
                   </div>
                 </article>
@@ -254,19 +258,19 @@ export function SavedOffersPage() {
       <Modal
         open={compareOpen}
         onClose={() => setCompareOpen(false)}
-        title="Compare saved offers"
-        description="Totals include delivery for the quantity you enter."
+        title={tr("Compare saved offers")}
+        description={tr("Totals include delivery for the quantity you enter.")}
         size="lg"
         footer={
           <button type="button" onClick={() => setCompareOpen(false)} className="btn-secondary">
-            Close
+            {tr("Close")}
           </button>
         }
       >
         <div className="mb-4 flex flex-wrap items-end gap-3">
           <div>
             <label htmlFor="compare-qty" className="mb-1 block text-[11px] font-semibold text-ink-soft">
-              Quantity per order
+              {tr("Quantity per order")}
             </label>
             <input
               id="compare-qty"
@@ -279,31 +283,31 @@ export function SavedOffersPage() {
               className={cn('field w-32 py-2', !compareQtyValid && 'border-danger/50')}
             />
             {!compareQtyValid && (
-              <p className="mt-1 text-[11px] text-danger">Enter a quantity greater than zero.</p>
+              <p className="mt-1 text-[11px] text-danger">{tr("Enter a quantity greater than zero.")}</p>
             )}
           </div>
           <p className="pb-2 text-[11px] text-ink-muted">
             {differentProducts
-              ? 'You selected offers for different products — totals are per order, not like-for-like.'
-              : 'Same product selected — totals are directly comparable.'}
+              ? tr("You selected offers for different products — totals are per order, not like-for-like.")
+              : tr("Same product selected — totals are directly comparable.")}
           </p>
         </div>
 
         {selectedSaved.length === 0 ? (
           <EmptyState
             icon={<Columns3 className="h-5 w-5" />}
-            title="Nothing selected"
-            message="Select at least two saved offers to compare them side by side."
+            title={tr("Nothing selected")}
+            message={tr("Select at least two saved offers to compare them side by side.")}
           />
         ) : (
           <div className="overflow-x-auto rounded-xl border border-line">
             <table className="table-base">
               <thead>
                 <tr>
-                  <th>Offer</th>
-                  <th className="text-right">Unit price</th>
-                  <th className="text-right">Delivery</th>
-                  <th className="text-right">Total</th>
+                  <th>{tr("Offer")}</th>
+                  <th className="text-right">{tr("Unit price")}</th>
+                  <th className="text-right">{tr("Delivery")}</th>
+                  <th className="text-right">{tr("Total")}</th>
                   <th />
                 </tr>
               </thead>
@@ -330,13 +334,13 @@ export function SavedOffersPage() {
                         </td>
                         <td className="whitespace-nowrap text-right">{formatUZS(item.offer.unit_price)}</td>
                         <td className="whitespace-nowrap text-right">
-                          {item.offer.delivery_cost === 0 ? 'Free' : formatUZS(item.offer.delivery_cost)}
+                          {item.offer.delivery_cost === 0 ? tr("Free") : formatUZS(item.offer.delivery_cost)}
                         </td>
                         <td className="whitespace-nowrap text-right font-semibold text-ink">
                           {compareQtyValid ? formatUZS(total) : '—'}
                         </td>
                         <td className="text-right">
-                          {index === 0 && <Badge tone="green">Cheapest</Badge>}
+                          {index === 0 && <Badge tone="green">{tr("Cheapest")}</Badge>}
                         </td>
                       </tr>
                     )
@@ -354,12 +358,12 @@ export function SavedOffersPage() {
             const diff = compareQtyValid ? Math.max(...totals) - Math.min(...totals) : 0
             return diff > 0 ? (
               <p className="mt-3 rounded-xl border border-brand-200 bg-brand-50/60 px-3.5 py-2.5 text-xs text-brand-900">
-                Choosing the cheapest selected offer saves{' '}
-                <span className="font-semibold">{formatUZS(diff)}</span> on this order.
+                {tr("Choosing the cheapest selected offer saves")}{' '}
+                <span className="font-semibold">{formatUZS(diff)}</span> {tr("on this order.")}
               </p>
             ) : (
               <p className="mt-3 rounded-xl border border-line bg-canvas px-3.5 py-2.5 text-xs text-ink-muted">
-                All selected offers cost the same for this quantity.
+                {tr("All selected offers cost the same for this quantity.")}
               </p>
             )
           })()}
@@ -368,7 +372,7 @@ export function SavedOffersPage() {
       {saved.length === 0 && !loading && (
         <div className="flex items-center gap-2 text-xs text-ink-muted">
           <BookmarkX className="h-3.5 w-3.5" aria-hidden />
-          Saved offers keep their original price so you can see what changed.
+          {tr("Saved offers keep their original price so you can see what changed.")}
         </div>
       )}
     </div>

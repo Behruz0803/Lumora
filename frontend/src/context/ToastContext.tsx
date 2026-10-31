@@ -1,6 +1,7 @@
 import { createContext, useCallback, useContext, useMemo, useRef, useState, type ReactNode } from 'react'
 import { AlertTriangle, CheckCircle2, Info, X } from 'lucide-react'
 import { cn } from '../utils/cn'
+import { tr } from '../i18n/core'
 
 type ToastKind = 'success' | 'error' | 'info'
 
@@ -88,7 +89,7 @@ export function ToastProvider({ children }: { children: ReactNode }) {
                 type="button"
                 onClick={() => remove(item.id)}
                 className="rounded-md p-0.5 text-ink-muted transition hover:bg-canvas hover:text-ink"
-                aria-label="Dismiss notification"
+                aria-label={tr("Dismiss notification")}
               >
                 <X className="h-4 w-4" />
               </button>

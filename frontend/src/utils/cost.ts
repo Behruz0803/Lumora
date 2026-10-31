@@ -4,6 +4,8 @@
  *
  *   Total Cost = (Unit Price x Quantity) + Delivery Cost
  */
+import { tr } from '../i18n'
+
 export function totalCost(unitPrice: number, quantity: number, deliveryCost: number): number {
   return Math.round(unitPrice * quantity) + deliveryCost
 }
@@ -32,20 +34,21 @@ export function buildOrderSummary(input: {
   businessName?: string | null
 }): string {
   const fmt = (value: number) => value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ' ')
+  const unit = tr(input.unit)
   return [
-    'PRICERADAR — PURCHASE ORDER (DEMO)',
-    `Buyer: ${input.businessName || 'My business'}`,
-    `Product: ${input.productName}`,
-    `Quantity: ${input.quantity} ${input.unit}`,
-    `Supplier: ${input.supplierName} (${input.location})`,
-    `Contact: ${input.phone}`,
+    tr('PRICERADAR — PURCHASE ORDER (DEMO)'),
+    tr('Buyer: {name}', { name: input.businessName || tr('My business') }),
+    tr('Product: {name}', { name: tr(input.productName) }),
+    tr('Quantity: {value} {unit}', { value: input.quantity, unit }),
+    tr('Supplier: {name} ({location})', { name: input.supplierName, location: tr(input.location) }),
+    tr('Contact: {phone}', { phone: input.phone }),
     '',
-    `Unit price: ${fmt(input.unitPrice)} UZS / ${input.unit}`,
-    `Product cost: ${fmt(input.unitPrice * input.quantity)} UZS`,
-    `Delivery: ${fmt(input.deliveryCost)} UZS`,
-    `TOTAL: ${fmt(input.total)} UZS`,
-    `Potential saving vs most expensive eligible offer: ${fmt(input.savings)} UZS`,
+    tr('Unit price: {price} UZS / {unit}', { price: fmt(input.unitPrice), unit }),
+    tr('Product cost: {price} UZS', { price: fmt(input.unitPrice * input.quantity) }),
+    tr('Delivery: {price} UZS', { price: fmt(input.deliveryCost) }),
+    tr('TOTAL: {price} UZS', { price: fmt(input.total) }),
+    tr('Potential saving vs most expensive eligible offer: {price} UZS', { price: fmt(input.savings) }),
     '',
-    'Prices from the PriceRadar demo dataset (fictional).',
+    tr('Prices from the PriceRadar demo dataset (fictional).'),
   ].join('\n')
 }

@@ -17,8 +17,9 @@ import { CategoryBarChart, ChartLegend, PriceHistoryChart, TrendAreaChart } from
 import { DemoNotice } from '../components/DemoNotice'
 import { Badge, DemoBadge } from '../components/ui/Badge'
 import { EmptyState, ErrorState, LoadingBlock } from '../components/ui/States'
-import { formatMoney, formatPercent, formatRelativeTime, formatUZS } from '../utils/format'
+import { formatMoney, formatPercent, formatRelativeTime, formatUZS, pluralize } from '../utils/format'
 import { cn } from '../utils/cn'
+import { tr } from '../i18n/core'
 
 const RANGES = [
   { days: 30, label: '30 days' },
@@ -54,9 +55,9 @@ export function AnalyticsPage() {
   return (
     <div className="space-y-6">
       <PageHeader
-        eyebrow="Market intelligence"
-        title="Market Analytics"
-        description="Price history, category averages, supply health and demand indicators derived from the demo dataset."
+        eyebrow={tr("Market intelligence")}
+        title={tr("Market Analytics")}
+        description={tr("Price history, category averages, supply health and demand indicators derived from the demo dataset.")}
         actions={
           <>
             <DemoBadge />
@@ -81,34 +82,34 @@ export function AnalyticsPage() {
       />
 
       {market.error && <ErrorState message={market.error} onRetry={market.refetch} />}
-      {market.loading && !market.data && <LoadingBlock rows={5} label="Loading market analytics…" />}
+      {market.loading && !market.data && <LoadingBlock rows={5} label={tr("Loading market analytics…")} />}
 
       {market.data && (
         <>
           <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
             <StatCard
-              label="Tracked offers"
+              label={tr("Tracked offers")}
               value={market.data.supply.total_offers}
-              hint={`${market.data.supply.in_stock_offers} in stock · ${market.data.supply.low_stock_offers} low`}
+              hint={tr('{inStock} in stock · {low} low', { inStock: market.data.supply.in_stock_offers, low: market.data.supply.low_stock_offers })}
               icon={<PackageCheck className="h-4.5 w-4.5" />}
             />
             <StatCard
-              label="Stock health"
+              label={tr("Stock health")}
               value={`${market.data.supply.stock_health_pct.toFixed(1)}%`}
-              hint={`${market.data.supply.out_of_stock_offers} offers out of stock`}
+              hint={tr('{count} {noun} out of stock', { count: market.data.supply.out_of_stock_offers, noun: pluralize(market.data.supply.out_of_stock_offers, 'offer') })}
               icon={<Activity className="h-4.5 w-4.5" />}
               tone="brand"
             />
             <StatCard
-              label="Suppliers"
+              label={tr("Suppliers")}
               value={market.data.suppliers.total_suppliers}
-              hint={`${market.data.suppliers.verified_pct.toFixed(0)}% verified · avg ${market.data.suppliers.avg_rating.toFixed(1)}/5`}
+              hint={tr('{percent}% verified · avg {rating}/5', { percent: market.data.suppliers.verified_pct.toFixed(0), rating: market.data.suppliers.avg_rating.toFixed(1) })}
               icon={<BadgeCheck className="h-4.5 w-4.5" />}
             />
             <StatCard
-              label="Avg delivery time"
-              value={`${market.data.suppliers.avg_delivery_days.toFixed(1)} days`}
-              hint={`${formatMoney(market.data.supply.total_available_volume)} units available`}
+              label={tr("Avg delivery time")}
+              value={tr('{count} days', { count: market.data.suppliers.avg_delivery_days.toFixed(1) })}
+              hint={tr('{count} units available', { count: formatMoney(market.data.supply.total_available_volume) })}
               icon={<Truck className="h-4.5 w-4.5" />}
             />
           </div>
@@ -117,12 +118,12 @@ export function AnalyticsPage() {
             <div className="card p-5 xl:col-span-2">
               <div className="flex flex-wrap items-start justify-between gap-2">
                 <div>
-                  <h2 className="text-sm font-semibold text-ink">Average market price</h2>
+                  <h2 className="text-sm font-semibold text-ink">{tr("Average market price")}</h2>
                   <p className="mt-0.5 text-xs text-ink-muted">
-                    Daily average across all tracked products · last {days} days
+                    {tr("Daily average across all tracked products · last")} {days} {tr("days")}
                   </p>
                 </div>
-                <Badge tone="amber">Simulated series</Badge>
+                <Badge tone="amber">{tr("Simulated series")}</Badge>
               </div>
               <div className="mt-4">
                 <TrendAreaChart data={market.data.trend} height={264} />
@@ -130,8 +131,8 @@ export function AnalyticsPage() {
             </div>
 
             <div className="card p-5">
-              <h2 className="text-sm font-semibold text-ink">Average price by category</h2>
-              <p className="mt-0.5 text-xs text-ink-muted">Averaged across available supplier offers</p>
+              <h2 className="text-sm font-semibold text-ink">{tr("Average price by category")}</h2>
+              <p className="mt-0.5 text-xs text-ink-muted">{tr("Averaged across available supplier offers")}</p>
               <div className="mt-3">
                 <CategoryBarChart data={market.data.categories} height={264} />
               </div>
@@ -142,13 +143,13 @@ export function AnalyticsPage() {
             <div className="card p-5 xl:col-span-2">
               <div className="flex flex-wrap items-start justify-between gap-3">
                 <div>
-                  <h2 className="text-sm font-semibold text-ink">Product price history</h2>
+                  <h2 className="text-sm font-semibold text-ink">{tr("Product price history")}</h2>
                   <p className="mt-0.5 text-xs text-ink-muted">
-                    Average price with individual supplier series
+                    {tr("Average price with individual supplier series")}
                   </p>
                 </div>
                 <label htmlFor="analytics-product" className="sr-only">
-                  Select product
+                  {tr("Select product")}
                 </label>
                 <select
                   id="analytics-product"
@@ -158,7 +159,7 @@ export function AnalyticsPage() {
                 >
                   {(products.data?.items ?? []).map((product) => (
                     <option key={product.id} value={product.id}>
-                      {product.name}
+                      {tr(product.name)}
                     </option>
                   ))}
                 </select>
@@ -166,7 +167,7 @@ export function AnalyticsPage() {
 
               {history.loading && !history.data && (
                 <div className="mt-4">
-                  <LoadingBlock rows={2} label="Loading price history…" />
+                  <LoadingBlock rows={2} label={tr("Loading price history…")} />
                 </div>
               )}
               {history.error && (
@@ -178,7 +179,7 @@ export function AnalyticsPage() {
                 <>
                   <div className="mt-3 flex flex-wrap items-center gap-x-4 gap-y-1 text-xs text-ink-muted">
                     <span>
-                      Change:{' '}
+                      {tr("Change:")}{' '}
                       <span
                         className={cn(
                           'font-semibold',
@@ -188,9 +189,9 @@ export function AnalyticsPage() {
                         {formatPercent(history.data.change_pct)}
                       </span>
                     </span>
-                    <span>Avg: {formatUZS(history.data.avg_price)}</span>
+                    <span>{tr("Avg:")} {formatUZS(history.data.avg_price)}</span>
                     <span>
-                      Range: {formatUZS(history.data.min_price)} – {formatUZS(history.data.max_price)}
+                      {tr("Range:")} {formatUZS(history.data.min_price)} – {formatUZS(history.data.max_price)}
                     </span>
                   </div>
                   <div className="mt-2">
@@ -218,24 +219,25 @@ export function AnalyticsPage() {
 
             <div className="card overflow-hidden">
               <div className="border-b border-line px-5 py-4">
-                <h2 className="text-sm font-semibold text-ink">Demand & supply indicators</h2>
-                <p className="mt-0.5 text-xs text-ink-muted">Derived from offer availability per category</p>
+                <h2 className="text-sm font-semibold text-ink">{tr("Demand & supply indicators")}</h2>
+                <p className="mt-0.5 text-xs text-ink-muted">{tr("Derived from offer availability per category")}</p>
               </div>
               <ul className="divide-y divide-line">
                 {market.data.demand.map((item) => (
                   <li key={item.category} className="flex items-center justify-between gap-3 px-5 py-3">
                     <div>
-                      <p className="text-sm font-medium text-ink">{item.category}</p>
+                      <p className="text-sm font-medium text-ink">{tr(item.category)}</p>
                       <p className="text-[11px] text-ink-muted">
-                        {item.offer_count} offers · avg {formatUZS(item.avg_price)}
+                        {item.offer_count} {pluralize(item.offer_count, 'offer')} ·{' '}
+                        {tr('avg {price}', { price: formatUZS(item.avg_price) })}
                       </p>
                     </div>
                     <Badge tone={supplyTone[item.supply_status]}>
                       {item.supply_status === 'healthy'
-                        ? 'Healthy supply'
+                        ? tr("Healthy supply")
                         : item.supply_status === 'tight'
-                          ? 'Tight supply'
-                          : 'Constrained'}
+                          ? tr('Tight supply')
+                          : tr('Constrained')}
                     </Badge>
                   </li>
                 ))}
@@ -248,17 +250,17 @@ export function AnalyticsPage() {
               <div className="border-b border-line px-5 py-4">
                 <h2 className="flex items-center gap-2 text-sm font-semibold text-ink">
                   <BarChart3 className="h-4 w-4 text-brand-600" aria-hidden />
-                  Category breakdown
+                  {tr("Category breakdown")}
                 </h2>
               </div>
               <div className="overflow-x-auto">
                 <table className="table-base">
                   <thead>
                     <tr>
-                      <th>Category</th>
-                      <th className="text-right">Products</th>
-                      <th className="text-right">Offers</th>
-                      <th className="text-right">Avg price</th>
+                      <th>{tr("Category")}</th>
+                      <th className="text-right">{tr("Products")}</th>
+                      <th className="text-right">{tr("Offers")}</th>
+                      <th className="text-right">{tr("Avg price")}</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -279,12 +281,12 @@ export function AnalyticsPage() {
               <div className="border-b border-line px-5 py-4">
                 <h2 className="flex items-center gap-2 text-sm font-semibold text-ink">
                   <CircleDollarSign className="h-4 w-4 text-brand-600" aria-hidden />
-                  Recent price movement
+                  {tr("Recent price movement")}
                 </h2>
               </div>
               {market.data.price_changes.length === 0 ? (
                 <div className="p-5">
-                  <EmptyState title="No price movement" message="Prices have not changed in this window." />
+                  <EmptyState title={tr("No price movement")} message={tr("Prices have not changed in this window.")} />
                 </div>
               ) : (
                 <ul className="max-h-[360px] divide-y divide-line overflow-y-auto">

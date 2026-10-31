@@ -1,6 +1,7 @@
 import { useEffect, useRef, type ReactNode } from 'react'
 import { X } from 'lucide-react'
 import { cn } from '../../utils/cn'
+import { tr } from '../../i18n/core'
 
 interface ModalProps {
   open: boolean
@@ -81,7 +82,7 @@ export function Modal({ open, onClose, title, description, children, footer, siz
             type="button"
             onClick={onClose}
             className="rounded-lg p-1.5 text-ink-muted transition hover:bg-canvas hover:text-ink"
-            aria-label="Close dialog"
+            aria-label={tr("Close dialog")}
           >
             <X className="h-4.5 w-4.5" />
           </button>

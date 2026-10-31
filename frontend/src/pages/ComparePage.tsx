@@ -31,15 +31,16 @@ import { useToast } from '../context/ToastContext'
 import { useAuth } from '../context/AuthContext'
 import { buildOrderSummary } from '../utils/cost'
 import { cn } from '../utils/cn'
-import { formatQuantity, formatRelativeTime, formatUZS, statusLabel, statusTone } from '../utils/format'
+import { formatQuantity, formatRelativeTime, formatUZS, pluralize, statusText, statusTone } from '../utils/format'
+import { tr } from '../i18n/core'
 
 type SortKey = 'total' | 'quality' | 'delivery'
 type SelectedProduct = Pick<Product, 'id' | 'name' | 'category' | 'unit' | 'image_url'>
 
-const SORT_OPTIONS: { key: SortKey; label: string }[] = [
-  { key: 'total', label: 'Lowest total cost' },
-  { key: 'quality', label: 'Best quality' },
-  { key: 'delivery', label: 'Fastest delivery' },
+const sortOptions = (): { key: SortKey; label: string }[] => [
+  { key: 'total', label: tr('Lowest total cost') },
+  { key: 'quality', label: tr('Best quality') },
+  { key: 'delivery', label: tr('Fastest delivery') },
 ]
 
 function defaultQuantity(unit: string): number {
@@ -86,7 +87,7 @@ export function ComparePage() {
       } catch (err) {
         if (current !== requestId.current) return
         setComparison(null)
-        setError(err instanceof ApiError ? err.message : 'Could not calculate the comparison.')
+        setError(err instanceof ApiError ? err.message : tr('Could not calculate the comparison.'))
       } finally {
         if (current === requestId.current) setLoading(false)
       }
@@ -166,12 +167,12 @@ export function ComparePage() {
       const sample = results.items[0] ?? popular.find((item) => item.name === 'Potatoes')
       if (!sample) {
         setTerm('Potatoes')
-        toast.info('Search for Potatoes to run the example.')
+        toast.info(tr('Search for Potatoes to run the example.'))
         return
       }
       selectProduct(sample, 100)
     } catch {
-      toast.error('Could not load the example product.')
+      toast.error(tr('Could not load the example product.'))
     }
   }, [popular, selectProduct, toast])
 
@@ -211,7 +212,7 @@ export function ComparePage() {
         }
       } catch (err) {
         if (!active) return
-        setError(err instanceof ApiError ? err.message : 'Could not load that product.')
+        setError(err instanceof ApiError ? err.message : tr('Could not load that product.'))
       } finally {
         loadingProductId.current = null
       }
@@ -257,13 +258,13 @@ export function ComparePage() {
     try {
       await api.saveOffer(offer.offer_id)
       setSavedOfferIds((ids) => [...ids, offer.offer_id])
-      toast.success(`Offer from ${offer.supplier_name} saved for later.`)
+      toast.success(tr('Offer from {supplier} saved for later.', { supplier: offer.supplier_name }))
     } catch (err) {
       if (err instanceof ApiError && err.status === 409) {
         setSavedOfferIds((ids) => [...ids, offer.offer_id])
-        toast.info('This offer is already in your saved offers.')
+        toast.info(tr('This offer is already in your saved offers.'))
       } else {
-        toast.error(err instanceof ApiError ? err.message : 'Could not save this offer.')
+        toast.error(err instanceof ApiError ? err.message : tr('Could not save this offer.'))
       }
     } finally {
       setSavingOfferId(null)
@@ -271,19 +272,19 @@ export function ComparePage() {
   }
 
   const steps = [
-    { label: 'Search product', done: Boolean(product) },
-    { label: 'Set quantity', done: Boolean(product) && quantityValid },
-    { label: 'Compare totals', done: Boolean(comparison) },
-    { label: 'Contact supplier', done: Boolean(contactOffer) },
+    { label: tr('Search product'), done: Boolean(product) },
+    { label: tr('Set quantity'), done: Boolean(product) && quantityValid },
+    { label: tr('Compare totals'), done: Boolean(comparison) },
+    { label: tr('Contact supplier'), done: Boolean(contactOffer) },
   ]
   const currentStep = steps.findIndex((step) => !step.done)
 
   return (
     <div className="space-y-6">
       <PageHeader
-        eyebrow="Core workflow"
-        title="Price Comparison"
-        description="Compare every supplier offer by total purchasing cost — unit price × quantity plus delivery — before you buy."
+        eyebrow={tr("Core workflow")}
+        title={tr("Price Comparison")}
+        description={tr("Compare every supplier offer by total purchasing cost — unit price × quantity plus delivery — before you buy.")}
         actions={
           <button
             type="button"
@@ -291,7 +292,7 @@ export function ComparePage() {
             onClick={() => void loadExample()}
           >
             <Sparkles className="h-4 w-4 text-brand-600" />
-            Load 100 kg potato example
+            {tr("Load 100 kg potato example")}
           </button>
         }
       />
@@ -323,7 +324,7 @@ export function ComparePage() {
         <div className="grid gap-5 lg:grid-cols-[1.4fr_1fr]">
           <div ref={searchRef} className="relative">
             <label htmlFor="product-search" className="mb-1.5 block text-xs font-semibold text-ink-soft">
-              1. Which product do you need?
+              {tr("1. Which product do you need?")}
             </label>
             <div className="relative">
               <Search className="pointer-events-none absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-ink-muted" aria-hidden />
@@ -332,7 +333,7 @@ export function ComparePage() {
                 value={term}
                 onChange={(event) => setTerm(event.target.value)}
                 onFocus={() => term.trim().length >= 2 && setShowSuggestions(true)}
-                placeholder={product ? product.name : 'Search potatoes, rice, cooking oil…'}
+                placeholder={product ? product.name : tr("Search potatoes, rice, cooking oil…")}
                 autoComplete="off"
                 className="field py-3 pl-10 pr-10 text-[15px]"
                 aria-expanded={showSuggestions}
@@ -349,7 +350,7 @@ export function ComparePage() {
                     setSearchParams({}, { replace: true })
                   }}
                   className="absolute right-2.5 top-1/2 -translate-y-1/2 rounded-md p-1.5 text-ink-muted transition hover:bg-canvas hover:text-ink"
-                  aria-label="Clear selected product"
+                  aria-label={tr("Clear selected product")}
                 >
                   <X className="h-4 w-4" />
                 </button>
@@ -363,7 +364,7 @@ export function ComparePage() {
                 className="absolute left-0 right-0 top-[calc(100%+6px)] z-30 overflow-hidden rounded-xl border border-line bg-white shadow-raised"
               >
                 {suggestions.length === 0 ? (
-                  <p className="px-4 py-3 text-sm text-ink-muted">No products match “{term}”.</p>
+                  <p className="px-4 py-3 text-sm text-ink-muted">{tr("No products match “")}{term}”.</p>
                 ) : (
                   <ul className="max-h-72 divide-y divide-line/70 overflow-y-auto">
                     {suggestions.map((item) => (
@@ -384,7 +385,7 @@ export function ComparePage() {
                           <span className="min-w-0 flex-1">
                             <span className="block truncate text-sm font-medium text-ink">{item.name}</span>
                             <span className="block text-[11px] text-ink-muted">
-                              {item.category} · {item.available_supplier_count} suppliers
+                              {item.category} · {item.available_supplier_count} {tr("suppliers")}
                             </span>
                           </span>
                           <span className="shrink-0 text-xs font-semibold text-brand-700">
@@ -400,7 +401,7 @@ export function ComparePage() {
 
             {!product && (
               <div className="mt-3 flex flex-wrap gap-1.5">
-                <span className="py-1 text-[11px] font-medium text-ink-muted">Popular:</span>
+                <span className="py-1 text-[11px] font-medium text-ink-muted">{tr("Popular:")}</span>
                 {popular.map((item) => (
                   <button
                     key={item.id}
@@ -428,7 +429,7 @@ export function ComparePage() {
 
           <div>
             <label htmlFor="quantity" className="mb-1.5 block text-xs font-semibold text-ink-soft">
-              2. How much do you need?
+              {tr("2. How much do you need?")}
             </label>
             <div className="flex items-center gap-2">
               <div className="relative flex-1">
@@ -455,7 +456,7 @@ export function ComparePage() {
                   type="button"
                   onClick={() => setQuantityText(String(Math.max(1, Math.round(quantity / 2) || 1)))}
                   className="btn-secondary px-2.5 py-3"
-                  aria-label="Halve quantity"
+                  aria-label={tr("Halve quantity")}
                 >
                   <Minus className="h-4 w-4" />
                 </button>
@@ -463,7 +464,7 @@ export function ComparePage() {
                   type="button"
                   onClick={() => setQuantityText(String(Math.round(quantity * 2) || 1))}
                   className="btn-secondary px-2.5 py-3"
-                  aria-label="Double quantity"
+                  aria-label={tr("Double quantity")}
                 >
                   <Plus className="h-4 w-4" />
                 </button>
@@ -488,12 +489,12 @@ export function ComparePage() {
                   className="chip ml-auto border-brand-300 text-brand-700"
                 >
                   {loading ? <Loader2 className="h-3 w-3 animate-spin" /> : <Calculator className="h-3 w-3" />}
-                  Recalculate
+                  {tr("Recalculate")}
                 </button>
               )}
             </div>
             {!quantityValid && (
-              <p className="mt-1.5 text-xs text-danger">Enter a quantity greater than zero.</p>
+              <p className="mt-1.5 text-xs text-danger">{tr("Enter a quantity greater than zero.")}</p>
             )}
           </div>
         </div>
@@ -501,8 +502,8 @@ export function ComparePage() {
 
       {!product && (
         <EmptyState
-          title="Pick a product to compare supplier offers"
-          message="Search for a product and enter the quantity you need. PriceRadar calculates the total cost including delivery for every eligible supplier."
+          title={tr("Pick a product to compare supplier offers")}
+          message={tr("Search for a product and enter the quantity you need. PriceRadar calculates the total cost including delivery for every eligible supplier.")}
           icon={<Scale className="h-5 w-5" />}
           action={
             <button
@@ -515,7 +516,7 @@ export function ComparePage() {
               disabled={popular.length === 0}
             >
               <Sparkles className="h-4 w-4" />
-              Try the 100 kg potato example
+              {tr("Try the 100 kg potato example")}
             </button>
           }
         />
@@ -523,7 +524,7 @@ export function ComparePage() {
 
       {product && error && <ErrorState message={error} onRetry={() => void runComparison(product, quantity)} />}
 
-      {product && loading && !comparison && <LoadingBlock label="Calculating total costs…" rows={3} />}
+      {product && loading && !comparison && <LoadingBlock label={tr("Calculating total costs…")} rows={3} />}
 
       {product && comparison && (
         <div className="space-y-5">
@@ -533,19 +534,23 @@ export function ComparePage() {
               <div className="flex items-center gap-3">
                 <ProductThumb
                   src={comparison.product.image_url}
-                  alt={comparison.product.name}
+                  alt={tr(comparison.product.name)}
                   category={comparison.product.category}
                   className="h-12 w-12"
                 />
                 <div>
                   <div className="flex flex-wrap items-center gap-2">
-                    <h2 className="text-base font-semibold text-ink">{comparison.product.name}</h2>
+                    <h2 className="text-base font-semibold text-ink">{tr(comparison.product.name)}</h2>
                     <DemoBadge />
                   </div>
                   <p className="mt-0.5 text-xs text-ink-muted">
                     {formatQuantity(comparison.quantity, comparison.unit)} ·{' '}
-                    {comparison.eligible_count} eligible of {comparison.offers.length} suppliers ·{' '}
-                    {comparison.rejected_count} excluded
+                    {tr('{eligible} eligible of {total} {noun} · {rejected} excluded', {
+                      eligible: comparison.eligible_count,
+                      total: comparison.offers.length,
+                      noun: pluralize(comparison.offers.length, 'supplier'),
+                      rejected: comparison.rejected_count,
+                    })}
                   </p>
                 </div>
               </div>
@@ -554,7 +559,7 @@ export function ComparePage() {
                   to={`/products/${comparison.product.id}`}
                   className="btn-secondary px-3 py-2 text-xs"
                 >
-                  Product details
+                  {tr("Product details")}
                 </Link>
                 <button
                   type="button"
@@ -563,7 +568,7 @@ export function ComparePage() {
                   disabled={loading}
                 >
                   {loading ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : <Calculator className="h-3.5 w-3.5" />}
-                  Refresh
+                  {tr("Refresh")}
                 </button>
               </div>
             </div>
@@ -574,10 +579,10 @@ export function ComparePage() {
                   <div className="flex items-center gap-2">
                     <Badge tone="green">
                       <Sparkles className="h-3 w-3" aria-hidden />
-                      Recommended · lowest total cost
+                      {tr("Recommended · lowest total cost")}
                     </Badge>
                     {comparison.recommended.is_best_overall && (
-                      <Badge tone="blue">Also best overall</Badge>
+                      <Badge tone="blue">{tr("Also best overall")}</Badge>
                     )}
                   </div>
                   <div className="mt-3 flex flex-wrap items-baseline gap-3">
@@ -585,12 +590,12 @@ export function ComparePage() {
                       {formatUZS(comparison.recommended.total_cost)}
                     </p>
                     <p className="text-xs text-ink-muted">
-                      total for {formatQuantity(comparison.quantity, comparison.unit)}
+                      {tr("total for")} {formatQuantity(comparison.quantity, comparison.unit)}
                     </p>
                   </div>
                   <p className="mt-1 text-sm text-ink-soft">
                     <span className="font-semibold text-ink">{comparison.recommended.supplier_name}</span>{' '}
-                    · {comparison.recommended.location}
+                    · {tr(comparison.recommended.location)}
                   </p>
 
                   <dl className="mt-4 space-y-2 rounded-xl border border-line bg-canvas/60 p-3.5 text-sm">
@@ -602,19 +607,19 @@ export function ComparePage() {
                       <dd className="font-medium text-ink">{formatUZS(comparison.recommended.product_cost)}</dd>
                     </div>
                     <div className="flex items-center justify-between gap-3">
-                      <dt className="text-ink-muted">Delivery</dt>
+                      <dt className="text-ink-muted">{tr("Delivery")}</dt>
                       <dd className="font-medium text-ink">
                         {comparison.recommended.delivery_cost === 0
-                          ? 'Free'
+                          ? tr("Free")
                           : formatUZS(comparison.recommended.delivery_cost)}
                       </dd>
                     </div>
                     <div className="flex items-center justify-between gap-3 border-t border-line pt-2">
-                      <dt className="font-semibold text-ink">Total cost</dt>
+                      <dt className="font-semibold text-ink">{tr("Total cost")}</dt>
                       <dd className="font-semibold text-ink">{formatUZS(comparison.recommended.total_cost)}</dd>
                     </div>
                     <div className="flex items-center justify-between gap-3">
-                      <dt className="text-ink-muted">Delivered cost per {comparison.unit}</dt>
+                      <dt className="text-ink-muted">{tr("Delivered cost per")} {comparison.unit}</dt>
                       <dd className="font-medium text-ink">
                         {formatUZS(comparison.recommended.cost_per_unit)}
                       </dd>
@@ -625,11 +630,11 @@ export function ComparePage() {
                     <Rating value={comparison.recommended.rating} />
                     <VerifiedBadge verified={comparison.recommended.is_verified} />
                     <Badge tone={statusTone[comparison.recommended.status]}>
-                      {statusLabel[comparison.recommended.status]}
+                      {statusText(comparison.recommended.status)}
                     </Badge>
                     <span className="inline-flex items-center gap-1">
                       <Truck className="h-3.5 w-3.5" aria-hidden />
-                      {comparison.recommended.delivery_days} day delivery
+                      {comparison.recommended.delivery_days} {tr("day delivery")}
                     </span>
                   </div>
 
@@ -640,7 +645,7 @@ export function ComparePage() {
                       className="btn-primary"
                     >
                       <Phone className="h-4 w-4" />
-                      Contact supplier
+                      {tr("Contact supplier")}
                       <ArrowRight className="h-4 w-4" />
                     </button>
                     <button
@@ -652,12 +657,12 @@ export function ComparePage() {
                       {savedOfferIds.includes(comparison.recommended.offer_id) ? (
                         <>
                           <BookmarkCheck className="h-4 w-4 text-brand-600" />
-                          Saved
+                          {tr("Saved")}
                         </>
                       ) : (
                         <>
                           <BookmarkPlus className="h-4 w-4" />
-                          Save offer
+                          {tr("Save offer")}
                         </>
                       )}
                     </button>
@@ -665,7 +670,7 @@ export function ComparePage() {
                       to={`/suppliers/${comparison.recommended.supplier_id}`}
                       className="btn-ghost"
                     >
-                      Supplier profile
+                      {tr("Supplier profile")}
                     </Link>
                   </div>
                 </div>
@@ -673,13 +678,14 @@ export function ComparePage() {
                 <div className="space-y-3">
                   {comparison.potential_savings > 0 && (
                     <div className="rounded-xl border border-brand-200 bg-brand-50/70 p-4">
-                      <p className="label text-brand-700">You save on this order</p>
+                      <p className="label text-brand-700">{tr("You save on this order")}</p>
                       <p className="mt-1 text-2xl font-semibold text-brand-800">
                         {formatUZS(comparison.potential_savings)}
                       </p>
                       <p className="mt-1 text-xs leading-relaxed text-brand-900/70">
-                        Compared with the most expensive eligible offer (
-                        {formatUZS(comparison.highest_eligible_total)}). Same product, same quantity.
+                        {tr('Compared with the most expensive eligible offer ({amount}). Same product, same quantity.', {
+                          amount: formatUZS(comparison.highest_eligible_total),
+                        })}
                       </p>
                     </div>
                   )}
@@ -687,7 +693,7 @@ export function ComparePage() {
                   <div className="rounded-xl border border-line bg-white p-4">
                     <div className="flex items-center gap-2">
                       <Info className="h-4 w-4 text-brand-600" aria-hidden />
-                      <p className="text-xs font-semibold text-ink">Why this recommendation</p>
+                      <p className="text-xs font-semibold text-ink">{tr("Why this recommendation")}</p>
                     </div>
                     <p className="mt-2 text-xs leading-relaxed text-ink-soft">{comparison.explanation}</p>
                   </div>
@@ -696,24 +702,32 @@ export function ComparePage() {
                     comparison.cheapest &&
                     comparison.best_overall.offer_id !== comparison.cheapest.offer_id && (
                       <div className="rounded-xl border border-[#C7D9EC] bg-[#F3F8FD] p-4">
-                        <p className="text-xs font-semibold text-[#2C5C8F]">Best overall alternative</p>
+                        <p className="text-xs font-semibold text-[#2C5C8F]">{tr("Best overall alternative")}</p>
                         <p className="mt-1 text-sm font-semibold text-ink">
                           {comparison.best_overall.supplier_name} ·{' '}
                           {formatUZS(comparison.best_overall.total_cost)}
                         </p>
                         <p className="mt-1 text-xs leading-relaxed text-ink-soft">
-                          Rating {comparison.best_overall.rating.toFixed(1)}/5,{' '}
-                          {comparison.best_overall.delivery_days} day delivery,{' '}
-                          {comparison.best_overall.is_verified ? 'verified supplier' : 'not yet verified'}. A
-                          quality and delivery premium of{' '}
-                          {formatUZS(comparison.best_overall.total_cost - comparison.recommended.total_cost)}.
+                          {tr(
+                            'Rating {rating}/5, {days} day delivery, {verification}. A quality and delivery premium of {premium}.',
+                            {
+                              rating: comparison.best_overall.rating.toFixed(1),
+                              days: comparison.best_overall.delivery_days,
+                              verification: comparison.best_overall.is_verified
+                                ? tr('verified supplier')
+                                : tr('not yet verified'),
+                              premium: formatUZS(
+                                comparison.best_overall.total_cost - comparison.recommended.total_cost,
+                              ),
+                            },
+                          )}
                         </p>
                         <button
                           type="button"
                           onClick={() => setContactOffer(comparison.best_overall)}
                           className="mt-2.5 text-xs font-semibold text-[#2C5C8F] underline-offset-2 hover:underline"
                         >
-                          View this option
+                          {tr("View this option")}
                         </button>
                       </div>
                     )}
@@ -724,7 +738,7 @@ export function ComparePage() {
                 <div className="flex items-start gap-3 rounded-xl border border-warning/30 bg-warning/[0.07] p-4">
                   <Info className="mt-0.5 h-4 w-4 shrink-0 text-[#96651B]" aria-hidden />
                   <div>
-                    <p className="text-sm font-semibold text-ink">No supplier can fulfil this order</p>
+                    <p className="text-sm font-semibold text-ink">{tr("No supplier can fulfil this order")}</p>
                     <p className="mt-1 text-xs leading-relaxed text-ink-soft">{comparison.explanation}</p>
                   </div>
                 </div>
@@ -739,13 +753,13 @@ export function ComparePage() {
           <div className="card overflow-hidden">
             <div className="flex flex-col gap-3 border-b border-line px-5 py-4 sm:flex-row sm:items-center sm:justify-between">
               <div>
-                <h3 className="text-sm font-semibold text-ink">All supplier offers</h3>
+                <h3 className="text-sm font-semibold text-ink">{tr("All supplier offers")}</h3>
                 <p className="mt-0.5 text-xs text-ink-muted">
-                  Total cost = unit price × quantity + delivery. Ineligible offers are shown but never ranked.
+                  {tr("Total cost = unit price × quantity + delivery. Ineligible offers are shown but never ranked.")}
                 </p>
               </div>
               <div className="flex flex-wrap gap-1.5">
-                {SORT_OPTIONS.map((option) => (
+                {sortOptions().map((option) => (
                   <button
                     key={option.key}
                     type="button"
@@ -765,15 +779,15 @@ export function ComparePage() {
                 <thead>
                   <tr>
                     <th className="w-12">#</th>
-                    <th>Supplier</th>
-                    <th className="text-right">Unit price</th>
-                    <th className="text-right">Delivery</th>
-                    <th className="text-right">Min. order</th>
-                    <th className="text-right">Available</th>
-                    <th className="text-right">Total cost</th>
-                    <th className="text-right">Per {comparison.unit}</th>
-                    <th>Updated</th>
-                    <th className="text-right">Actions</th>
+                    <th>{tr("Supplier")}</th>
+                    <th className="text-right">{tr("Unit price")}</th>
+                    <th className="text-right">{tr("Delivery")}</th>
+                    <th className="text-right">{tr("Min. order")}</th>
+                    <th className="text-right">{tr("Available")}</th>
+                    <th className="text-right">{tr("Total cost")}</th>
+                    <th className="text-right">{tr("Per")} {comparison.unit}</th>
+                    <th>{tr("Updated")}</th>
+                    <th className="text-right">{tr("Actions")}</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -814,17 +828,17 @@ export function ComparePage() {
                             >
                               {offer.supplier_name}
                             </Link>
-                            {offer.is_cheapest && <Badge tone="green">Lowest total</Badge>}
+                            {offer.is_cheapest && <Badge tone="green">{tr("Lowest total")}</Badge>}
                             {offer.is_best_overall && !offer.is_cheapest && (
-                              <Badge tone="blue">Best overall</Badge>
+                              <Badge tone="blue">{tr("Best overall")}</Badge>
                             )}
                           </div>
                           <div className="mt-1 flex flex-wrap items-center gap-2 text-[11px] text-ink-muted">
-                            <span>{offer.location}</span>
+                            <span>{tr(offer.location)}</span>
                             <Rating value={offer.rating} />
                             {offer.is_verified && (
                               <span className="inline-flex items-center gap-0.5 text-brand-700">
-                                <BadgeCheck className="h-3 w-3" aria-hidden /> Verified
+                                <BadgeCheck className="h-3 w-3" aria-hidden /> {tr("Verified")}
                               </span>
                             )}
                           </div>
@@ -837,7 +851,7 @@ export function ComparePage() {
                         </td>
                         <td className="whitespace-nowrap text-right">
                           {offer.delivery_cost === 0 ? (
-                            <Badge tone="green">Free</Badge>
+                            <Badge tone="green">{tr("Free")}</Badge>
                           ) : (
                             formatUZS(offer.delivery_cost)
                           )}
@@ -887,15 +901,15 @@ export function ComparePage() {
                               )}
                             >
                               <Phone className="h-3.5 w-3.5" />
-                              Contact
+                              {tr("Contact")}
                             </button>
                             <button
                               type="button"
                               onClick={() => void handleSave(offer)}
                               disabled={isSaved || savingOfferId === offer.offer_id}
                               className="btn-secondary px-2 py-1.5"
-                              aria-label={isSaved ? 'Offer saved' : `Save offer from ${offer.supplier_name}`}
-                              title={isSaved ? 'Saved' : 'Save offer'}
+                              aria-label={isSaved ? tr("Offer saved") : `Save offer from ${offer.supplier_name}`}
+                              title={isSaved ? tr("Saved") : tr("Save offer")}
                             >
                               {isSaved ? (
                                 <BookmarkCheck className="h-3.5 w-3.5 text-brand-600" />
@@ -922,11 +936,11 @@ export function ComparePage() {
                       <div>
                         <div className="flex flex-wrap items-center gap-1.5">
                           <span className="text-sm font-semibold text-ink">{offer.supplier_name}</span>
-                          {offer.is_cheapest && <Badge tone="green">Lowest total</Badge>}
+                          {offer.is_cheapest && <Badge tone="green">{tr("Lowest total")}</Badge>}
                         </div>
                         <p className="mt-0.5 text-[11px] text-ink-muted">
-                          {offer.location} · {offer.rating.toFixed(1)}/5 ·{' '}
-                          {offer.is_verified ? 'Verified' : 'Unverified'}
+                          {tr(offer.location)} · {offer.rating.toFixed(1)}/5 ·{' '}
+                          {offer.is_verified ? tr("Verified") : tr("Unverified")}
                         </p>
                       </div>
                       <div className="text-right">
@@ -939,17 +953,17 @@ export function ComparePage() {
                         >
                           {formatUZS(offer.total_cost)}
                         </p>
-                        <p className="text-[11px] text-ink-muted">total</p>
+                        <p className="text-[11px] text-ink-muted">{tr("total")}</p>
                       </div>
                     </div>
                     <div className="mt-2 grid grid-cols-2 gap-x-3 gap-y-1 text-[11px] text-ink-muted">
-                      <span>Unit: {formatUZS(offer.unit_price)}</span>
-                      <span>Delivery: {offer.delivery_cost === 0 ? 'Free' : formatUZS(offer.delivery_cost)}</span>
-                      <span>Min: {formatQuantity(offer.minimum_order_quantity)} {comparison.unit}</span>
-                      <span>Stock: {formatQuantity(offer.available_quantity)} {comparison.unit}</span>
-                      <span>Per {comparison.unit}: {formatUZS(offer.cost_per_unit)}</span>
-                      <span>Delivery: {offer.delivery_days} day(s)</span>
-                      <span>Updated: {formatRelativeTime(offer.updated_at)}</span>
+                      <span>{tr("Unit:")} {formatUZS(offer.unit_price)}</span>
+                      <span>{tr("Delivery:")} {offer.delivery_cost === 0 ? tr("Free") : formatUZS(offer.delivery_cost)}</span>
+                      <span>{tr("Min:")} {formatQuantity(offer.minimum_order_quantity)} {comparison.unit}</span>
+                      <span>{tr("Stock:")} {formatQuantity(offer.available_quantity)} {comparison.unit}</span>
+                      <span>{tr("Per")} {comparison.unit}: {formatUZS(offer.cost_per_unit)}</span>
+                      <span>{tr("Delivery:")} {offer.delivery_days} {tr("day(s)")}</span>
+                      <span>{tr("Updated:")} {formatRelativeTime(offer.updated_at)}</span>
                     </div>
                     {!offer.eligible && (
                       <p className="mt-2 text-[11px] font-medium text-danger/80">{offer.reason}</p>
@@ -966,14 +980,14 @@ export function ComparePage() {
                         )}
                       >
                         <Phone className="h-3.5 w-3.5" />
-                        Contact supplier
+                        {tr("Contact supplier")}
                       </button>
                       <button
                         type="button"
                         onClick={() => void handleSave(offer)}
                         disabled={isSaved}
                         className="btn-secondary px-3 py-2"
-                        aria-label={isSaved ? 'Offer saved' : 'Save offer'}
+                        aria-label={isSaved ? tr("Offer saved") : tr("Save offer")}
                       >
                         {isSaved ? (
                           <BookmarkCheck className="h-4 w-4 text-brand-600" />
@@ -1040,7 +1054,7 @@ function ContactSupplierModal({
       await navigator.clipboard.writeText(text)
       toast.success(message)
     } catch {
-      toast.error('Clipboard is not available in this browser. Please copy manually.')
+      toast.error(tr('Clipboard is not available in this browser. Please copy manually.'))
     }
   }
 
@@ -1048,63 +1062,63 @@ function ContactSupplierModal({
     <Modal
       open={Boolean(offer)}
       onClose={onClose}
-      title={`Contact ${offer.supplier_name}`}
-      description="Purchase summary for this order. Demo contact details — prices are fictional."
+      title={tr('Contact {supplier}', { supplier: offer.supplier_name })}
+      description={tr("Purchase summary for this order. Demo contact details — prices are fictional.")}
       size="lg"
       footer={
         <>
           <button type="button" onClick={onClose} className="btn-secondary">
-            Close
+            {tr("Close")}
           </button>
           <button
             type="button"
-            onClick={() => void copy(summary, 'Purchase order summary copied to clipboard.')}
+            onClick={() => void copy(summary, tr('Purchase order summary copied to clipboard.'))}
             className="btn-secondary"
           >
             <Copy className="h-4 w-4" />
-            Copy order
+            {tr("Copy order")}
           </button>
           <a href={`tel:${offer.phone.replace(/\s/g, '')}`} className="btn-primary">
             <Phone className="h-4 w-4" />
-            Call supplier
+            {tr("Call supplier")}
           </a>
         </>
       }
     >
       <div className="space-y-4">
         <div className="rounded-xl border border-brand-200 bg-brand-50/60 p-4">
-          <p className="label text-brand-700">Total purchase cost</p>
+          <p className="label text-brand-700">{tr("Total purchase cost")}</p>
           <p className="mt-1 text-3xl font-semibold tracking-tight text-ink">{formatUZS(offer.total_cost)}</p>
           <p className="mt-1 text-xs text-ink-soft">
-            {formatQuantity(comparison.quantity, comparison.unit)} of {comparison.product.name} from{' '}
-            {offer.supplier_name}, {offer.location}.
+            {formatQuantity(comparison.quantity, comparison.unit)} {tr("of")} {tr(comparison.product.name)} {tr("from")}{' '}
+            {offer.supplier_name}, {tr(offer.location)}.
           </p>
         </div>
 
         <dl className="divide-y divide-line rounded-xl border border-line">
           <div className="flex items-center justify-between px-4 py-2.5 text-sm">
             <dt className="text-ink-muted">
-              Unit price × quantity ({formatQuantity(comparison.quantity, comparison.unit)})
+              {tr("Unit price × quantity (")}{formatQuantity(comparison.quantity, comparison.unit)})
             </dt>
             <dd className="font-medium text-ink">{formatUZS(offer.product_cost)}</dd>
           </div>
           <div className="flex items-center justify-between px-4 py-2.5 text-sm">
-            <dt className="text-ink-muted">Delivery</dt>
+            <dt className="text-ink-muted">{tr("Delivery")}</dt>
             <dd className="font-medium text-ink">
-              {offer.delivery_cost === 0 ? 'Free' : formatUZS(offer.delivery_cost)}
+              {offer.delivery_cost === 0 ? tr("Free") : formatUZS(offer.delivery_cost)}
             </dd>
           </div>
           <div className="flex items-center justify-between px-4 py-2.5 text-sm">
-            <dt className="font-semibold text-ink">Total cost</dt>
+            <dt className="font-semibold text-ink">{tr("Total cost")}</dt>
             <dd className="font-semibold text-ink">{formatUZS(offer.total_cost)}</dd>
           </div>
           <div className="flex items-center justify-between px-4 py-2.5 text-sm">
-            <dt className="text-ink-muted">Delivered cost per {comparison.unit}</dt>
+            <dt className="text-ink-muted">{tr("Delivered cost per")} {comparison.unit}</dt>
             <dd className="font-medium text-ink">{formatUZS(offer.cost_per_unit)}</dd>
           </div>
           {savings > 0 && (
             <div className="flex items-center justify-between px-4 py-2.5 text-sm">
-              <dt className="text-brand-700">Saving vs most expensive eligible offer</dt>
+              <dt className="text-brand-700">{tr("Saving vs most expensive eligible offer")}</dt>
               <dd className="font-semibold text-brand-700">{formatUZS(savings)}</dd>
             </div>
           )}
@@ -1112,9 +1126,9 @@ function ContactSupplierModal({
 
         <div className="grid gap-3 sm:grid-cols-2">
           <div className="rounded-xl border border-line p-4">
-            <p className="label">Supplier contact</p>
+            <p className="label">{tr("Supplier contact")}</p>
             <p className="mt-1.5 text-sm font-semibold text-ink">{offer.supplier_name}</p>
-            <p className="text-xs text-ink-muted">{offer.location}</p>
+            <p className="text-xs text-ink-muted">{tr(offer.location)}</p>
             <a
               href={`tel:${offer.phone.replace(/\s/g, '')}`}
               className="mt-2 inline-flex items-center gap-1.5 text-sm font-semibold text-brand-700 hover:underline"
@@ -1124,16 +1138,16 @@ function ContactSupplierModal({
             </a>
             <div className="mt-2 flex flex-wrap items-center gap-2">
               <VerifiedBadge verified={offer.is_verified} />
-              <Badge tone={statusTone[offer.status]}>{statusLabel[offer.status]}</Badge>
+              <Badge tone={statusTone[offer.status]}>{statusText(offer.status)}</Badge>
             </div>
           </div>
           <div className="rounded-xl border border-line p-4">
-            <p className="label">Order terms</p>
+            <p className="label">{tr("Order terms")}</p>
             <ul className="mt-1.5 space-y-1 text-xs text-ink-soft">
-              <li>Minimum order: {formatQuantity(offer.minimum_order_quantity)} {comparison.unit}</li>
-              <li>Available now: {formatQuantity(offer.available_quantity)} {comparison.unit}</li>
-              <li>Delivery time: {offer.delivery_days} day(s)</li>
-              <li>Supplier rating: {offer.rating.toFixed(1)} / 5</li>
+              <li>{tr("Minimum order:")} {formatQuantity(offer.minimum_order_quantity)} {comparison.unit}</li>
+              <li>{tr("Available now:")} {formatQuantity(offer.available_quantity)} {comparison.unit}</li>
+              <li>{tr("Delivery time:")} {offer.delivery_days} {tr("day(s)")}</li>
+              <li>{tr("Supplier rating:")} {offer.rating.toFixed(1)} / 5</li>
             </ul>
           </div>
         </div>
@@ -1151,7 +1165,7 @@ function ContactSupplierModal({
             className="btn-secondary shrink-0"
           >
             {saved ? <BookmarkCheck className="h-4 w-4 text-brand-600" /> : <BookmarkPlus className="h-4 w-4" />}
-            {saved ? 'Saved' : 'Save offer'}
+            {saved ? tr("Saved") : tr("Save offer")}
           </button>
         </div>
       </div>

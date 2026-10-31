@@ -29,11 +29,13 @@ import {
   formatQuantity,
   formatRelativeTime,
   formatUZS,
-  statusLabel,
+  statusText,
+  pluralize,
   statusTone,
 } from '../utils/format'
 import { Badge } from '../components/ui/Badge'
 import { cn } from '../utils/cn'
+import { tr } from '../i18n/core'
 
 export function OverviewPage() {
   const { user } = useAuth()
@@ -57,16 +59,16 @@ export function OverviewPage() {
     <div className="space-y-6">
       <PageHeader
         eyebrow={today}
-        title={`Welcome back, ${user?.full_name?.split(' ')[0] ?? 'there'}`}
-        description="Here is where the market stands today across your tracked products and suppliers."
+        title={tr('Welcome back, {name}', { name: user?.full_name?.split(' ')[0] ?? tr('there') })}
+        description={tr("Here is where the market stands today across your tracked products and suppliers.")}
         actions={
           <>
             <Link to="/assistant" className="btn-secondary">
               <Sparkles className="h-4 w-4 text-brand-600" />
-              Ask the assistant
+              {tr("Ask the assistant")}
             </Link>
             <Link to="/compare" className="btn-primary">
-              Compare prices
+              {tr("Compare prices")}
               <ArrowRight className="h-4 w-4" />
             </Link>
           </>
@@ -78,55 +80,54 @@ export function OverviewPage() {
         <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
           <div className="max-w-2xl">
             <div className="flex flex-wrap items-center gap-2">
-              <Badge tone="green">Core demo workflow</Badge>
+              <Badge tone="green">{tr("Core demo workflow")}</Badge>
               <DemoBadge />
             </div>
             <h2 className="mt-2 text-lg font-semibold tracking-tight text-ink sm:text-xl">
-              Dilshod needs 100 kg of potatoes for his grocery store
+              {tr("Dilshod needs 100 kg of potatoes for his grocery store")}
             </h2>
             <p className="mt-1.5 text-sm leading-relaxed text-ink-muted">
-              Search the product, enter the quantity, and PriceRadar ranks every supplier by total cost —
-              unit price × 100 kg plus delivery. The cheapest unit price is not always the cheapest order.
+              {tr("Search the product, enter the quantity, and PriceRadar ranks every supplier by total cost — unit price × 100 kg plus delivery. The cheapest unit price is not always the cheapest order.")}
             </p>
           </div>
           <div className="flex shrink-0 flex-col gap-2 sm:items-end">
             <Link to="/compare?search=potatoes&qty=100" className="btn-primary whitespace-nowrap">
-              Run the 100 kg potato flow
+              {tr("Run the 100 kg potato flow")}
               <ArrowRight className="h-4 w-4" />
             </Link>
             <p className="text-[11px] text-ink-muted sm:text-right">
-              3 suppliers · delivery included · savings shown
+              {tr("3 suppliers · delivery included · savings shown")}
             </p>
           </div>
         </div>
       </div>
 
       {error && <ErrorState message={error} onRetry={refetch} />}
-      {loading && !data && <LoadingBlock rows={4} label="Loading dashboard…" />}
+      {loading && !data && <LoadingBlock rows={4} label={tr("Loading dashboard…")} />}
 
       {data && (
         <>
           <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
             <StatCard
-              label="Tracked products"
+              label={tr("Tracked products")}
               value={data.total_products}
-              hint={`${data.total_offers} supplier offers`}
+              hint={tr('{count} {noun}', { count: data.total_offers, noun: pluralize(data.total_offers, 'supplier offer') })}
               icon={<Boxes className="h-4.5 w-4.5" />}
             />
             <StatCard
-              label="Active suppliers"
+              label={tr("Active suppliers")}
               value={data.active_suppliers}
               hint={
                 <span className="inline-flex items-center gap-1">
-                  <Users className="h-3 w-3" aria-hidden /> with live offers
+                  <Users className="h-3 w-3" aria-hidden /> {tr("with live offers")}
                 </span>
               }
               icon={<Store className="h-4.5 w-4.5" />}
             />
             <StatCard
-              label="Average market price"
+              label={tr("Average market price")}
               value={formatUZS(data.avg_market_price)}
-              hint="across tracked products, per unit"
+              hint={tr("across tracked products, per unit")}
               icon={<CircleDollarSign className="h-4.5 w-4.5" />}
               trend={
                 trendChange === null
@@ -139,9 +140,9 @@ export function OverviewPage() {
               }
             />
             <StatCard
-              label="Potential savings"
+              label={tr("Potential savings")}
               value={formatUZS(data.potential_savings)}
-              hint={`${data.savings_pct.toFixed(1)}% vs worst eligible offer`}
+              hint={tr('{percent}% vs worst eligible offer', { percent: data.savings_pct.toFixed(1) })}
               icon={<PiggyBank className="h-4.5 w-4.5" />}
               tone="brand"
             />
@@ -151,16 +152,16 @@ export function OverviewPage() {
             <div className="card p-5 xl:col-span-2">
               <div className="flex flex-wrap items-start justify-between gap-2">
                 <div>
-                  <h3 className="text-sm font-semibold text-ink">Market price trend</h3>
+                  <h3 className="text-sm font-semibold text-ink">{tr("Market price trend")}</h3>
                   <p className="mt-0.5 text-xs text-ink-muted">
-                    Daily average across all tracked products · last 30 days
+                    {tr("Daily average across all tracked products · last 30 days")}
                   </p>
                 </div>
                 <Link
                   to="/analytics"
                   className="text-xs font-semibold text-brand-700 underline-offset-2 hover:underline"
                 >
-                  Full analytics
+                  {tr("Full analytics")}
                 </Link>
               </div>
               <div className="mt-4">
@@ -172,9 +173,9 @@ export function OverviewPage() {
             </div>
 
             <div className="card p-5">
-              <h3 className="text-sm font-semibold text-ink">Quick product search</h3>
+              <h3 className="text-sm font-semibold text-ink">{tr("Quick product search")}</h3>
               <p className="mt-0.5 text-xs text-ink-muted">
-                Jump straight into a total-cost comparison.
+                {tr("Jump straight into a total-cost comparison.")}
               </p>
               <div className="mt-3">
                 <GlobalSearch />
@@ -182,9 +183,9 @@ export function OverviewPage() {
 
               <div className="mt-5">
                 <div className="flex items-center justify-between">
-                  <h3 className="text-sm font-semibold text-ink">Top categories</h3>
+                  <h3 className="text-sm font-semibold text-ink">{tr("Top categories")}</h3>
                   <Link to="/products" className="text-xs font-semibold text-brand-700 hover:underline">
-                    All products
+                    {tr("All products")}
                   </Link>
                 </div>
                 <div className="mt-2">
@@ -198,11 +199,11 @@ export function OverviewPage() {
             <div className="card overflow-hidden xl:col-span-2">
               <div className="flex items-center justify-between border-b border-line px-5 py-4">
                 <div>
-                  <h3 className="text-sm font-semibold text-ink">Recent supplier offers</h3>
-                  <p className="mt-0.5 text-xs text-ink-muted">Latest price updates in the demo dataset</p>
+                  <h3 className="text-sm font-semibold text-ink">{tr("Recent supplier offers")}</h3>
+                  <p className="mt-0.5 text-xs text-ink-muted">{tr("Latest price updates in the demo dataset")}</p>
                 </div>
                 <Link to="/products" className="text-xs font-semibold text-brand-700 hover:underline">
-                  Browse
+                  {tr("Browse")}
                 </Link>
               </div>
               <ul className="divide-y divide-line">
@@ -215,27 +216,27 @@ export function OverviewPage() {
                       className="h-10 w-10"
                     />
                     <div className="min-w-0 flex-1">
-                      <p className="truncate text-sm font-medium text-ink">{offer.product?.name}</p>
+                      <p className="truncate text-sm font-medium text-ink">{tr(offer.product?.name ?? "")}</p>
                       <p className="truncate text-[11px] text-ink-muted">
-                        {offer.supplier?.name} · {offer.supplier?.location} ·{' '}
+                        {tr(offer.supplier?.name ?? "")} · {tr(offer.supplier?.location ?? "")} ·{' '}
                         {formatRelativeTime(offer.updated_at)}
                       </p>
                     </div>
                     <div className="hidden text-right sm:block">
                       <p className="text-sm font-semibold text-ink">{formatUZS(offer.unit_price)}</p>
                       <p className="text-[11px] text-ink-muted">
-                        per {offer.product?.unit} · delivery{' '}
-                        {offer.delivery_cost === 0 ? 'free' : formatMoney(offer.delivery_cost)}
+                        {tr("per")} {offer.product?.unit} {tr("· delivery")}{' '}
+                        {offer.delivery_cost === 0 ? tr("free") : formatMoney(offer.delivery_cost)}
                       </p>
                     </div>
-                    <Badge tone={statusTone[offer.status]}>{statusLabel[offer.status]}</Badge>
+                    <Badge tone={statusTone[offer.status]}>{statusText(offer.status)}</Badge>
                     <Link
                       to={`/compare?product=${offer.product_id}&qty=${
                         offer.product?.unit === 'kg' || offer.product?.unit === 'l' ? 100 : 10
                       }`}
                       className="btn-secondary px-2.5 py-1.5 text-xs"
                     >
-                      Compare
+                      {tr("Compare")}
                     </Link>
                   </li>
                 ))}
@@ -244,14 +245,14 @@ export function OverviewPage() {
 
             <div className="card overflow-hidden">
               <div className="border-b border-line px-5 py-4">
-                <h3 className="text-sm font-semibold text-ink">Recent price changes</h3>
-                <p className="mt-0.5 text-xs text-ink-muted">Latest movement per offer</p>
+                <h3 className="text-sm font-semibold text-ink">{tr("Recent price changes")}</h3>
+                <p className="mt-0.5 text-xs text-ink-muted">{tr("Latest movement per offer")}</p>
               </div>
               {data.price_changes.length === 0 ? (
                 <div className="p-5">
                   <EmptyState
-                    title="No price changes yet"
-                    message="As supplier prices update, changes will appear here."
+                    title={tr("No price changes yet")}
+                    message={tr("As supplier prices update, changes will appear here.")}
                   />
                 </div>
               ) : (
@@ -300,7 +301,7 @@ export function OverviewPage() {
                   to="/analytics"
                   className="inline-flex items-center gap-1 text-xs font-semibold text-brand-700 hover:underline"
                 >
-                  View market analytics
+                  {tr("View market analytics")}
                   <ArrowUpRight className="h-3 w-3" />
                 </Link>
               </div>
@@ -309,8 +310,8 @@ export function OverviewPage() {
 
           <div className="grid gap-5 lg:grid-cols-2">
             <div className="card p-5">
-              <h3 className="text-sm font-semibold text-ink">Top categories by offers</h3>
-              <p className="mt-0.5 text-xs text-ink-muted">Where the demo market has the most supply</p>
+              <h3 className="text-sm font-semibold text-ink">{tr("Top categories by offers")}</h3>
+              <p className="mt-0.5 text-xs text-ink-muted">{tr("Where the demo market has the most supply")}</p>
               <ul className="mt-4 space-y-3">
                 {data.top_categories.map((category) => {
                   const max = Math.max(...data.top_categories.map((item) => item.offer_count), 1)
@@ -319,7 +320,7 @@ export function OverviewPage() {
                       <div className="flex items-center justify-between text-xs">
                         <span className="font-medium text-ink">{category.category}</span>
                         <span className="text-ink-muted">
-                          {category.offer_count} offers · avg {formatUZS(category.avg_price)}
+                          {category.offer_count} {tr("offers · avg")} {formatUZS(category.avg_price)}
                         </span>
                       </div>
                       <div className="mt-1.5 h-1.5 w-full overflow-hidden rounded-full bg-canvas">
@@ -335,8 +336,8 @@ export function OverviewPage() {
             </div>
 
             <div className="card p-5">
-              <h3 className="text-sm font-semibold text-ink">Supplier snapshot</h3>
-              <p className="mt-0.5 text-xs text-ink-muted">Ratings and delivery terms from the directory</p>
+              <h3 className="text-sm font-semibold text-ink">{tr("Supplier snapshot")}</h3>
+              <p className="mt-0.5 text-xs text-ink-muted">{tr("Ratings and delivery terms from the directory")}</p>
               <ul className="mt-4 space-y-3">
                 {data.recent_offers.slice(0, 4).map((offer) =>
                   offer.supplier ? (
@@ -349,7 +350,7 @@ export function OverviewPage() {
                           {offer.supplier.name}
                         </Link>
                         <p className="text-[11px] text-ink-muted">
-                          {offer.supplier.location} · {offer.supplier.delivery_days} day delivery
+                          {offer.supplier.location} · {offer.supplier.delivery_days} {tr("day delivery")}
                         </p>
                       </div>
                       <Rating value={offer.supplier.rating} />
@@ -361,7 +362,7 @@ export function OverviewPage() {
                 to="/suppliers"
                 className="mt-4 inline-flex items-center gap-1 text-xs font-semibold text-brand-700 hover:underline"
               >
-                Open supplier directory
+                {tr("Open supplier directory")}
                 <ArrowUpRight className="h-3 w-3" />
               </Link>
             </div>
@@ -370,7 +371,7 @@ export function OverviewPage() {
           <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
             <DemoNotice className="flex-1" />
             <p className="text-[11px] text-ink-muted">
-              Avg order quantities used for savings: {formatQuantity(100)} kg / l, {formatQuantity(10)} trays.
+              {tr("Avg order quantities used for savings:")} {formatQuantity(100)} {tr("kg / l,")} {formatQuantity(10)} {tr("trays.")}
             </p>
           </div>
         </>

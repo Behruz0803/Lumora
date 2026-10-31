@@ -1,5 +1,6 @@
 import { FlaskConical } from 'lucide-react'
 import { cn } from '../utils/cn'
+import { tr } from '../i18n/core'
 
 /**
  * Product principle: never present demo data as verified market information.
@@ -15,10 +16,10 @@ export function DemoNotice({ className, compact = false }: { className?: string;
     >
       <FlaskConical className="mt-0.5 h-3.5 w-3.5 shrink-0" aria-hidden />
       <p className="leading-relaxed">
-        <span className="font-semibold">Demo dataset.</span>{' '}
+        <span className="font-semibold">{tr("Demo dataset.")}</span>{' '}
         {compact
-          ? 'Prices and suppliers are fictional examples, not real market data.'
-          : 'Prices, availability and trends shown here are fictional demonstration values — not real market research. Use PriceRadar to compare total cost, then confirm details with the supplier.'}
+          ? tr("Prices and suppliers are fictional examples, not real market data.")
+          : tr("Prices, availability and trends shown here are fictional demonstration values — not real market research. Use PriceRadar to compare total cost, then confirm details with the supplier.")}
       </p>
     </div>
   )

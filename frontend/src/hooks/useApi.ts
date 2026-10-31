@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { ApiError } from '../services/api'
+import { tr } from '../i18n'
 
 interface State<T> {
   data: T | null
@@ -30,7 +31,7 @@ export function useApi<T>(fetcher: () => Promise<T>, deps: unknown[] = []) {
       .catch((error: unknown) => {
         if (!active || current !== requestId.current) return
         const message =
-          error instanceof ApiError ? error.message : 'Something went wrong while loading data.'
+          error instanceof ApiError ? error.message : tr('Something went wrong while loading data.')
         setState({ data: null, error: message, loading: false })
       })
     return () => {

@@ -13,6 +13,7 @@ import type {
   Supplier,
   User,
 } from '../types'
+import { getLanguage, tr } from '../i18n'
 
 const TOKEN_KEY = 'priceradar_token'
 // Requests go through the Vite dev-server proxy to the FastAPI backend.
@@ -54,12 +55,15 @@ async function request<T>(
   if (init.body) headers.set('Content-Type', 'application/json')
   const token = tokenStore.get()
   if (token) headers.set('Authorization', `Bearer ${token}`)
+  // Server-generated text (explanations, eligibility reasons, assistant answers)
+  // is returned in the active interface language.
+  headers.set('Accept-Language', getLanguage())
 
   let response: Response
   try {
     response = await fetch(`${BASE_URL}/api${path}${buildQuery(params)}`, { ...init, headers })
   } catch {
-    throw new ApiError('Cannot reach the PriceRadar API. Check that the backend server is running.', 0)
+    throw new ApiError(tr('Cannot reach the PriceRadar API. Check that the backend server is running.'), 0)
   }
 
   if (response.status === 401) {
@@ -76,8 +80,8 @@ async function request<T>(
     const detail =
       (payload && typeof payload.detail === 'string' && payload.detail) ||
       (response.status === 401
-        ? 'Your session has expired. Please sign in again.'
-        : `Request failed with status ${response.status}.`)
+        ? tr('Your session has expired. Please sign in again.')
+        : tr('Request failed with status {status}.', { status: response.status }))
     throw new ApiError(detail, response.status)
   }
   return payload as T

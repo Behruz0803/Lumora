@@ -1,6 +1,6 @@
 import { Loader2 } from 'lucide-react'
 
-export function FullPageLoader({ label = 'Loading PriceRadar…' }: { label?: string }) {
+export function FullPageLoader({ label = '{tr("Loading PriceRadar…")}' }: { label?: string }) {
   return (
     <div className="flex min-h-screen flex-col items-center justify-center gap-3 bg-canvas" role="status">
       <span className="flex h-11 w-11 items-center justify-center rounded-xl bg-brand-500 shadow-sm">

@@ -1,5 +1,6 @@
 import { AlertTriangle, RefreshCw, WifiOff } from 'lucide-react'
 import { useAuth } from '../context/AuthContext'
+import { tr } from '../i18n/core'
 
 /**
  * Shown when a stored session exists but the API cannot be reached.
@@ -14,22 +15,22 @@ export function ConnectionErrorScreen() {
         <span className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-warning/10 text-[#96651B]">
           <WifiOff className="h-5 w-5" aria-hidden />
         </span>
-        <h1 className="mt-4 text-lg font-semibold text-ink">Cannot reach the PriceRadar API</h1>
+        <h1 className="mt-4 text-lg font-semibold text-ink">{tr("Cannot reach the PriceRadar API")}</h1>
         <p className="mt-1.5 text-sm text-ink-muted">
-          {connectionError ?? 'The service is unavailable right now.'}
+          {connectionError ?? tr('The service is unavailable right now.')}
         </p>
         <p className="mt-2 text-xs text-ink-muted">
-          Your session is still saved. Check that the backend is running on port 8000, then try again.
+          {tr("Your session is still saved. Check that the backend is running on port 8000, then try again.")}
         </p>
 
         <div className="mt-5 flex flex-col gap-2 sm:flex-row sm:justify-center">
           <button type="button" onClick={retryConnection} disabled={loading} className="btn-primary">
             <RefreshCw className={loading ? 'h-4 w-4 animate-spin' : 'h-4 w-4'} />
-            {loading ? 'Reconnecting…' : 'Try again'}
+            {loading ? tr("Reconnecting…") : tr("Try again")}
           </button>
           <button type="button" onClick={logout} className="btn-secondary">
             <AlertTriangle className="h-4 w-4" />
-            Sign out instead
+            {tr("Sign out instead")}
           </button>
         </div>
       </div>

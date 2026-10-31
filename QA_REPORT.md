@@ -4,13 +4,15 @@
 **Role:** Senior QA Engineer
 **Date:** 31 October 2026
 **Branch:** `arena/69672421-lumora`
+**Languages:** **English** · [O‘zbekcha](./QA_REPORT.uz.md) · [Русский](./QA_REPORT.ru.md)
 **Verdict:** ✅ **Release-ready for an MVP demonstration** — 0 open critical or major defects.
-All automated suites pass: **133 backend tests, 98 UI/unit tests, 110 live API checks, 57 adversarial edge probes**,
-clean type-check and production build.
+All automated suites pass: **159 backend tests, 116 UI/unit tests, 110 live API checks, 57 adversarial edge probes**,
+clean type-check and production build. The application ships in **English, Uzbek and Russian** (see §5.2).
 
-> **Pass history:** pass 1 (functional QA) found and fixed 13 defects. Pass 2 (adversarial / error-path QA,
-> run afterwards) found and fixed 7 further defects — including three that only appear when the API or the
-> network misbehaves. Both passes are recorded below; the numbers in this report are from pass 2.
+> **Pass history:** pass 1 (functional QA) found and fixed 13 defects. Pass 2 (adversarial / error-path QA)
+> found and fixed 7 further defects — including three that only appear when the API or the network misbehaves.
+> Pass 3 delivered the three-language UI and server-side text, and fixed 6 localisation defects (§5.2).
+> All three passes are recorded below; the numbers in this report are from pass 3.
 
 ---
 
@@ -35,15 +37,18 @@ $ git log --oneline
 
 | Suite | Tests | Passed | Failed |
 | --- | --- | --- | --- |
-| Backend unit + integration (pytest) | 133 | 133 | 0 |
-| Frontend UI, error-path, a11y and unit tests (Vitest) | 98 | 98 | 0 |
+| Backend unit + integration (pytest) | 159 | 159 | 0 |
+| Frontend UI, error-path, a11y, i18n and unit tests (Vitest) | 116 | 116 | 0 |
 | Live API smoke suite (all endpoints) | 110 | 110 | 0 |
 | Adversarial edge probes (validation, auth, injection, limits) | 57 | 57 | 0 |
 | TypeScript type-check | — | ✅ | — |
 | Production build (`vite build` + `vite preview` smoke) | — | ✅ | — |
 
-Defects found during QA across both passes: **20** (9 major, 11 minor) — **20 fixed and re-tested**, 0 deferred,
+Defects found during QA across all passes: **26** (12 major, 14 minor) — **26 fixed and re-tested**, 0 deferred,
 0 open critical/major.
+
+Interface languages: **English (en) · Uzbek (uz) · Russian (ru)** — switchable on every screen, persisted per
+device and per account, and applied to server-generated text as well (§5.2).
 
 ---
 
@@ -167,6 +172,39 @@ POST /api/assistant/chat {"message":"   "}       → 422  (previously 200 + help
 ```
 
 
+### 5.2 Pass 3 — language support (English · Uzbek · Russian)
+
+Requirement: the interface must **actually switch** language for all three languages, both in the app and in
+the prepared deliverables. Six localisation defects were found and fixed on the way.
+
+| ID | Severity | Area | Defect | Fix | Regression test |
+| --- | --- | --- | --- | --- | --- |
+| D-21 | **Major** | Language switching | Choosing a language changed the stored preference and the switcher label, but the mounted pages kept rendering the previous language: the React root was keyed only once, so nothing re-rendered on a language change | The default `App` became a `useSyncExternalStore` subscriber and renders `<AppShell key={language} />`, so every screen re-mounts in the new language (including charts and derived text) | `i18n.test.tsx::switching language re-renders the whole app` |
+| D-22 | **Major** | Server text | Recommendation explanations, “why this offer was rejected” reasons and all assistant answers were generated in English only, so a Russian or Uzbek user saw a translated shell around English engine output | `backend/app/core/i18n.py` now holds the templates (keyed by the English source sentence) and `pricing.py` / `assistant.py` take a `language`; `/recommendations/compare` and `/assistant/chat` resolve it from `Accept-Language` (or `?lang=`), and `services/api.ts` sends `Accept-Language: <lang>` on every request | `tests/test_i18n.py` (26 tests) — Russian/Uzbek explanation, rejection reason, assistant answer, `?lang=` override, unsupported-language fallback |
+| D-23 | **Major** | Demo data inside prose | Product names, categories, units and cities inside generated sentences stayed English (“100 kg of **Potatoes**” → Russian “…Помидоры”, “…100 kg”), visibly breaking the illusion in ru/uz | Added `DATA_NAMES`/`localise()` to `app/core/i18n.py`; prose placeholders now receive localised names and units (кг/л, шт/лоток) | `test_i18n.py`, plus a live curl matrix (en/ru/uz × compare + chat) |
+| D-24 | Minor | Translation quality | Russian sentences read poorly (“Для «Potatoes» на 100 kg”, “Не удалось найти поставщика…”) — wrong case and a first-person voice that does not match the rest of the engine | Reworded all five sentence templates to “Для заказа «…» …”, “Ни один поставщик не может выполнить заказ…”, “Варианты поставщиков по товару «…»” | Manual review of the en/ru/uz matrix; assertion on the new wording |
+| D-25 | Minor | Build break | Duplicate keys in `locales/uz/ui.ts` (and `ru/ui.ts`) made `tsc` fail with `TS1117` — the app would not type-check or build | De-duplicated with a block-aware script (multi-line entries) and removed the one remaining 404-string pair by hand | `npm run typecheck` (clean), full Vitest run |
+| D-26 | Minor | Coverage | The dictionary-coverage test could not detect strings that were only *partially* translated, and five legitimate identical strings (brand, `kg`, `l`, `UZS`, names) failed the “must differ from English” rule | Coverage test walks every `tr()` key against both dictionaries with an explicit allowlist of identical-by-design strings, and asserts placeholders survive translation | `i18n.test.tsx` 18 tests (coverage, plural rules, switch behaviour) |
+
+Localisation verification matrix (live API, real server):
+
+| Language | `POST /recommendations/compare` explanation | Rejection reason | `POST /assistant/chat` |
+| --- | --- | --- | --- |
+| `en` | “Recommended: Fergana Fresh Produce — 100 kg x 3 500 UZS = 350 000 UZS … 400 000 UZS total” | “Currently out of stock” | “For 100 kg of Potatoes, the lowest total cost is 400 000 UZS …” |
+| `ru` (`Accept-Language: ru`) | “Рекомендуется: Fergana Fresh Produce — 100 кг × 3 500 UZS … итого 400 000 UZS” | “Сейчас нет в наличии” | “Для заказа «Картофель» на 100 кг наименьшая общая стоимость — 400 000 UZS …” |
+| `uz` (`Accept-Language: uz-UZ`) | “Tavsiya etiladi: Fergana Fresh Produce — 100 kg x 3 500 UZS … jami 400 000 UZS” | “Hozir omborda yo‘q” | “Kartoshka mahsulotidan 100 kg uchun eng past umumiy xarajat — 400 000 UZS …” |
+| `fr-FR` (unsupported) | English fallback, HTTP 200 | English | English |
+| `?lang=uz` + `Accept-Language: ru` | Query parameter wins (Uzbek) | Uzbek | Uzbek |
+
+Interface coverage verified in `frontend/src/test/i18n.test.tsx`:
+
+* **476 UI keys** are enumerated from the source and every one is present in `uz` and `ru` (`476/476`).
+* Nothing falls back silently: a missing key, an English leftover or a dropped `{placeholder}` fails the suite.
+* Switching `en → uz → ru → en` through the real switcher re-renders pages, sidebar, tables, charts and the
+  assistant screen; the choice survives a reload (`localStorage`) and is written to the account.
+* Plural handling: Russian `one/few/many`, Uzbek single form, English `one/other`; money stays UZS with
+  space grouping and locale-aware decimals.
+
 ---
 
 ## 6. Authentication & authorization matrix
@@ -207,8 +245,11 @@ POST /api/assistant/chat {"message":"   "}       → 422  (previously 200 + help
 * **Saved offers:** auth, create, duplicate 409, unknown offer 404, list, delete 204, delete-again 404, empty after delete.
 * **Recommendations:** full Killer Flow, ranking order, savings, eligibility, MOQ boundary, over-stock, 422s, 404, formula invariant.
 * **Assistant:** compare, trend intent, help fallback, rule-based disclosure, referenced offers, empty message 422.
+* **Localisation:** `Accept-Language: en|ru|uz`, `uz-UZ` region tag, `?lang=` override over the header,
+  unsupported language → English fallback (200, never 500), and localised explanation / rejection reason /
+  assistant answer for every supported language.
 
-### 7.2 Interactive controls — all exercised (98 UI/unit tests)
+### 7.2 Interactive controls — all exercised (116 UI/unit tests)
 
 Sign in · demo sign-in · register · password visibility toggle · form validation (email, password, confirm) ·
 sidebar links (all 8) · mobile menu open/close · header search → comparison · dashboard CTAs ·
@@ -217,7 +258,9 @@ quality, delivery) · Contact Supplier → modal · Copy order · Call link · S
 category chips · availability & sort selects · reset filters · pagination · supplier verified filter ·
 location filter · copy phone · analytics range chips · product history selector · assistant send,
 suggestion chips, clear chat, product/quantity context · saved-offer selection, compare modal, remove ·
-settings profile/business/preferences/password/sign out · error-state Retry · 404 page links.
+settings profile/business/preferences/password/sign out · error-state Retry · 404 page links ·
+**language switcher (en/uz/ru) in the top bar, the sidebar and the sign-in screen, plus the language select
+on Settings, all of which re-render the entire application immediately**.
 
 **Result:** no dead buttons, no decorative controls, no broken links detected after fixes.
 Pass 2 additionally proved the *failure* behaviour of these controls: with the API offline, the dashboard,
@@ -311,8 +354,13 @@ field and a modal that did not restore `body` scrolling on close.
 4. **No security penetration testing** — JWT/bcrypt/CORS/validation reviewed and negative-tested, but no
    fuzzing, rate-limit or dependency CVE scan was performed.
 5. **No load/performance testing** of API endpoints or charts.
-6. Demo-only product areas by design: notifications are stored but not delivered, language is stored but the UI
-   is English-only, and the assistant is a rule-based engine with no external model.
+6. Demo-only product areas by design: notifications are stored but not delivered, supplier *company names*
+   stay as given in all three languages, and the assistant is a rule-based engine with no external model.
+   The assistant understands Uzbek/Russian questions through the same keyword rules, but the keywords are
+   English-source based, so a purely Uzbek sentence is answered with the help text rather than a parsed intent
+   (the help text itself is in the chosen language).
+7. **Translation quality** was reviewed by a native-reading pass over the en/uz/ru matrix and the 476 UI keys,
+   but no professional linguistic sign-off exists for the Uzbek or Russian copy.
 
 ---
 
@@ -320,7 +368,7 @@ field and a modal that did not restore `body` scrolling on close.
 
 ```bash
 # 1. Backend unit + integration tests
-cd backend && python -m pytest tests -q                     # 133 passed
+cd backend && python -m pytest tests -q                     # 159 passed (incl. 26 localisation tests)
 
 # 2. Start a throwaway API instance for the live suites (keeps demo data clean)
 cd backend && rm -f qa_smoke.db && \
@@ -335,7 +383,7 @@ python scripts/qa_edge_probes.py http://127.0.0.1:8001       # 57/57 passed
 # 5. Frontend checks
 cd frontend
 npm run typecheck                                           # clean
-npm test                                                    # 98 passed
+npm test                                                    # 116 passed (incl. 18 i18n tests)
 npm run build                                               # success
 npm run preview                                             # serves build + /api proxy on :4173
 
@@ -359,9 +407,10 @@ Both QA scripts create demo users and offers, so always point them at a throwawa
 | Authentication and per-user data isolation correct | ✅ |
 | No dead buttons or broken navigation | ✅ |
 | Responsive layouts implemented with mobile fallbacks | ✅ (structural; manual visual pass advised) |
-| Critical/major defects | **0 open** (9 fixed across two passes) |
-| Minor defects | **0 open** (11 fixed across two passes) |
-| Automated regression coverage | 133 backend + 98 UI/unit + 110 live API + 57 edge probes |
+| Three-language interface (en/uz/ru) actually switches, incl. server text | ✅ |
+| Critical/major defects | **0 open** (12 fixed across three passes) |
+| Minor defects | **0 open** (14 fixed across three passes) |
+| Automated regression coverage | 159 backend + 116 UI/unit + 110 live API + 57 edge probes |
 
 **Recommendation:** approved for MVP demo. Before a public/production launch, close the environment gaps in
 §10 (real-browser pass, Docker + PostgreSQL integration run, and a security/dependency scan).

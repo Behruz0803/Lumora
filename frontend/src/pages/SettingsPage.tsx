@@ -19,11 +19,12 @@ import { PageHeader } from '../components/ui/PageHeader'
 import { Badge } from '../components/ui/Badge'
 import { formatDate } from '../utils/format'
 import { cn } from '../utils/cn'
+import { getLanguage, setLanguage as applyLanguage, tr, type Language } from '../i18n'
 
-const LANGUAGES = [
+const languageOptions = () => [
   { value: 'en', label: 'English' },
-  { value: 'ru', label: 'Русский' },
   { value: 'uz', label: "O'zbekcha" },
+  { value: 'ru', label: 'Русский' },
 ]
 
 function Section({
@@ -107,7 +108,7 @@ export function SettingsPage() {
   const [fullName, setFullName] = useState('')
   const [businessName, setBusinessName] = useState('')
   const [phone, setPhone] = useState('')
-  const [language, setLanguage] = useState('en')
+  const [language, setLanguage] = useState<string>(getLanguage())
   const [notifyPriceDrops, setNotifyPriceDrops] = useState(true)
   const [notifyNewOffers, setNotifyNewOffers] = useState(false)
   const [notifyDigest, setNotifyDigest] = useState(true)
@@ -126,6 +127,8 @@ export function SettingsPage() {
     setBusinessName(user.business_name ?? '')
     setPhone(user.phone ?? '')
     setLanguage(user.language)
+    // keep the interface in sync with the saved profile preference
+    if (user.language !== getLanguage()) applyLanguage(user.language as Language)
     setNotifyPriceDrops(user.notify_price_drops)
     setNotifyNewOffers(user.notify_new_offers)
     setNotifyDigest(user.notify_weekly_digest)
@@ -165,9 +168,9 @@ export function SettingsPage() {
         notify_weekly_digest: notifyDigest,
       })
       setUser(updated)
-      toast.success('Preferences saved.')
+      toast.success(tr('Preferences saved.'))
     } catch (err) {
-      toast.error(err instanceof ApiError ? err.message : 'Could not save preferences.')
+      toast.error(err instanceof ApiError ? err.message : tr('Could not save preferences.'))
     } finally {
       setSavingPreferences(false)
     }
@@ -202,22 +205,22 @@ export function SettingsPage() {
   return (
     <div className="space-y-6">
       <PageHeader
-        eyebrow="Account"
-        title="Settings"
-        description="Manage your profile, business details, language, notifications and security."
+        eyebrow={tr("Account")}
+        title={tr("Settings")}
+        description={tr("Manage your profile, business details, language, notifications and security.")}
       />
 
       <div className="grid gap-5 xl:grid-cols-2">
         <Section
-          title="Profile information"
-          description="How your name appears across PriceRadar."
+          title={tr("Profile information")}
+          description={tr("How your name appears across PriceRadar.")}
           icon={<UserIcon className="h-3.5 w-3.5" />}
           footer={
             <>
-              <p className="text-[11px] text-ink-muted">Member since {formatDate(user.created_at)}</p>
+              <p className="text-[11px] text-ink-muted">{tr("Member since")} {formatDate(user.created_at)}</p>
               <button type="submit" form="profile-form" disabled={savingProfile} className="btn-primary">
                 {savingProfile ? <Loader2 className="h-4 w-4 animate-spin" /> : <Check className="h-4 w-4" />}
-                Save profile
+                {tr("Save profile")}
               </button>
             </>
           }
@@ -225,7 +228,7 @@ export function SettingsPage() {
           <form id="profile-form" onSubmit={saveProfile} className="space-y-4">
             <div>
               <label htmlFor="settings-name" className="mb-1.5 block text-xs font-semibold text-ink-soft">
-                Full name
+                {tr("Full name")}
               </label>
               <input
                 id="settings-name"
@@ -237,7 +240,7 @@ export function SettingsPage() {
             </div>
             <div>
               <label htmlFor="settings-email" className="mb-1.5 block text-xs font-semibold text-ink-soft">
-                Email address
+                {tr("Email address")}
               </label>
               <div className="relative">
                 <Mail className="pointer-events-none absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-ink-muted" aria-hidden />
@@ -250,24 +253,24 @@ export function SettingsPage() {
                 />
               </div>
               <p className="mt-1 text-[11px] text-ink-muted">
-                Email changes are disabled in this demo. Contact support to change it.
+                {tr("Email changes are disabled in this demo. Contact support to change it.")}
               </p>
             </div>
           </form>
         </Section>
 
         <Section
-          title="Business information"
-          description="Used on purchase summaries when you contact a supplier."
+          title={tr("Business information")}
+          description={tr("Used on purchase summaries when you contact a supplier.")}
           icon={<Building2 className="h-3.5 w-3.5" />}
           footer={
             <>
               <Badge tone={user.business_name ? 'green' : 'neutral'}>
-                {user.business_name ? 'Business linked' : 'No business set'}
+                {user.business_name ? tr("Business linked") : tr("No business set")}
               </Badge>
               <button type="submit" form="business-form" disabled={savingProfile} className="btn-primary">
                 {savingProfile ? <Loader2 className="h-4 w-4 animate-spin" /> : <Check className="h-4 w-4" />}
-                Save business
+                {tr("Save business")}
               </button>
             </>
           }
@@ -275,20 +278,20 @@ export function SettingsPage() {
           <form id="business-form" onSubmit={saveProfile} className="space-y-4">
             <div>
               <label htmlFor="settings-business" className="mb-1.5 block text-xs font-semibold text-ink-soft">
-                Business name
+                {tr("Business name")}
               </label>
               <input
                 id="settings-business"
                 value={businessName}
                 onChange={(event) => setBusinessName(event.target.value)}
-                placeholder="Dilshod Grocery Market"
+                placeholder={tr("Dilshod Grocery Market")}
                 className="field"
                 autoComplete="organization"
               />
             </div>
             <div>
               <label htmlFor="settings-phone" className="mb-1.5 block text-xs font-semibold text-ink-soft">
-                Phone number
+                {tr("Phone number")}
               </label>
               <input
                 id="settings-phone"
@@ -303,13 +306,13 @@ export function SettingsPage() {
         </Section>
 
         <Section
-          title="Language & notifications"
-          description="Choose your interface language and what we notify you about."
+          title={tr("Language & notifications")}
+          description={tr("Choose your interface language and what we notify you about.")}
           icon={<Globe2 className="h-3.5 w-3.5" />}
           footer={
             <>
               <p className="text-[11px] text-ink-muted">
-                Interface translations are limited to labels in this MVP.
+                {tr("The whole interface, including demo labels and engine explanations, follows this choice.")}
               </p>
               <button
                 type="button"
@@ -318,22 +321,29 @@ export function SettingsPage() {
                 className="btn-primary"
               >
                 {savingPreferences ? <Loader2 className="h-4 w-4 animate-spin" /> : <Check className="h-4 w-4" />}
-                Save preferences
+                {tr("Save preferences")}
               </button>
             </>
           }
         >
           <div>
             <label htmlFor="settings-language" className="mb-1.5 block text-xs font-semibold text-ink-soft">
-              Language
+              {tr("Language")}
             </label>
             <select
               id="settings-language"
               value={language}
-              onChange={(event) => setLanguage(event.target.value)}
+              onChange={(event) => {
+                setLanguage(event.target.value)
+                applyLanguage(event.target.value as Language)
+                void api
+                  .updateProfile({ language: event.target.value })
+                  .then((updated) => setUser(updated))
+                  .catch(() => toast.error(tr('Could not save your language preference.')))
+              }}
               className="field"
             >
-              {LANGUAGES.map((item) => (
+              {languageOptions().map((item) => (
                 <option key={item.value} value={item.value}>
                   {item.label}
                 </option>
@@ -344,37 +354,37 @@ export function SettingsPage() {
             <Toggle
               checked={notifyPriceDrops}
               onChange={setNotifyPriceDrops}
-              label="Price drop alerts"
-              description="Notify me when a saved offer becomes cheaper."
+              label={tr("Price drop alerts")}
+              description={tr("Notify me when a saved offer becomes cheaper.")}
             />
             <Toggle
               checked={notifyNewOffers}
               onChange={setNotifyNewOffers}
-              label="New supplier offers"
-              description="Notify me when a new supplier lists a tracked product."
+              label={tr("New supplier offers")}
+              description={tr("Notify me when a new supplier lists a tracked product.")}
             />
             <Toggle
               checked={notifyDigest}
               onChange={setNotifyDigest}
-              label="Weekly market digest"
-              description="A weekly summary of price movement for my categories."
+              label={tr("Weekly market digest")}
+              description={tr("A weekly summary of price movement for my categories.")}
             />
           </div>
           <p className="mt-2 flex items-start gap-1.5 rounded-lg bg-canvas px-2.5 py-2 text-[11px] text-ink-muted">
             <Bell className="mt-0.5 h-3 w-3 shrink-0" aria-hidden />
-            Notification delivery is not connected in this MVP — preferences are stored on your account.
+            {tr("Notification delivery is not connected in this MVP — preferences are stored on your account.")}
           </p>
         </Section>
 
         <Section
-          title="Account security"
-          description="Change the password used to sign in."
+          title={tr("Account security")}
+          description={tr("Change the password used to sign in.")}
           icon={<KeyRound className="h-3.5 w-3.5" />}
           footer={
             <>
               <p className="flex items-center gap-1.5 text-[11px] text-ink-muted">
                 <ShieldCheck className="h-3 w-3 text-brand-600" aria-hidden />
-                Passwords are hashed with bcrypt.
+                {tr("Passwords are hashed with bcrypt.")}
               </p>
               <button
                 type="submit"
@@ -383,7 +393,7 @@ export function SettingsPage() {
                 className="btn-primary"
               >
                 {changingPassword ? <Loader2 className="h-4 w-4 animate-spin" /> : <KeyRound className="h-4 w-4" />}
-                Update password
+                {tr("Update password")}
               </button>
             </>
           }
@@ -396,7 +406,7 @@ export function SettingsPage() {
             )}
             <div>
               <label htmlFor="current-password" className="mb-1.5 block text-xs font-semibold text-ink-soft">
-                Current password
+                {tr("Current password")}
               </label>
               <input
                 id="current-password"
@@ -410,7 +420,7 @@ export function SettingsPage() {
             <div className="grid gap-3 sm:grid-cols-2">
               <div>
                 <label htmlFor="new-password" className="mb-1.5 block text-xs font-semibold text-ink-soft">
-                  New password
+                  {tr("New password")}
                 </label>
                 <input
                   id="new-password"
@@ -423,7 +433,7 @@ export function SettingsPage() {
               </div>
               <div>
                 <label htmlFor="confirm-password" className="mb-1.5 block text-xs font-semibold text-ink-soft">
-                  Confirm new password
+                  {tr("Confirm new password")}
                 </label>
                 <input
                   id="confirm-password"
@@ -442,9 +452,9 @@ export function SettingsPage() {
       <section className="card p-5">
         <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
           <div>
-            <h2 className="text-sm font-semibold text-ink">Session</h2>
+            <h2 className="text-sm font-semibold text-ink">{tr("Session")}</h2>
             <p className="mt-0.5 text-xs text-ink-muted">
-              Signed in as {user.email}. Tokens expire after 7 days.
+              {tr("Signed in as")} {user.email}{tr(". Tokens expire after 7 days.")}
             </p>
           </div>
           <button
@@ -456,7 +466,7 @@ export function SettingsPage() {
             className="btn-danger"
           >
             <LogOut className="h-4 w-4" />
-            Sign out
+            {tr("Sign out")}
           </button>
         </div>
       </section>

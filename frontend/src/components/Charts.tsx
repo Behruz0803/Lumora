@@ -12,6 +12,7 @@ import {
   XAxis,
   YAxis,
 } from 'recharts'
+import { tr } from '../i18n'
 import type { PricePoint, SupplierSeries } from '../types'
 import { formatMoney, formatShortDate } from '../utils/format'
 
@@ -93,7 +94,7 @@ export function TrendAreaChart({ data, height = 220 }: { data: { date: string; a
           <Area
             type="monotone"
             dataKey="avg_price"
-            name="Average price"
+            name={tr('Average price')}
             stroke="#0F8B5F"
             strokeWidth={2}
             fill="url(#trendFill)"
@@ -129,7 +130,7 @@ export function CategoryBarChart({ data, height = 240 }: { data: { category: str
             width={92}
           />
           <Tooltip content={<ChartTooltip />} cursor={{ fill: '#F7F9F8' }} />
-          <Bar dataKey="avg_price" name="Average price" radius={[0, 6, 6, 0]} barSize={16}>
+          <Bar dataKey="avg_price" name={tr('Average price')} radius={[0, 6, 6, 0]} barSize={16}>
             {points.map((_, index) => (
               <Cell key={index} fill={index % 2 === 0 ? '#0F8B5F' : '#3BA377'} />
             ))}

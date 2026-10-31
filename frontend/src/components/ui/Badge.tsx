@@ -1,6 +1,7 @@
 import type { ReactNode } from 'react'
 import { BadgeCheck, Star } from 'lucide-react'
 import { cn } from '../../utils/cn'
+import { tr } from '../../i18n/core'
 
 type Tone = 'green' | 'amber' | 'red' | 'neutral' | 'blue'
 
@@ -39,11 +40,11 @@ export function VerifiedBadge({ verified }: { verified: boolean }) {
     return (
       <Badge tone="green">
         <BadgeCheck className="h-3 w-3" aria-hidden />
-        Verified
+        {tr("Verified")}
       </Badge>
     )
   }
-  return <Badge tone="neutral">Unverified</Badge>
+  return <Badge tone="neutral">{tr("Unverified")}</Badge>
 }
 
 export function Rating({ value, className }: { value: number; className?: string }) {
@@ -58,7 +59,7 @@ export function Rating({ value, className }: { value: number; className?: string
 export function DemoBadge() {
   return (
     <Badge tone="amber" className="uppercase tracking-wide">
-      Demo data
+      {tr("Demo data")}
     </Badge>
   )
 }

@@ -13,10 +13,11 @@ import {
   formatQuantity,
   formatRelativeTime,
   formatUZS,
-  statusLabel,
+  statusText,
   statusTone,
 } from '../utils/format'
 import { cn } from '../utils/cn'
+import { tr } from '../i18n/core'
 
 const RANGES = [30, 90, 180]
 
@@ -39,7 +40,7 @@ export function ProductDetailPage() {
   if (invalid) {
     return (
       <div className="space-y-4">
-        <ErrorState message="That product link is not valid." onRetry={() => navigate('/products')} />
+        <ErrorState message={tr("That product link is not valid.")} onRetry={() => navigate('/products')} />
       </div>
     )
   }
@@ -48,7 +49,7 @@ export function ProductDetailPage() {
     return (
       <div className="space-y-4">
         <Link to="/products" className="btn-ghost px-0 text-xs">
-          <ArrowLeft className="h-3.5 w-3.5" /> Back to products
+          <ArrowLeft className="h-3.5 w-3.5" /> {tr("Back to products")}
         </Link>
         <ErrorState message={product.error} onRetry={product.refetch} />
       </div>
@@ -58,10 +59,10 @@ export function ProductDetailPage() {
   return (
     <div className="space-y-6">
       <Link to="/products" className="btn-ghost w-fit px-0 text-xs">
-        <ArrowLeft className="h-3.5 w-3.5" /> Back to products
+        <ArrowLeft className="h-3.5 w-3.5" /> {tr("Back to products")}
       </Link>
 
-      {product.loading && !product.data && <LoadingBlock rows={3} label="Loading product…" />}
+      {product.loading && !product.data && <LoadingBlock rows={3} label={tr("Loading product…")} />}
 
       {product.data && (
         <>
@@ -71,22 +72,22 @@ export function ProductDetailPage() {
                 <ProductThumb
                   src={product.data.image_url}
                   alt={product.data.name}
-                  category={product.data.category}
+                  category={tr(product.data.category)}
                   className="h-20 w-20"
                 />
                 <div>
                   <div className="flex flex-wrap items-center gap-2">
                     <h1 className="text-2xl font-semibold tracking-tight text-ink">{product.data.name}</h1>
                     <Badge tone={statusTone[product.data.availability]}>
-                      {statusLabel[product.data.availability]}
+                      {statusText(product.data.availability)}
                     </Badge>
                     <DemoBadge />
                   </div>
                   <p className="mt-1 text-sm text-ink-muted">
-                    {product.data.category} · sold by {product.data.unit}
+                    {tr(product.data.category)} {tr("· sold by")} {product.data.unit}
                   </p>
                   <p className="mt-2 max-w-2xl text-sm leading-relaxed text-ink-soft">
-                    {product.data.description}
+                    {tr(product.data.description ?? "")}
                   </p>
                 </div>
               </div>
@@ -96,24 +97,24 @@ export function ProductDetailPage() {
                 className="btn-primary shrink-0"
               >
                 <Calculator className="h-4 w-4" />
-                Compare {formatQuantity(referenceQuantity, product.data.unit)}
+                {tr("Compare")} {formatQuantity(referenceQuantity, product.data.unit)}
               </button>
             </div>
 
             <dl className="grid grid-cols-2 gap-px border-t border-line bg-line sm:grid-cols-3 lg:grid-cols-6">
               {[
-                { label: 'Average price', value: formatUZS(product.data.avg_price) },
-                { label: 'Lowest offer', value: formatUZS(product.data.min_price) },
-                { label: 'Highest offer', value: formatUZS(product.data.max_price) },
+                { label: tr('Average price'), value: formatUZS(product.data.avg_price) },
+                { label: tr('Lowest offer'), value: formatUZS(product.data.min_price) },
+                { label: tr('Highest offer'), value: formatUZS(product.data.max_price) },
                 {
-                  label: 'Available suppliers',
+                  label: tr('Available suppliers'),
                   value: `${product.data.available_supplier_count} / ${product.data.offer_count}`,
                 },
                 {
-                  label: 'Availability',
-                  value: statusLabel[product.data.availability],
+                  label: tr('Availability'),
+                  value: statusText(product.data.availability),
                 },
-                { label: 'Last updated', value: formatRelativeTime(product.data.updated_at) },
+                { label: tr('Last updated'), value: formatRelativeTime(product.data.updated_at) },
               ].map((item) => (
                 <div key={item.label} className="bg-white px-4 py-3">
                   <dt className="text-[11px] font-medium uppercase tracking-wide text-ink-muted">
@@ -131,10 +132,12 @@ export function ProductDetailPage() {
                 <div>
                   <h2 className="flex items-center gap-2 text-sm font-semibold text-ink">
                     <LineChartIcon className="h-4 w-4 text-brand-600" aria-hidden />
-                    Price history
+                    {tr("Price history")}
                   </h2>
                   <p className="mt-0.5 text-xs text-ink-muted">
-                    Daily average price per {product.data.unit}, plus each supplier's series
+                    {tr('Daily average price per {unit}, plus each supplier series', {
+                      unit: tr(product.data.unit),
+                    })}
                   </p>
                 </div>
                 <div className="flex flex-wrap items-center gap-1.5">
@@ -146,7 +149,7 @@ export function ProductDetailPage() {
                       className={cn('chip', days === range && 'chip-active')}
                       aria-pressed={days === range}
                     >
-                      {range}d
+                      {range}{tr("d")}
                     </button>
                   ))}
                   <button
@@ -155,14 +158,14 @@ export function ProductDetailPage() {
                     className={cn('chip', showSuppliers && 'chip-active')}
                     aria-pressed={showSuppliers}
                   >
-                    Suppliers
+                    {tr("Suppliers")}
                   </button>
                 </div>
               </div>
 
               {history.loading && !history.data && (
                 <div className="mt-4">
-                  <LoadingBlock rows={2} label="Loading price history…" />
+                  <LoadingBlock rows={2} label={tr("Loading price history…")} />
                 </div>
               )}
               {history.error && (
@@ -174,7 +177,7 @@ export function ProductDetailPage() {
                 <>
                   <div className="mt-4 flex flex-wrap items-center gap-x-5 gap-y-1 text-xs">
                     <span className="text-ink-muted">
-                      {days}-day change:{' '}
+                      {tr('{days}-day change:', { days })}{' '}
                       <span
                         className={cn(
                           'font-semibold',
@@ -185,9 +188,9 @@ export function ProductDetailPage() {
                       </span>
                     </span>
                     <span className="text-ink-muted">
-                      Range: {formatUZS(history.data.min_price)} – {formatUZS(history.data.max_price)}
+                      {tr("Range:")} {formatUZS(history.data.min_price)} – {formatUZS(history.data.max_price)}
                     </span>
-                    <span className="text-ink-muted">Average: {formatUZS(history.data.avg_price)}</span>
+                    <span className="text-ink-muted">{tr("Average:")} {formatUZS(history.data.avg_price)}</span>
                   </div>
                   <div className="mt-3">
                     <PriceHistoryChart
@@ -221,17 +224,17 @@ export function ProductDetailPage() {
                 <div>
                   <h2 className="flex items-center gap-2 text-sm font-semibold text-ink">
                     <Store className="h-4 w-4 text-brand-600" aria-hidden />
-                    Supplier offers
+                    {tr("Supplier offers")}
                   </h2>
                   <p className="mt-0.5 text-xs text-ink-muted">
-                    Total at {formatQuantity(referenceQuantity, product.data.unit)}
+                    {tr("Total at")} {formatQuantity(referenceQuantity, product.data.unit)}
                   </p>
                 </div>
               </div>
 
               {offers.loading && !offers.data && (
                 <div className="p-5">
-                  <LoadingBlock rows={2} label="Loading offers…" />
+                  <LoadingBlock rows={2} label={tr("Loading offers…")} />
                 </div>
               )}
               {offers.error && (
@@ -241,7 +244,7 @@ export function ProductDetailPage() {
               )}
               {offers.data && offers.data.length === 0 && (
                 <div className="p-5">
-                  <EmptyState title="No offers yet" message="No supplier has listed this product." />
+                  <EmptyState title={tr("No offers yet")} message={tr("No supplier has listed this product.")} />
                 </div>
               )}
               {offers.data && offers.data.length > 0 && (
@@ -257,7 +260,7 @@ export function ProductDetailPage() {
                             {offer.supplier?.name}
                           </Link>
                           <p className="text-[11px] text-ink-muted">
-                            {offer.supplier?.location} · {offer.supplier?.delivery_days} day delivery
+                            {offer.supplier?.location} · {offer.supplier?.delivery_days} {tr("day delivery")}
                           </p>
                           <div className="mt-1 flex flex-wrap items-center gap-1.5">
                             {offer.supplier && <Rating value={offer.supplier.rating} />}
@@ -267,22 +270,22 @@ export function ProductDetailPage() {
                         <div className="text-right">
                           <p className="text-sm font-semibold text-ink">{formatUZS(offer.unit_price)}</p>
                           <p className="text-[11px] text-ink-muted">
-                            {offer.delivery_cost === 0 ? 'free delivery' : `+${formatUZS(offer.delivery_cost)}`}
+                            {offer.delivery_cost === 0 ? tr("free delivery") : `+${formatUZS(offer.delivery_cost)}`}
                           </p>
                           {offer.total_cost !== null && (
                             <p className="mt-0.5 text-[11px] font-medium text-brand-700">
-                              {formatUZS(offer.total_cost)} total
+                              {formatUZS(offer.total_cost)} {tr("total")}
                             </p>
                           )}
                         </div>
                       </div>
                       <div className="mt-1.5 flex flex-wrap items-center gap-2">
-                        <Badge tone={statusTone[offer.status]}>{statusLabel[offer.status]}</Badge>
+                        <Badge tone={statusTone[offer.status]}>{statusText(offer.status)}</Badge>
                         <span className="text-[11px] text-ink-muted">
-                          Min {formatQuantity(offer.minimum_order_quantity, product.data?.unit)}
+                          {tr("Min")} {formatQuantity(offer.minimum_order_quantity, product.data?.unit)}
                         </span>
                         <span className="text-[11px] text-ink-muted">
-                          Stock {formatQuantity(offer.available_quantity)}
+                          {tr("Stock")} {formatQuantity(offer.available_quantity)}
                         </span>
                       </div>
                     </li>
@@ -295,7 +298,7 @@ export function ProductDetailPage() {
                   to={`/compare?product=${product.data.id}&qty=${referenceQuantity}`}
                   className="btn-primary w-full"
                 >
-                  Open full comparison
+                  {tr("Open full comparison")}
                   <ArrowRight className="h-4 w-4" />
                 </Link>
               </div>

@@ -1,6 +1,7 @@
 import type { ReactNode } from 'react'
 import { AlertTriangle, Inbox, Loader2, RefreshCw } from 'lucide-react'
 import { cn } from '../../utils/cn'
+import { tr } from '../../i18n/core'
 
 export function Spinner({ className = 'h-4 w-4' }: { className?: string }) {
   return <Loader2 className={cn('animate-spin', className)} aria-hidden />
@@ -64,14 +65,14 @@ export function ErrorState({
       <div className="flex items-start gap-3">
         <AlertTriangle className="mt-0.5 h-4.5 w-4.5 shrink-0 text-danger" aria-hidden />
         <div>
-          <p className="text-sm font-semibold text-ink">Something went wrong</p>
+          <p className="text-sm font-semibold text-ink">{tr("Something went wrong")}</p>
           <p className="mt-0.5 text-sm text-ink-muted">{message}</p>
         </div>
       </div>
       {onRetry && (
         <button type="button" onClick={onRetry} className="btn-secondary shrink-0">
           <RefreshCw className="h-4 w-4" />
-          Retry
+          {tr("Retry")}
         </button>
       )}
     </div>

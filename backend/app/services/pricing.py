@@ -12,6 +12,7 @@ from dataclasses import dataclass
 from datetime import datetime
 from decimal import Decimal, ROUND_HALF_UP
 
+from app.core.i18n import localise, t
 from app.schemas.schemas import CompareResponse, ProductBrief, ScoredOffer
 
 
@@ -78,29 +79,41 @@ def _fmt_qty(value: float) -> str:
     return f"{value:g}"
 
 
-def eligibility_reason(offer: OfferInput, quantity: float) -> tuple[bool, str]:
+def eligibility_reason(offer: OfferInput, quantity: float, language: str = "en") -> tuple[bool, str]:
     """Decide whether an offer can fulfil the requested quantity, and explain why not."""
     if offer.unit_price <= 0:
-        return False, "Invalid price data"
+        return False, t(language, "Invalid price data")
     if offer.status == "out_of_stock":
-        return False, "Currently out of stock"
+        return False, t(language, "Currently out of stock")
     if offer.available_quantity <= 0:
-        return False, "No stock available"
+        return False, t(language, "No stock available")
     if quantity < offer.minimum_order_quantity:
         return (
             False,
-            f"Minimum order is {_fmt_qty(offer.minimum_order_quantity)} units "
-            f"(requested {_fmt_qty(quantity)})",
+            t(
+                language,
+                "Minimum order is {minimum} units (requested {requested})",
+                minimum=_fmt_qty(offer.minimum_order_quantity),
+                requested=_fmt_qty(quantity),
+            ),
         )
     if quantity > offer.available_quantity:
         return (
             False,
-            f"Only {_fmt_qty(offer.available_quantity)} units available "
-            f"(requested {_fmt_qty(quantity)})",
+            t(
+                language,
+                "Only {available} units available (requested {requested})",
+                available=_fmt_qty(offer.available_quantity),
+                requested=_fmt_qty(quantity),
+            ),
         )
     if offer.status == "low_stock":
-        return True, f"Eligible - low stock ({_fmt_qty(offer.available_quantity)} units left)"
-    return True, "Eligible - in stock"
+        return True, t(
+            language,
+            "Eligible - low stock ({available} units left)",
+            available=_fmt_qty(offer.available_quantity),
+        )
+    return True, t(language, "Eligible - in stock")
 
 
 def score_offer(offer: OfferInput, total_cost: int) -> float:
@@ -119,13 +132,13 @@ def score_offer(offer: OfferInput, total_cost: int) -> float:
     return round(score, 2)
 
 
-def evaluate_offers(offers: list[OfferInput], quantity: float) -> list[ScoredOffer]:
+def evaluate_offers(offers: list[OfferInput], quantity: float, language: str = "en") -> list[ScoredOffer]:
     if quantity <= 0:
         raise PricingError("Quantity must be greater than zero")
 
     scored: list[ScoredOffer] = []
     for offer in offers:
-        eligible, reason = eligibility_reason(offer, quantity)
+        eligible, reason = eligibility_reason(offer, quantity, language)
         costs = calculate_total_cost(offer.unit_price, quantity, offer.delivery_cost)
         score = score_offer(offer, costs["total_cost"]) if eligible else None
         scored.append(
@@ -179,8 +192,9 @@ def build_comparison(
     product: ProductBrief,
     offers: list[OfferInput],
     quantity: float,
+    language: str = "en",
 ) -> CompareResponse:
-    ranked = evaluate_offers(offers, quantity)
+    ranked = evaluate_offers(offers, quantity, language)
     eligible = [o for o in ranked if o.eligible]
     rejected = [o for o in ranked if not o.eligible]
     cheapest = next((o for o in ranked if o.is_cheapest), None)
@@ -199,7 +213,7 @@ def build_comparison(
         rejected_count=len(rejected),
         highest_eligible_total=highest_total,
         potential_savings=(highest_total - cheapest.total_cost) if (cheapest and highest_total) else 0,
-        explanation=explain(product, quantity, ranked, cheapest, best_overall, len(rejected)),
+        explanation=explain(product, quantity, ranked, cheapest, best_overall, len(rejected), language),
     )
 
 
@@ -210,28 +224,45 @@ def explain(
     cheapest: ScoredOffer | None,
     best_overall: ScoredOffer | None,
     rejected_count: int,
+    language: str = "en",
 ) -> str:
-    unit = product.unit
+    unit = localise(language, product.unit)
+    product_name = localise(language, product.name)
     qty = _fmt_qty(quantity)
     if cheapest is None:
-        base = (
-            f"No supplier can currently fulfil {qty} {unit} of {product.name}. "
-            "All offers are out of stock, below the minimum order quantity, or short on stock."
+        base = t(
+            language,
+            "No supplier can currently fulfil {quantity} {unit} of {product}. "
+            "All offers are out of stock, below the minimum order quantity, or short on stock.",
+            quantity=qty,
+            unit=unit,
+            product=product_name,
         )
         if ranked:
             closest = ranked[0]
-            base += (
-                f" The closest option is {closest.supplier_name} "
-                f"({closest.reason.lower()})."
+            base += " " + t(
+                language,
+                "The closest option is {supplier} ({reason}).",
+                supplier=closest.supplier_name,
+                reason=closest.reason,
             )
         return base
 
     lines = [
-        f"Recommended: {cheapest.supplier_name} - {qty} {unit} x "
-        f"{_fmt_money(cheapest.unit_price)} UZS = {_fmt_money(cheapest.product_cost)} UZS "
-        f"product cost + {_fmt_money(cheapest.delivery_cost)} UZS delivery = "
-        f"{_fmt_money(cheapest.total_cost)} UZS total "
-        f"({_fmt_money(cheapest.cost_per_unit)} UZS per {unit} delivered)."
+        t(
+            language,
+            "Recommended: {supplier} - {quantity} {unit} x {unit_price} UZS = {product_cost} UZS "
+            "product cost + {delivery} UZS delivery = {total} UZS total "
+            "({per_unit} UZS per {unit} delivered).",
+            supplier=cheapest.supplier_name,
+            quantity=qty,
+            unit=unit,
+            unit_price=_fmt_money(cheapest.unit_price),
+            product_cost=_fmt_money(cheapest.product_cost),
+            delivery=_fmt_money(cheapest.delivery_cost),
+            total=_fmt_money(cheapest.total_cost),
+            per_unit=_fmt_money(cheapest.cost_per_unit),
+        )
     ]
 
     runner_up = next(
@@ -241,52 +272,102 @@ def explain(
         diff = runner_up.total_cost - cheapest.total_cost
         pct = (diff / runner_up.total_cost * 100) if runner_up.total_cost else 0
         lines.append(
-            f"It is {_fmt_money(diff)} UZS ({pct:.1f}%) cheaper than the next option, "
-            f"{runner_up.supplier_name} ({_fmt_money(runner_up.total_cost)} UZS)."
+            t(
+                language,
+                "It is {difference} UZS ({percent}%) cheaper than the next option, {supplier} ({total} UZS).",
+                difference=_fmt_money(diff),
+                percent=f"{pct:.1f}",
+                supplier=runner_up.supplier_name,
+                total=_fmt_money(runner_up.total_cost),
+            )
         )
     else:
-        lines.append("It is the only offer that can fulfil this quantity, so there is no alternative to compare against.")
+        lines.append(
+            t(
+                language,
+                "It is the only offer that can fulfil this quantity, so there is no alternative to compare against.",
+            )
+        )
 
     if cheapest.delivery_cost == 0:
         lines.append(
-            "This supplier includes free delivery, which is why the higher unit price still wins on total cost."
+            t(
+                language,
+                "This supplier includes free delivery, which is why the higher unit price still wins on total cost.",
+            )
         )
     elif cheapest.unit_price > min(o.unit_price for o in ranked if o.eligible):
         lines.append(
-            "Its unit price is not the lowest, but free or cheaper delivery makes the total cost the lowest."
+            t(
+                language,
+                "Its unit price is not the lowest, but free or cheaper delivery makes the total cost the lowest.",
+            )
         )
 
     others = [o for o in ranked if o.eligible and o.offer_id != cheapest.offer_id]
     if others:
         breakdown = "; ".join(
             f"{o.supplier_name} - {_fmt_money(o.total_cost)} UZS"
-            + (" (free delivery)" if o.delivery_cost == 0 else f" ({_fmt_money(o.delivery_cost)} UZS delivery)")
+            + (
+                " " + t(language, "(free delivery)")
+                if o.delivery_cost == 0
+                else " " + t(language, "({delivery} UZS delivery)", delivery=_fmt_money(o.delivery_cost))
+            )
             for o in others
         )
-        lines.append(f"Other eligible options: {breakdown}.")
+        lines.append(t(language, "Other eligible options: {breakdown}.", breakdown=breakdown))
 
     if len(others) >= 1:
         most_expensive = max(others, key=lambda o: o.total_cost)
         saved = most_expensive.total_cost - cheapest.total_cost
         if saved > 0:
             lines.append(
-                f"Compared with the most expensive eligible option ({most_expensive.supplier_name}, "
-                f"{_fmt_money(most_expensive.total_cost)} UZS), choosing {cheapest.supplier_name} "
-                f"saves {_fmt_money(saved)} UZS on this order."
+                t(
+                    language,
+                    "Compared with the most expensive eligible option ({supplier}, {total} UZS), "
+                    "choosing {best} saves {saved} UZS on this order.",
+                    supplier=most_expensive.supplier_name,
+                    total=_fmt_money(most_expensive.total_cost),
+                    best=cheapest.supplier_name,
+                    saved=_fmt_money(saved),
+                )
             )
 
     if best_overall and best_overall.offer_id != cheapest.offer_id:
         premium = best_overall.total_cost - cheapest.total_cost
-        lines.append(
-            f"Best overall on quality and delivery is {best_overall.supplier_name} "
-            f"({best_overall.rating:.1f}/5 rating, {best_overall.delivery_days} day delivery) "
-            f"at {_fmt_money(best_overall.total_cost)} UZS"
-            + (f", a {_fmt_money(premium)} UZS premium." if premium > 0 else ".")
-        )
+        if premium > 0:
+            lines.append(
+                t(
+                    language,
+                    "Best overall on quality and delivery is {supplier} ({rating}/5 rating, "
+                    "{days} day delivery) at {total} UZS, a {premium} UZS premium.",
+                    supplier=best_overall.supplier_name,
+                    rating=f"{best_overall.rating:.1f}",
+                    days=best_overall.delivery_days,
+                    total=_fmt_money(best_overall.total_cost),
+                    premium=_fmt_money(premium),
+                )
+            )
+        else:
+            lines.append(
+                t(
+                    language,
+                    "Best overall on quality and delivery is {supplier} ({rating}/5 rating, "
+                    "{days} day delivery) at {total} UZS.",
+                    supplier=best_overall.supplier_name,
+                    rating=f"{best_overall.rating:.1f}",
+                    days=best_overall.delivery_days,
+                    total=_fmt_money(best_overall.total_cost),
+                )
+            )
 
     if rejected_count:
         lines.append(
-            f"{rejected_count} offer(s) were excluded because they cannot fulfil the requested quantity "
-            "or are out of stock."
+            t(
+                language,
+                "{count} offer(s) were excluded because they cannot fulfil the requested quantity "
+                "or are out of stock.",
+                count=rejected_count,
+            )
         )
     return " ".join(lines)

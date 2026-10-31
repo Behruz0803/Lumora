@@ -13,11 +13,13 @@ import {
   Truck,
   User as UserIcon,
 } from 'lucide-react'
+import { LanguageSwitcher } from '../components/LanguageSwitcher'
 import { useAuth } from '../context/AuthContext'
 import { useToast } from '../context/ToastContext'
 import { ApiError } from '../services/api'
 import { cn } from '../utils/cn'
 import { formatUZS } from '../utils/format'
+import { tr } from '../i18n/core'
 
 const DEMO_EMAIL = 'dilshod@priceradar.uz'
 const DEMO_PASSWORD = 'demo1234'
@@ -55,10 +57,10 @@ export function AuthPage({ mode }: { mode: 'login' | 'register' }) {
 
   const validate = (): boolean => {
     const next: Errors = {}
-    if (isRegister && fullName.trim().length < 2) next.full_name = 'Please enter your full name.'
-    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.trim())) next.email = 'Enter a valid email address.'
-    if (password.length < 8) next.password = 'Password must be at least 8 characters.'
-    if (isRegister && confirm !== password) next.confirm = 'Passwords do not match.'
+    if (isRegister && fullName.trim().length < 2) next.full_name = tr('Please enter your full name.')
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.trim())) next.email = tr('Enter a valid email address.')
+    if (password.length < 8) next.password = tr('Password must be at least 8 characters.')
+    if (isRegister && confirm !== password) next.confirm = tr('Passwords do not match.')
     setErrors(next)
     return Object.keys(next).length === 0
   }
@@ -76,14 +78,14 @@ export function AuthPage({ mode }: { mode: 'login' | 'register' }) {
           password,
           business_name: businessName.trim() || undefined,
         })
-        toast.success(`Welcome to PriceRadar, ${user.full_name.split(' ')[0]}!`)
+        toast.success(tr('Welcome to PriceRadar, {name}!', { name: user.full_name.split(' ')[0] }))
       } else {
         const user = await login(email.trim(), password)
-        toast.success(`Welcome back, ${user.full_name.split(' ')[0]}.`)
+        toast.success(tr('Welcome back, {name}.', { name: user.full_name.split(' ')[0] }))
       }
       navigate(redirectTo, { replace: true })
     } catch (error) {
-      const message = error instanceof ApiError ? error.message : 'Unable to sign in. Please try again.'
+      const message = error instanceof ApiError ? error.message : tr('Unable to sign in. Please try again.')
       setErrors({ form: message })
     } finally {
       setSubmitting(false)
@@ -96,10 +98,10 @@ export function AuthPage({ mode }: { mode: 'login' | 'register' }) {
     setErrors({})
     try {
       const user = await login(DEMO_EMAIL, DEMO_PASSWORD)
-      toast.success(`Signed in as ${user.full_name} (demo account).`)
+      toast.success(tr('Signed in as {name} (demo account).', { name: user.full_name }))
       navigate(redirectTo, { replace: true })
     } catch (error) {
-      const message = error instanceof ApiError ? error.message : 'Demo sign-in failed.'
+      const message = error instanceof ApiError ? error.message : tr('Demo sign-in failed.')
       setErrors({ form: message })
     } finally {
       setDemoLoading(false)
@@ -130,26 +132,25 @@ export function AuthPage({ mode }: { mode: 'login' | 'register' }) {
               </svg>
             </span>
             <div>
-              <p className="text-[15px] font-semibold tracking-tight">PriceRadar</p>
-              <p className="text-[10px] uppercase tracking-[0.16em] text-white/50">Market intelligence</p>
+              <p className="text-[15px] font-semibold tracking-tight">{tr("PriceRadar")}</p>
+              <p className="text-[10px] uppercase tracking-[0.16em] text-white/50">{tr("Market intelligence")}</p>
             </div>
           </div>
 
           <h1 className="mt-10 max-w-md text-3xl font-semibold leading-[1.15] tracking-tight sm:text-[38px]">
-            Know the market.
+            {tr("Know the market.")}
             <br />
-            Buy smarter. Save more.
+            {tr("Buy smarter. Save more.")}
           </h1>
           <p className="mt-4 max-w-md text-sm leading-relaxed text-white/70">
-            Compare supplier offers by <span className="font-semibold text-white">total purchasing cost</span> —
-            unit price, delivery and minimum order quantity — not just the cheapest headline price.
+            {tr("Compare supplier offers by")} <span className="font-semibold text-white">{tr("total purchasing cost")}</span> {tr("— unit price, delivery and minimum order quantity — not just the cheapest headline price.")}
           </p>
 
           <ul className="mt-8 space-y-3.5 text-sm text-white/80">
             {[
-              { icon: TrendingDown, text: 'See true cost per order, delivery included' },
-              { icon: ShieldCheck, text: 'Verified suppliers clearly separated from demo data' },
-              { icon: Truck, text: 'Availability and minimum order checked before recommending' },
+              { icon: TrendingDown, text: tr('See true cost per order, delivery included') },
+              { icon: ShieldCheck, text: tr('Verified suppliers clearly separated from demo data') },
+              { icon: Truck, text: tr('Availability and minimum order checked before recommending') },
             ].map((item) => (
               <li key={item.text} className="flex items-start gap-3">
                 <span className="mt-0.5 flex h-6 w-6 shrink-0 items-center justify-center rounded-lg bg-white/10">
@@ -165,10 +166,10 @@ export function AuthPage({ mode }: { mode: 'login' | 'register' }) {
         <div className="relative mt-10 hidden rounded-2xl border border-white/10 bg-white/[0.06] p-4 backdrop-blur-sm sm:block">
           <div className="flex items-center justify-between">
             <p className="text-[11px] font-semibold uppercase tracking-wide text-white/60">
-              Example · 100 kg potatoes
+              {tr("Example · 100 kg potatoes")}
             </p>
             <span className="rounded-full bg-warning/15 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-warning">
-              Demo data
+              {tr("Demo data")}
             </span>
           </div>
           <div className="mt-3 space-y-2">
@@ -193,23 +194,25 @@ export function AuthPage({ mode }: { mode: 'login' | 'register' }) {
             ))}
           </div>
           <p className="mt-3 text-[11px] leading-relaxed text-white/50">
-            Lowest total cost, not lowest unit price: the cheapest unit price still loses once
-            delivery is added.
+            {tr("Lowest total cost, not lowest unit price: the cheapest unit price still loses once delivery is added.")}
           </p>
         </div>
       </div>
 
       {/* Form panel */}
-      <div className="flex flex-1 items-center justify-center px-4 py-10 sm:px-8">
+      <div className="relative flex flex-1 items-center justify-center px-4 py-10 sm:px-8">
+        <div className="absolute right-4 top-4 sm:right-8">
+          <LanguageSwitcher variant="full" />
+        </div>
         <div className="w-full max-w-[420px]">
           <div className="mb-6">
             <h2 className="text-2xl font-semibold tracking-tight text-ink">
-              {isRegister ? 'Create your account' : 'Sign in to PriceRadar'}
+              {isRegister ? tr("Create your account") : tr("Sign in to PriceRadar")}
             </h2>
             <p className="mt-1.5 text-sm text-ink-muted">
               {isRegister
-                ? 'Start comparing real purchasing costs in a few minutes.'
-                : 'Use your business account, or explore with the demo account.'}
+                ? tr("Start comparing real purchasing costs in a few minutes.")
+                : tr("Use your business account, or explore with the demo account.")}
             </p>
           </div>
 
@@ -228,7 +231,7 @@ export function AuthPage({ mode }: { mode: 'login' | 'register' }) {
                 <>
                   <div>
                     <label htmlFor="full_name" className="mb-1.5 block text-xs font-semibold text-ink-soft">
-                      Full name
+                      {tr("Full name")}
                     </label>
                     <div className="relative">
                       <UserIcon className="pointer-events-none absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-ink-muted" aria-hidden />
@@ -236,7 +239,7 @@ export function AuthPage({ mode }: { mode: 'login' | 'register' }) {
                         id="full_name"
                         value={fullName}
                         onChange={(event) => setFullName(event.target.value)}
-                        placeholder="Dilshod Karimov"
+                        placeholder={tr("Dilshod Karimov")}
                         autoComplete="name"
                         aria-invalid={Boolean(errors.full_name)}
                         className={cn('field pl-10', errors.full_name && 'border-danger/50')}
@@ -246,13 +249,13 @@ export function AuthPage({ mode }: { mode: 'login' | 'register' }) {
                   </div>
                   <div>
                     <label htmlFor="business_name" className="mb-1.5 block text-xs font-semibold text-ink-soft">
-                      Business name <span className="font-normal text-ink-muted">(optional)</span>
+                      {tr("Business name")} <span className="font-normal text-ink-muted">{tr("(optional)")}</span>
                     </label>
                     <input
                       id="business_name"
                       value={businessName}
                       onChange={(event) => setBusinessName(event.target.value)}
-                      placeholder="Dilshod Grocery Market"
+                      placeholder={tr("Dilshod Grocery Market")}
                       autoComplete="organization"
                       className="field"
                     />
@@ -262,7 +265,7 @@ export function AuthPage({ mode }: { mode: 'login' | 'register' }) {
 
               <div>
                 <label htmlFor="email" className="mb-1.5 block text-xs font-semibold text-ink-soft">
-                  Email address
+                  {tr("Email address")}
                 </label>
                 <div className="relative">
                   <Mail className="pointer-events-none absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-ink-muted" aria-hidden />
@@ -271,7 +274,7 @@ export function AuthPage({ mode }: { mode: 'login' | 'register' }) {
                     type="email"
                     value={email}
                     onChange={(event) => setEmail(event.target.value)}
-                    placeholder="you@business.uz"
+                    placeholder={tr("you@business.uz")}
                     autoComplete="email"
                     aria-invalid={Boolean(errors.email)}
                     className={cn('field pl-10', errors.email && 'border-danger/50')}
@@ -282,7 +285,7 @@ export function AuthPage({ mode }: { mode: 'login' | 'register' }) {
 
               <div>
                 <label htmlFor="password" className="mb-1.5 block text-xs font-semibold text-ink-soft">
-                  Password
+                  {tr("Password")}
                 </label>
                 <div className="relative">
                   <Lock className="pointer-events-none absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-ink-muted" aria-hidden />
@@ -291,7 +294,7 @@ export function AuthPage({ mode }: { mode: 'login' | 'register' }) {
                     type={showPassword ? 'text' : 'password'}
                     value={password}
                     onChange={(event) => setPassword(event.target.value)}
-                    placeholder={isRegister ? 'At least 8 characters' : 'Your password'}
+                    placeholder={isRegister ? tr("At least 8 characters") : tr("Your password")}
                     autoComplete={isRegister ? 'new-password' : 'current-password'}
                     aria-invalid={Boolean(errors.password)}
                     className={cn('field px-10', errors.password && 'border-danger/50')}
@@ -300,8 +303,8 @@ export function AuthPage({ mode }: { mode: 'login' | 'register' }) {
                     type="button"
                     onClick={() => setShowPassword((visible) => !visible)}
                     className="absolute right-2.5 top-1/2 -translate-y-1/2 rounded-md p-1.5 text-ink-muted transition hover:bg-canvas hover:text-ink"
-                    aria-label={showPassword ? 'Hide password' : 'Show password'}
-                    title={showPassword ? 'Hide password' : 'Show password'}
+                    aria-label={showPassword ? tr("Hide password") : tr("Show password")}
+                    title={showPassword ? tr("Hide password") : tr("Show password")}
                   >
                     {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
                   </button>
@@ -312,14 +315,14 @@ export function AuthPage({ mode }: { mode: 'login' | 'register' }) {
               {isRegister && (
                 <div>
                   <label htmlFor="confirm" className="mb-1.5 block text-xs font-semibold text-ink-soft">
-                    Confirm password
+                    {tr("Confirm password")}
                   </label>
                   <input
                     id="confirm"
                     type={showPassword ? 'text' : 'password'}
                     value={confirm}
                     onChange={(event) => setConfirm(event.target.value)}
-                    placeholder="Repeat your password"
+                    placeholder={tr("Repeat your password")}
                     autoComplete="new-password"
                     aria-invalid={Boolean(errors.confirm)}
                     className={cn('field', errors.confirm && 'border-danger/50')}
@@ -332,11 +335,11 @@ export function AuthPage({ mode }: { mode: 'login' | 'register' }) {
                 {submitting ? (
                   <>
                     <Loader2 className="h-4 w-4 animate-spin" aria-hidden />
-                    {isRegister ? 'Creating account…' : 'Signing in…'}
+                    {isRegister ? tr("Creating account…") : tr("Signing in…")}
                   </>
                 ) : (
                   <>
-                    {isRegister ? 'Create account' : 'Sign in'}
+                    {isRegister ? tr("Create account") : tr("Sign in")}
                     <ArrowRight className="h-4 w-4" aria-hidden />
                   </>
                 )}
@@ -345,7 +348,7 @@ export function AuthPage({ mode }: { mode: 'login' | 'register' }) {
 
             <div className="my-5 flex items-center gap-3">
               <span className="h-px flex-1 bg-line" />
-              <span className="text-[11px] font-medium uppercase tracking-wide text-ink-muted">or</span>
+              <span className="text-[11px] font-medium uppercase tracking-wide text-ink-muted">{tr("or")}</span>
               <span className="h-px flex-1 bg-line" />
             </div>
 
@@ -360,25 +363,25 @@ export function AuthPage({ mode }: { mode: 'login' | 'register' }) {
               ) : (
                 <ShieldCheck className="h-4 w-4 text-brand-600" aria-hidden />
               )}
-              Use the demo account
+              {tr("Use the demo account")}
             </button>
             <p className="mt-2 text-center text-[11px] text-ink-muted">
               {DEMO_EMAIL} · {DEMO_PASSWORD}
             </p>
 
             <p className="mt-5 text-center text-xs text-ink-muted">
-              {isRegister ? 'Already have an account?' : 'New to PriceRadar?'}{' '}
+              {isRegister ? tr("Already have an account?") : tr("New to PriceRadar?")}{' '}
               <Link
                 to={isRegister ? '/login' : '/register'}
                 className="font-semibold text-brand-700 underline-offset-2 hover:underline"
               >
-                {isRegister ? 'Sign in' : 'Create an account'}
+                {isRegister ? tr("Sign in") : tr("Create an account")}
               </Link>
             </p>
           </div>
 
           <p className="mt-6 text-center text-[11px] leading-relaxed text-ink-muted">
-            PriceRadar is a demonstration MVP. Seeded prices, suppliers and trends are fictional.
+            {tr("PriceRadar is a demonstration MVP. Seeded prices, suppliers and trends are fictional.")}
           </p>
         </div>
       </div>

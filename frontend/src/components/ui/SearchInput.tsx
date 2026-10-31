@@ -1,5 +1,6 @@
 import { Search, X } from 'lucide-react'
 import { cn } from '../../utils/cn'
+import { tr } from '../../i18n/core'
 
 export function SearchInput({
   value,
@@ -33,7 +34,7 @@ export function SearchInput({
           type="button"
           onClick={() => onChange('')}
           className="absolute right-2.5 top-1/2 -translate-y-1/2 rounded-md p-1 text-ink-muted transition hover:bg-canvas hover:text-ink"
-          aria-label="Clear search"
+          aria-label={tr("Clear search")}
         >
           <X className="h-3.5 w-3.5" />
         </button>

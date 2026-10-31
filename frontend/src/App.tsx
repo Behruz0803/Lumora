@@ -1,5 +1,6 @@
+import { useSyncExternalStore, type ReactNode } from 'react'
 import { BrowserRouter, Navigate, Route, Routes, useLocation } from 'react-router-dom'
-import type { ReactNode } from 'react'
+import { getLanguage, subscribe } from './i18n'
 import { AuthProvider, useAuth } from './context/AuthContext'
 import { ToastProvider } from './context/ToastContext'
 import { AppLayout } from './layouts/AppLayout'
@@ -37,7 +38,7 @@ function PublicOnlyRoute({ children }: { children: ReactNode }) {
   return <>{children}</>
 }
 
-export default function App() {
+function AppShell() {
   return (
     <AuthProvider>
       <ToastProvider>
@@ -84,4 +85,14 @@ export default function App() {
       </ToastProvider>
     </AuthProvider>
   )
+}
+
+/**
+ * The interface language lives in a small external store. Re-mounting the shell
+ * on change guarantees every screen (and every plain `tr()` call) re-renders in
+ * the new language without threading a hook through the whole component tree.
+ */
+export default function App() {
+  const language = useSyncExternalStore(subscribe, getLanguage, getLanguage)
+  return <AppShell key={language} />
 }

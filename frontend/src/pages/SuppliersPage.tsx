@@ -11,6 +11,8 @@ import { EmptyState, ErrorState, LoadingBlock } from '../components/ui/States'
 import { DemoBadge, Rating, VerifiedBadge } from '../components/ui/Badge'
 import { DemoNotice } from '../components/DemoNotice'
 import { cn } from '../utils/cn'
+import { tr } from '../i18n/core'
+import { pluralize } from '../utils/format'
 
 const PAGE_SIZE = 9
 
@@ -45,9 +47,9 @@ export function SuppliersPage() {
   return (
     <div className="space-y-6">
       <PageHeader
-        eyebrow="Directory"
-        title="Suppliers"
-        description="Wholesale suppliers, distributors and farmer cooperatives in the PriceRadar demo network."
+        eyebrow={tr("Directory")}
+        title={tr("Suppliers")}
+        description={tr("Wholesale suppliers, distributors and farmer cooperatives in the PriceRadar demo network.")}
         actions={<DemoBadge />}
       />
 
@@ -56,12 +58,12 @@ export function SuppliersPage() {
           <SearchInput
             value={search}
             onChange={setSearch}
-            placeholder="Search by supplier name, city or category…"
+            placeholder={tr("Search by supplier name, city or category…")}
             className="flex-1"
           />
           <div className="flex flex-wrap items-center gap-2">
             <label htmlFor="location" className="sr-only">
-              Location
+              {tr("Location")}
             </label>
             <select
               id="location"
@@ -69,7 +71,7 @@ export function SuppliersPage() {
               onChange={(event) => setLocation(event.target.value)}
               className="field w-auto min-w-[150px] py-2.5"
             >
-              <option value="all">All locations</option>
+              <option value="all">{tr("All locations")}</option>
               {(locations.data ?? []).map((item) => (
                 <option key={item} value={item}>
                   {item}
@@ -77,7 +79,7 @@ export function SuppliersPage() {
               ))}
             </select>
             <label htmlFor="supplier-sort" className="sr-only">
-              Sort suppliers
+              {tr("Sort suppliers")}
             </label>
             <select
               id="supplier-sort"
@@ -85,10 +87,10 @@ export function SuppliersPage() {
               onChange={(event) => setSort(event.target.value)}
               className="field w-auto min-w-[170px] py-2.5"
             >
-              <option value="rating">Highest rated</option>
-              <option value="delivery">Fastest delivery</option>
-              <option value="offers">Most offers</option>
-              <option value="name">Name (A–Z)</option>
+              <option value="rating">{tr("Highest rated")}</option>
+              <option value="delivery">{tr("Fastest delivery")}</option>
+              <option value="offers">{tr("Most offers")}</option>
+              <option value="name">{tr("Name (A–Z)")}</option>
             </select>
             <button
               type="button"
@@ -97,7 +99,7 @@ export function SuppliersPage() {
               className={cn('chip py-2.5', verifiedOnly && 'chip-active')}
             >
               <BadgeCheck className="h-3.5 w-3.5" />
-              Verified only
+              {tr("Verified only")}
             </button>
             {filtersActive && (
               <button
@@ -111,7 +113,7 @@ export function SuppliersPage() {
                 className="btn-secondary py-2.5 text-xs"
               >
                 <RotateCcw className="h-3.5 w-3.5" />
-                Reset
+                {tr("Reset")}
               </button>
             )}
           </div>
@@ -119,13 +121,13 @@ export function SuppliersPage() {
       </div>
 
       {error && <ErrorState message={error} onRetry={refetch} />}
-      {loading && !data && <LoadingBlock rows={4} label="Loading suppliers…" />}
+      {loading && !data && <LoadingBlock rows={4} label={tr("Loading suppliers…")} />}
 
       {data && data.items.length === 0 && (
         <EmptyState
           icon={<Store className="h-5 w-5" />}
-          title="No suppliers match your filters"
-          message="Adjust the location, verification filter or search term and try again."
+          title={tr("No suppliers match your filters")}
+          message={tr("Adjust the location, verification filter or search term and try again.")}
           action={
             <button
               type="button"
@@ -136,7 +138,7 @@ export function SuppliersPage() {
                 setVerifiedOnly(false)
               }}
             >
-              Clear filters
+              {tr("Clear filters")}
             </button>
           }
         />
@@ -145,8 +147,8 @@ export function SuppliersPage() {
       {data && data.items.length > 0 && (
         <>
           <p className="text-xs text-ink-muted">
-            <span className="font-semibold text-ink">{data.total}</span> supplier
-            {data.total === 1 ? '' : 's'} in the directory
+            <span className="font-semibold text-ink">{data.total}</span> {pluralize(data.total, 'supplier')}{' '}
+            {tr("in the directory")}
           </p>
           <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
             {data.items.map((supplier) => (
@@ -156,14 +158,14 @@ export function SuppliersPage() {
                     <h3 className="truncate text-sm font-semibold text-ink">{supplier.name}</h3>
                     <p className="mt-0.5 flex items-center gap-1 text-[11px] text-ink-muted">
                       <MapPin className="h-3 w-3" aria-hidden />
-                      {supplier.location}
+                      {tr(supplier.location)}
                     </p>
                   </div>
                   <VerifiedBadge verified={supplier.is_verified} />
                 </div>
 
                 <p className="mt-3 line-clamp-2 text-xs leading-relaxed text-ink-soft">
-                  {supplier.description}
+                  {tr(supplier.description)}
                 </p>
 
                 <div className="mt-3 flex flex-wrap gap-1.5">
@@ -179,18 +181,18 @@ export function SuppliersPage() {
 
                 <dl className="mt-4 grid grid-cols-3 gap-2 rounded-xl border border-line/70 bg-canvas/50 p-3 text-center">
                   <div>
-                    <dt className="text-[10px] uppercase tracking-wide text-ink-muted">Rating</dt>
+                    <dt className="text-[10px] uppercase tracking-wide text-ink-muted">{tr("Rating")}</dt>
                     <dd className="mt-0.5 flex justify-center">
                       <Rating value={supplier.rating} />
                     </dd>
                   </div>
                   <div>
-                    <dt className="text-[10px] uppercase tracking-wide text-ink-muted">Offers</dt>
+                    <dt className="text-[10px] uppercase tracking-wide text-ink-muted">{tr("Offers")}</dt>
                     <dd className="text-xs font-semibold text-ink">{supplier.offer_count}</dd>
                   </div>
                   <div>
-                    <dt className="text-[10px] uppercase tracking-wide text-ink-muted">Delivery</dt>
-                    <dd className="text-xs font-semibold text-ink">{supplier.delivery_days} d</dd>
+                    <dt className="text-[10px] uppercase tracking-wide text-ink-muted">{tr("Delivery")}</dt>
+                    <dd className="text-xs font-semibold text-ink">{supplier.delivery_days} {tr("d")}</dd>
                   </div>
                 </dl>
 
@@ -204,17 +206,17 @@ export function SuppliersPage() {
                   </a>
                   <p className="flex items-center gap-1.5">
                     <Truck className="h-3 w-3" aria-hidden />
-                    {supplier.delivery_days} day delivery · {supplier.product_count} products
+                    {supplier.delivery_days} {tr("day delivery ·")} {supplier.product_count} {tr("products")}
                   </p>
                 </div>
 
                 <div className="mt-auto flex gap-2 pt-4">
                   <Link to={`/suppliers/${supplier.id}`} className="btn-primary flex-1 px-3 py-2 text-xs">
-                    View profile
+                    {tr("View profile")}
                     <ArrowRight className="h-3.5 w-3.5" />
                   </Link>
                   <Link to="/compare" className="btn-secondary px-3 py-2 text-xs">
-                    Compare
+                    {tr("Compare")}
                   </Link>
                 </div>
               </article>

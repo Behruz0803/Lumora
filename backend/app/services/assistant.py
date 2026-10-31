@@ -11,6 +11,7 @@ from datetime import timedelta
 from sqlalchemy import select
 from sqlalchemy.orm import Session
 
+from app.core.i18n import localise, t
 from app.models import PriceHistory, Product
 from app.schemas import AssistantResponse, ProductBrief
 from app.services.catalog import offer_input, offers_for_product, reference_quantity
@@ -65,6 +66,10 @@ DEFAULT_SUGGESTIONS = [
 ]
 
 
+def suggestions(language: str) -> list[str]:
+    return [t(language, item) for item in DEFAULT_SUGGESTIONS]
+
+
 def money(value: float | int) -> str:
     return f"{int(round(value)):,}".replace(",", " ")
 
@@ -100,7 +105,7 @@ def find_quantity(message: str, product: Product) -> tuple[float | None, bool]:
     return None, False
 
 
-def _trend_answer(db: Session, product: Product, days: int = 30) -> str:
+def _trend_answer(db: Session, product: Product, days: int = 30, language: str = "en") -> str:
     rows = list(
         db.scalars(
             select(PriceHistory)
@@ -109,45 +114,78 @@ def _trend_answer(db: Session, product: Product, days: int = 30) -> str:
         )
     )
     if not rows:
-        return f"There is no recorded price history for {product.name} yet."
+        return t(
+            language,
+            "There is no recorded price history for {product} yet.",
+            product=localise(language, product.name),
+        )
     latest_date = rows[-1].recorded_at
     window_start = latest_date - timedelta(days=days)
     window = [r for r in rows if r.recorded_at >= window_start]
     if len(window) < 2:
-        return f"Not enough price history for {product.name} in the last {days} days."
+        return t(
+            language,
+            "Not enough price history for {product} in the last {days} days.",
+            product=localise(language, product.name),
+            days=days,
+        )
     first, last = window[0].price, window[-1].price
     change = last - first
     pct = change / first * 100 if first else 0
-    direction = "increased" if change > 0 else "decreased" if change < 0 else "stayed flat"
+    direction = t(
+        language,
+        "increased" if change > 0 else "decreased" if change < 0 else "stayed flat",
+    )
     low = min(window, key=lambda r: r.price)
     high = max(window, key=lambda r: r.price)
-    return (
-        f"Over the last {days} days the average {product.name} price {direction} "
-        f"from {money(first)} UZS to {money(last)} UZS per {product.unit} "
-        f"({pct:+.1f}%). The observed range was {money(low.price)} - {money(high.price)} UZS. "
-        "This is a simulated demo series, so treat it as an illustration of the product, not a forecast."
+    return t(
+        language,
+        "Over the last {days} days the average {product} price {direction} "
+        "from {first} UZS to {last} UZS per {unit} ({percent}%). The observed range was "
+        "{low} - {high} UZS. This is a simulated demo series, so treat it as an "
+        "illustration of the product, not a forecast.",
+        days=days,
+        product=localise(language, product.name),
+        direction=direction,
+        first=money(first),
+        last=money(last),
+        unit=localise(language, product.unit),
+        percent=f"{pct:+.1f}",
+        low=money(low.price),
+        high=money(high.price),
     )
 
 
-def answer(db: Session, message: str, product_id: int | None, quantity: float | None) -> AssistantResponse:
+def answer(
+    db: Session,
+    message: str,
+    product_id: int | None,
+    quantity: float | None,
+    language: str = "en",
+) -> AssistantResponse:
     text = message.strip()
     lowered = text.lower()
     product = db.get(Product, product_id) if product_id else None
     if product is None:
         product = find_product(db, text)
 
+    pname = localise(language, product.name) if product is not None else ""
+    punit = localise(language, product.unit) if product is not None else ""
+
     def help_response() -> AssistantResponse:
         products = list(db.scalars(select(Product).order_by(Product.name)))
         catalogue = ", ".join(p.name for p in products)
         return AssistantResponse(
-            answer=(
+            answer=t(
+                language,
                 "I can compare supplier offers and calculate total purchasing costs including delivery. "
-                f"Try naming a product from the demo catalogue ({catalogue}) and a quantity, "
+                "Try naming a product from the demo catalogue ({catalogue}) and a quantity, "
                 "for example: '100 kg of potatoes'. I run on transparent business rules - "
-                "no external AI model is connected."
+                "no external AI model is connected.",
+                catalogue=catalogue,
             ),
             intent="help",
-            suggestions=DEFAULT_SUGGESTIONS,
+            suggestions=suggestions(language),
         )
 
     if product is None:
@@ -176,29 +214,40 @@ def answer(db: Session, message: str, product_id: int | None, quantity: float | 
     offers = offers_for_product(db, product.id)
     if not offers:
         return AssistantResponse(
-            answer=f"There are no supplier offers for {product.name} in the demo dataset yet.",
+            answer=t(
+                language,
+                "There are no supplier offers for {product} in the demo dataset yet.",
+                product=pname,
+            ),
             intent="empty",
-            suggestions=DEFAULT_SUGGESTIONS,
+            suggestions=suggestions(language),
         )
 
     if intent == "trend":
         return AssistantResponse(
-            answer=_trend_answer(db, product),
+            answer=_trend_answer(db, product, language=language),
             intent="trend",
             suggestions=[
-                f"Compare {product.name.lower()} for 100 {product.unit}",
-                f"Which supplier is best for {product.name.lower()}?",
+                t(language, "Compare {product} for 100 {unit}", product=pname.lower(), unit=punit),
+                t(language, "Which supplier is best for {product}?", product=pname.lower()),
             ],
         )
 
     if qty is None:
         qty = reference_quantity(product)
 
-    comparison = build_comparison(ProductBrief.model_validate(product), [offer_input(o) for o in offers], qty)
+    comparison = build_comparison(
+        ProductBrief.model_validate(product), [offer_input(o) for o in offers], qty, language
+    )
     best: ScoredOffer | None = comparison.cheapest
     assigned_default = not unit_matched
     qty_note = (
-        f" (I assumed {qty:g} {product.unit} - tell me the real quantity and I will recalculate.)"
+        t(
+            language,
+            " (I assumed {quantity} {unit} - tell me the real quantity and I will recalculate.)",
+            quantity=f"{qty:g}",
+            unit=punit,
+        )
         if assigned_default
         else ""
     )
@@ -206,94 +255,175 @@ def answer(db: Session, message: str, product_id: int | None, quantity: float | 
     if best is None:
         reasons = "; ".join(f"{o.supplier_name}: {o.reason}" for o in comparison.offers)
         return AssistantResponse(
-            answer=(
-                f"I cannot find a supplier that can fulfil {qty:g} {product.unit} of {product.name}. "
-                f"Reasons - {reasons}."
+            answer=t(
+                language,
+                "I cannot find a supplier that can fulfil {quantity} {unit} of {product}. Reasons - {reasons}.",
+                quantity=f"{qty:g}",
+                unit=punit,
+                product=pname,
+                reasons=reasons,
             ),
             intent=intent,
-            suggestions=[f"Compare {product.name.lower()} for 20 {product.unit}", "Show all suppliers"],
+            suggestions=[
+                t(language, "Compare {product} for 20 {unit}", product=pname.lower(), unit=punit),
+                t(language, "Show all suppliers"),
+            ],
             referenced_offers=comparison.offers,
         )
 
     if intent == "savings":
-        preamble = (
-            f"At {qty:g} {product.unit}{qty_note}, {best.supplier_name} gives the lowest total cost of "
-            f"{money(best.total_cost)} UZS. "
-        )
+        preamble = t(
+            language,
+            "At {quantity} {unit}{note}, {supplier} gives the lowest total cost of {total} UZS.",
+            quantity=f"{qty:g}",
+            unit=punit,
+            note=qty_note,
+            supplier=best.supplier_name,
+            total=money(best.total_cost),
+        ) + " "
         if comparison.potential_savings > 0:
-            preamble += (
-                f"Choosing it instead of the most expensive eligible offer saves "
-                f"{money(comparison.potential_savings)} UZS on this order."
+            preamble += t(
+                language,
+                "Choosing it instead of the most expensive eligible offer saves {saved} UZS on this order.",
+                saved=money(comparison.potential_savings),
             )
         else:
-            preamble += "It is also the only eligible offer, so there is nothing to save against."
+            preamble += t(language, "It is also the only eligible offer, so there is nothing to save against.")
         return AssistantResponse(
             answer=preamble + " " + comparison.explanation,
             intent="savings",
-            suggestions=[f"Compare {product.name.lower()} at a different quantity", "Save this offer"],
+            suggestions=[
+                t(language, "Compare {product} at a different quantity", product=pname.lower()),
+                t(language, "Save this offer"),
+            ],
             referenced_offers=comparison.offers[:3],
         )
 
     if intent == "suppliers":
         lines = []
         for offer in comparison.offers[:4]:
-            verification = "verified" if offer.is_verified else "not verified"
+            verification = t(language, "verified" if offer.is_verified else "not verified")
             lines.append(
-                f"- {offer.supplier_name} ({offer.location}, {offer.rating:.1f}/5, {verification}, "
-                f"{offer.delivery_days} day delivery, {offer.phone}): "
-                f"{money(offer.unit_price)} UZS/{product.unit} + {money(offer.delivery_cost)} UZS delivery"
-                + (f" = {money(offer.total_cost)} UZS for {qty:g} {product.unit}" if offer.eligible
-                   else f" - not eligible ({offer.reason.lower()})")
+                t(
+                    language,
+                    "- {supplier} ({location}, {rating}/5, {verification}, {days} day delivery, {phone}): "
+                    "{unit_price} UZS/{unit} + {delivery} UZS delivery",
+                    supplier=offer.supplier_name,
+                    location=offer.location,
+                    rating=f"{offer.rating:.1f}",
+                    verification=verification,
+                    days=offer.delivery_days,
+                    phone=offer.phone,
+                    unit_price=money(offer.unit_price),
+                    unit=punit,
+                    delivery=money(offer.delivery_cost),
+                )
+                + (
+                    t(
+                        language,
+                        " = {total} UZS for {quantity} {unit}",
+                        total=money(offer.total_cost),
+                        quantity=f"{qty:g}",
+                        unit=punit,
+                    )
+                    if offer.eligible
+                    else t(language, " - not eligible ({reason})", reason=offer.reason)
+                )
             )
         return AssistantResponse(
             answer=(
-                f"Supplier options for {product.name} at {qty:g} {product.unit}{qty_note}:\n"
+                t(
+                    language,
+                    "Supplier options for {product} at {quantity} {unit}{note}:",
+                    product=pname,
+                    quantity=f"{qty:g}",
+                    unit=punit,
+                    note=qty_note,
+                )
+                + "\n"
                 + "\n".join(lines)
-                + f"\n\nBest total cost: {best.supplier_name} at {money(best.total_cost)} UZS. "
-                "Contact details are fictional demo data."
+                + "\n\n"
+                + t(
+                    language,
+                    "Best total cost: {supplier} at {total} UZS. Contact details are fictional demo data.",
+                    supplier=best.supplier_name,
+                    total=money(best.total_cost),
+                )
             ),
             intent="suppliers",
-            suggestions=[f"Compare {product.name.lower()} for 100 {product.unit}", "Show price trend"],
+            suggestions=[
+                t(language, "Compare {product} for 100 {unit}", product=pname.lower(), unit=punit),
+                t(language, "Show price trend"),
+            ],
             referenced_offers=comparison.offers[:4],
         )
 
     if intent == "availability":
         available = [o for o in comparison.offers if o.eligible]
         parts = [
-            f"{o.supplier_name}: {o.available_quantity:g} {product.unit} available, "
-            f"minimum order {o.minimum_order_quantity:g} {product.unit}, delivery in {o.delivery_days} day(s)"
+            t(
+                language,
+                "{supplier}: {available} {unit} available, minimum order {minimum} {unit}, delivery in {days} day(s)",
+                supplier=o.supplier_name,
+                available=f"{o.available_quantity:g}",
+                minimum=f"{o.minimum_order_quantity:g}",
+                unit=punit,
+                days=o.delivery_days,
+            )
             for o in available
         ]
         return AssistantResponse(
             answer=(
-                f"At {qty:g} {product.unit}{qty_note}, {len(available)} of {len(comparison.offers)} "
-                f"suppliers can fulfil your order.\n" + "\n".join(f"- {p}" for p in parts)
+                t(
+                    language,
+                    "At {quantity} {unit}{note}, {available} of {total} suppliers can fulfil your order.",
+                    quantity=f"{qty:g}",
+                    unit=punit,
+                    note=qty_note,
+                    available=len(available),
+                    total=len(comparison.offers),
+                )
+                + "\n"
+                + "\n".join(f"- {p}" for p in parts)
             ),
             intent="availability",
-            suggestions=[f"Which supplier is cheapest for {product.name.lower()}?", "Show price trend"],
+            suggestions=[
+                t(language, "Which supplier is cheapest for {product}?", product=pname.lower()),
+                t(language, "Show price trend"),
+            ],
             referenced_offers=comparison.offers[:3],
         )
 
     # default: full comparison / recommendation
-    direct = (
-        f"For {qty:g} {product.unit} of {product.name}{qty_note}, the lowest total cost is "
-        f"{money(best.total_cost)} UZS from {best.supplier_name} "
-        f"({money(best.unit_price)} UZS/{product.unit} x {qty:g} = {money(best.product_cost)} UZS "
-        f"+ {money(best.delivery_cost)} UZS delivery). "
-    )
+    direct = t(
+        language,
+        "For {quantity} {unit} of {product}{note}, the lowest total cost is {total} UZS from "
+        "{supplier} ({unit_price} UZS/{unit} x {quantity} = {product_cost} UZS + {delivery} UZS delivery).",
+        quantity=f"{qty:g}",
+        unit=punit,
+        product=pname,
+        note=qty_note,
+        total=money(best.total_cost),
+        supplier=best.supplier_name,
+        unit_price=money(best.unit_price),
+        product_cost=money(best.product_cost),
+        delivery=money(best.delivery_cost),
+    ) + " "
     if comparison.cheapest and comparison.best_overall and comparison.cheapest.offer_id != comparison.best_overall.offer_id:
-        direct += (
-            f"If you value quality and delivery speed over the last few percent of price, "
-            f"{comparison.best_overall.supplier_name} is the best overall option."
+        direct += t(
+            language,
+            "If you value quality and delivery speed over the last few percent of price, "
+            "{supplier} is the best overall option.",
+            supplier=comparison.best_overall.supplier_name,
         )
-    suggestions = [
-        f"Show the price trend for {product.name.lower()}",
-        f"What if I order 250 {product.unit}?",
-        "Save the cheapest offer",
+    suggestion_list = [
+        t(language, "Show the price trend for {product}", product=pname.lower()),
+        t(language, "What if I order 250 {unit}?", unit=punit),
+        t(language, "Save the cheapest offer"),
     ]
     return AssistantResponse(
         answer=direct + "\n\n" + comparison.explanation,
         intent=intent,
-        suggestions=suggestions,
+        suggestions=suggestion_list,
         referenced_offers=comparison.offers[:3],
     )

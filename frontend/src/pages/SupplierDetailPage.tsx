@@ -7,7 +7,8 @@ import { ErrorState, LoadingBlock, EmptyState } from '../components/ui/States'
 import { Badge, DemoBadge, Rating, VerifiedBadge } from '../components/ui/Badge'
 import { DemoNotice } from '../components/DemoNotice'
 import { ProductThumb } from '../components/ProductThumb'
-import { formatDate, formatQuantity, formatRelativeTime, formatUZS, statusLabel, statusTone } from '../utils/format'
+import { formatDate, formatQuantity, formatRelativeTime, formatUZS, statusText, statusTone } from '../utils/format'
+import { tr } from '../i18n/core'
 
 export function SupplierDetailPage() {
   const { supplierId } = useParams()
@@ -22,7 +23,7 @@ export function SupplierDetailPage() {
     return (
       <div className="space-y-4">
         <Link to="/suppliers" className="btn-ghost w-fit px-0 text-xs">
-          <ArrowLeft className="h-3.5 w-3.5" /> Back to suppliers
+          <ArrowLeft className="h-3.5 w-3.5" /> {tr("Back to suppliers")}
         </Link>
         <ErrorState message={supplier.error} onRetry={supplier.refetch} />
       </div>
@@ -32,10 +33,10 @@ export function SupplierDetailPage() {
   return (
     <div className="space-y-6">
       <Link to="/suppliers" className="btn-ghost w-fit px-0 text-xs">
-        <ArrowLeft className="h-3.5 w-3.5" /> Back to suppliers
+        <ArrowLeft className="h-3.5 w-3.5" /> {tr("Back to suppliers")}
       </Link>
 
-      {supplier.loading && !supplier.data && <LoadingBlock rows={3} label="Loading supplier…" />}
+      {supplier.loading && !supplier.data && <LoadingBlock rows={3} label={tr("Loading supplier…")} />}
 
       {supplier.data && (
         <>
@@ -59,16 +60,16 @@ export function SupplierDetailPage() {
                   <p className="mt-1 flex flex-wrap items-center gap-x-3 gap-y-1 text-sm text-ink-muted">
                     <span className="inline-flex items-center gap-1">
                       <MapPin className="h-3.5 w-3.5" aria-hidden />
-                      {supplier.data.location}
+                      {tr(supplier.data.location)}
                     </span>
                     <span className="inline-flex items-center gap-1">
                       <Truck className="h-3.5 w-3.5" aria-hidden />
-                      {supplier.data.delivery_days} day delivery
+                      {supplier.data.delivery_days} {tr("day delivery")}
                     </span>
                     <Rating value={supplier.data.rating} />
                   </p>
                   <p className="mt-2 max-w-2xl text-sm leading-relaxed text-ink-soft">
-                    {supplier.data.description}
+                    {tr(supplier.data.description)}
                   </p>
                   <div className="mt-3 flex flex-wrap gap-1.5">
                     {supplier.data.categories.map((category) => (
@@ -105,7 +106,7 @@ export function SupplierDetailPage() {
                   }}
                 >
                   <Copy className="h-4 w-4" />
-                  Copy phone
+                  {tr("Copy phone")}
                 </button>
               </div>
             </div>
@@ -127,15 +128,15 @@ export function SupplierDetailPage() {
 
           <div className="card overflow-hidden">
             <div className="border-b border-line px-5 py-4">
-              <h2 className="text-sm font-semibold text-ink">Offers from this supplier</h2>
+              <h2 className="text-sm font-semibold text-ink">{tr("Offers from this supplier")}</h2>
               <p className="mt-0.5 text-xs text-ink-muted">
-                Unit prices, delivery fees and stock levels from the demo dataset.
+                {tr("Unit prices, delivery fees and stock levels from the demo dataset.")}
               </p>
             </div>
 
             {offers.loading && !offers.data && (
               <div className="p-5">
-                <LoadingBlock rows={3} label="Loading offers…" />
+                <LoadingBlock rows={3} label={tr("Loading offers…")} />
               </div>
             )}
             {offers.error && (
@@ -145,7 +146,7 @@ export function SupplierDetailPage() {
             )}
             {offers.data && offers.data.length === 0 && (
               <div className="p-5">
-                <EmptyState title="No offers listed" message="This supplier has no active offers right now." />
+                <EmptyState title={tr("No offers listed")} message={tr("This supplier has no active offers right now.")} />
               </div>
             )}
 
@@ -155,14 +156,14 @@ export function SupplierDetailPage() {
                   <table className="table-base">
                     <thead>
                       <tr>
-                        <th>Product</th>
-                        <th className="text-right">Unit price</th>
-                        <th className="text-right">Delivery</th>
-                        <th className="text-right">Min. order</th>
-                        <th className="text-right">Available</th>
-                        <th>Status</th>
-                        <th>Updated</th>
-                        <th className="text-right">Action</th>
+                        <th>{tr("Product")}</th>
+                        <th className="text-right">{tr("Unit price")}</th>
+                        <th className="text-right">{tr("Delivery")}</th>
+                        <th className="text-right">{tr("Min. order")}</th>
+                        <th className="text-right">{tr("Available")}</th>
+                        <th>{tr("Status")}</th>
+                        <th>{tr("Updated")}</th>
+                        <th className="text-right">{tr("Action")}</th>
                       </tr>
                     </thead>
                     <tbody>
@@ -181,7 +182,7 @@ export function SupplierDetailPage() {
                                   to={`/products/${offer.product_id}`}
                                   className="text-sm font-medium text-ink hover:text-brand-700"
                                 >
-                                  {offer.product?.name}
+                                  {tr(offer.product?.name ?? "")}
                                 </Link>
                                 <p className="text-[11px] text-ink-muted">{offer.product?.category}</p>
                               </div>
@@ -192,7 +193,7 @@ export function SupplierDetailPage() {
                           </td>
                           <td className="whitespace-nowrap text-right">
                             {offer.delivery_cost === 0 ? (
-                              <Badge tone="green">Free</Badge>
+                              <Badge tone="green">{tr("Free")}</Badge>
                             ) : (
                               formatUZS(offer.delivery_cost)
                             )}
@@ -205,7 +206,7 @@ export function SupplierDetailPage() {
                             {formatQuantity(offer.available_quantity)} {offer.product?.unit}
                           </td>
                           <td>
-                            <Badge tone={statusTone[offer.status]}>{statusLabel[offer.status]}</Badge>
+                            <Badge tone={statusTone[offer.status]}>{statusText(offer.status)}</Badge>
                           </td>
                           <td className="whitespace-nowrap text-xs text-ink-muted">
                             {formatRelativeTime(offer.updated_at)}
@@ -223,7 +224,7 @@ export function SupplierDetailPage() {
                                 }
                                 className="btn-secondary px-2.5 py-1.5 text-xs"
                               >
-                                Compare
+                                {tr("Compare")}
                                 <ArrowRight className="h-3 w-3" />
                               </button>
                             </div>
@@ -250,10 +251,10 @@ export function SupplierDetailPage() {
                               to={`/products/${offer.product_id}`}
                               className="text-sm font-medium text-ink"
                             >
-                              {offer.product?.name}
+                              {tr(offer.product?.name ?? "")}
                             </Link>
                             <p className="text-[11px] text-ink-muted">
-                              Min {formatQuantity(offer.minimum_order_quantity)} · stock{' '}
+                              {tr("Min")} {formatQuantity(offer.minimum_order_quantity)} {tr("· stock")}{' '}
                               {formatQuantity(offer.available_quantity)}
                             </p>
                           </div>
@@ -261,12 +262,12 @@ export function SupplierDetailPage() {
                         <div className="text-right">
                           <p className="text-sm font-semibold text-ink">{formatUZS(offer.unit_price)}</p>
                           <p className="text-[11px] text-ink-muted">
-                            {offer.delivery_cost === 0 ? 'free delivery' : `+${formatUZS(offer.delivery_cost)}`}
+                            {offer.delivery_cost === 0 ? tr("free delivery") : `+${formatUZS(offer.delivery_cost)}`}
                           </p>
                         </div>
                       </div>
                       <div className="mt-2 flex items-center justify-between gap-2">
-                        <Badge tone={statusTone[offer.status]}>{statusLabel[offer.status]}</Badge>
+                        <Badge tone={statusTone[offer.status]}>{statusText(offer.status)}</Badge>
                         <button
                           type="button"
                           onClick={() =>
@@ -278,7 +279,7 @@ export function SupplierDetailPage() {
                           }
                           className="btn-secondary px-3 py-1.5 text-xs"
                         >
-                          Compare
+                          {tr("Compare")}
                           <ArrowRight className="h-3 w-3" />
                         </button>
                       </div>

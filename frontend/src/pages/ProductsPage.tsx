@@ -11,15 +11,17 @@ import { EmptyState, ErrorState, LoadingBlock } from '../components/ui/States'
 import { Badge, DemoBadge } from '../components/ui/Badge'
 import { ProductThumb } from '../components/ProductThumb'
 import { DemoNotice } from '../components/DemoNotice'
-import { formatRelativeTime, formatUZS, statusLabel, statusTone } from '../utils/format'
+import { formatRelativeTime, formatUZS, statusText, statusTone } from '../utils/format'
 import { cn } from '../utils/cn'
+import { tr } from '../i18n/core'
+import { pluralize } from '../utils/format'
 
-const SORT_OPTIONS = [
-  { value: 'name', label: 'Name (A–Z)' },
-  { value: 'price_asc', label: 'Lowest average price' },
-  { value: 'price_desc', label: 'Highest average price' },
-  { value: 'suppliers', label: 'Most suppliers' },
-  { value: 'updated', label: 'Recently updated' },
+const sortOptions = () => [
+  { value: 'name', label: tr('Name (A–Z)') },
+  { value: 'price_asc', label: tr('Lowest average price') },
+  { value: 'price_desc', label: tr('Highest average price') },
+  { value: 'suppliers', label: tr('Most suppliers') },
+  { value: 'updated', label: tr('Recently updated') },
 ]
 
 const PAGE_SIZE = 12
@@ -74,9 +76,9 @@ export function ProductsPage() {
   return (
     <div className="space-y-6">
       <PageHeader
-        eyebrow="Catalogue"
-        title="Products"
-        description="Every product tracked by PriceRadar, with average market price, supplier coverage and availability."
+        eyebrow={tr("Catalogue")}
+        title={tr("Products")}
+        description={tr("Every product tracked by PriceRadar, with average market price, supplier coverage and availability.")}
         actions={<DemoBadge />}
       />
 
@@ -85,12 +87,12 @@ export function ProductsPage() {
           <SearchInput
             value={search}
             onChange={setSearch}
-            placeholder="Search products by name, category or description…"
+            placeholder={tr("Search products by name, category or description…")}
             className="flex-1"
           />
           <div className="flex flex-wrap items-center gap-2">
             <label htmlFor="availability" className="sr-only">
-              Availability
+              {tr("Availability")}
             </label>
             <select
               id="availability"
@@ -98,13 +100,13 @@ export function ProductsPage() {
               onChange={(event) => setAvailability(event.target.value)}
               className="field w-auto min-w-[150px] py-2.5"
             >
-              <option value="all">All availability</option>
-              <option value="in_stock">In stock</option>
-              <option value="low_stock">Low stock</option>
-              <option value="out_of_stock">Out of stock</option>
+              <option value="all">{tr("All availability")}</option>
+              <option value="in_stock">{tr("In stock")}</option>
+              <option value="low_stock">{tr("Low stock")}</option>
+              <option value="out_of_stock">{tr("Out of stock")}</option>
             </select>
             <label htmlFor="sort" className="sr-only">
-              Sort products
+              {tr("Sort products")}
             </label>
             <select
               id="sort"
@@ -112,7 +114,7 @@ export function ProductsPage() {
               onChange={(event) => setSort(event.target.value)}
               className="field w-auto min-w-[180px] py-2.5"
             >
-              {SORT_OPTIONS.map((option) => (
+              {sortOptions().map((option) => (
                 <option key={option.value} value={option.value}>
                   {option.label}
                 </option>
@@ -121,7 +123,7 @@ export function ProductsPage() {
             {filtersActive && (
               <button type="button" onClick={resetFilters} className="btn-secondary py-2.5 text-xs">
                 <RotateCcw className="h-3.5 w-3.5" />
-                Reset
+                {tr("Reset")}
               </button>
             )}
           </div>
@@ -130,7 +132,7 @@ export function ProductsPage() {
         <div className="mt-3 flex items-center gap-2 overflow-x-auto pb-1 scrollbar-none">
           <span className="flex shrink-0 items-center gap-1.5 pr-1 text-[11px] font-semibold uppercase tracking-wide text-ink-muted">
             <Filter className="h-3 w-3" aria-hidden />
-            Category
+            {tr("Category")}
           </span>
           <button
             type="button"
@@ -138,7 +140,7 @@ export function ProductsPage() {
             aria-pressed={category === 'all'}
             className={cn('chip shrink-0', category === 'all' && 'chip-active')}
           >
-            All products
+            {tr("All products")}
           </button>
           {(categories.data ?? []).map((item) => (
             <button
@@ -158,16 +160,16 @@ export function ProductsPage() {
       </div>
 
       {error && <ErrorState message={error} onRetry={refetch} />}
-      {loading && !data && <LoadingBlock rows={4} label="Loading products…" />}
+      {loading && !data && <LoadingBlock rows={4} label={tr("Loading products…")} />}
 
       {data && data.items.length === 0 && (
         <EmptyState
           icon={<PackageSearch className="h-5 w-5" />}
-          title="No products match your filters"
-          message="Try a different search term, category or availability filter."
+          title={tr("No products match your filters")}
+          message={tr("Try a different search term, category or availability filter.")}
           action={
             <button type="button" className="btn-primary" onClick={resetFilters}>
-              Clear filters
+              {tr("Clear filters")}
             </button>
           }
         />
@@ -177,11 +179,10 @@ export function ProductsPage() {
         <>
           <div className="flex items-center justify-between">
             <p className="text-xs text-ink-muted">
-              <span className="font-semibold text-ink">{data.total}</span> product
-              {data.total === 1 ? '' : 's'}
-              {category !== 'all' && ` in ${category}`}
+              <span className="font-semibold text-ink">{data.total}</span> {pluralize(data.total, 'product')}
+              {category !== 'all' && ` ${tr('in {category}', { category: tr(category) })}`}
             </p>
-            <p className="hidden text-[11px] text-ink-muted sm:block">Average prices exclude out-of-stock offers</p>
+            <p className="hidden text-[11px] text-ink-muted sm:block">{tr("Average prices exclude out-of-stock offers")}</p>
           </div>
 
           <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4">
@@ -191,22 +192,22 @@ export function ProductsPage() {
                   <div className="flex items-start gap-3">
                     <ProductThumb
                       src={product.image_url}
-                      alt={product.name}
+                      alt={tr(product.name)}
                       category={product.category}
                       className="h-14 w-14"
                     />
                     <div className="min-w-0 flex-1">
                       <div className="flex items-start justify-between gap-2">
                         <h3 className="truncate text-sm font-semibold text-ink group-hover:text-brand-700">
-                          {product.name}
+                          {tr(product.name)}
                         </h3>
-                        <Badge tone={statusTone[product.availability]}>{statusLabel[product.availability]}</Badge>
+                        <Badge tone={statusTone[product.availability]}>{statusText(product.availability)}</Badge>
                       </div>
-                      <p className="mt-0.5 text-[11px] text-ink-muted">{product.category}</p>
+                      <p className="mt-0.5 text-[11px] text-ink-muted">{tr(product.category)}</p>
                       <p className="mt-2 text-lg font-semibold tracking-tight text-ink">
                         {formatUZS(product.avg_price)}
                         <span className="ml-1 text-[11px] font-normal text-ink-muted">
-                          avg / {product.unit}
+                          {tr("avg /")} {product.unit}
                         </span>
                       </p>
                     </div>
@@ -214,13 +215,13 @@ export function ProductsPage() {
 
                   <dl className="mt-3.5 grid grid-cols-2 gap-2 rounded-lg border border-line/70 bg-canvas/50 p-2.5 text-[11px]">
                     <div>
-                      <dt className="text-ink-muted">Suppliers</dt>
+                      <dt className="text-ink-muted">{tr("Suppliers")}</dt>
                       <dd className="font-semibold text-ink">
                         {product.available_supplier_count} / {product.offer_count}
                       </dd>
                     </div>
                     <div>
-                      <dt className="text-ink-muted">Range</dt>
+                      <dt className="text-ink-muted">{tr("Range")}</dt>
                       <dd className="font-semibold text-ink">
                         {product.min_price ? formatUZS(product.min_price).replace(' UZS', '') : '—'}–
                         {product.max_price ? formatUZS(product.max_price).replace(' UZS', '') : '—'}
@@ -229,7 +230,7 @@ export function ProductsPage() {
                   </dl>
 
                   <p className="mt-2.5 text-[11px] text-ink-muted">
-                    Updated {formatRelativeTime(product.updated_at)}
+                    {tr("Updated")} {formatRelativeTime(product.updated_at)}
                   </p>
                 </Link>
 
@@ -245,11 +246,11 @@ export function ProductsPage() {
                     }
                     className="btn-primary flex-1 px-3 py-2 text-xs"
                   >
-                    Compare offers
+                    {tr("Compare offers")}
                     <ArrowRight className="h-3.5 w-3.5" />
                   </button>
                   <Link to={`/products/${product.id}`} className="btn-secondary px-3 py-2 text-xs">
-                    Details
+                    {tr("Details")}
                   </Link>
                 </div>
               </article>

@@ -2,6 +2,8 @@
 
 **Know the market. Buy smarter. Save more.**
 
+**Languages:** **English** · [O‘zbekcha](./README.uz.md) · [Русский](./README.ru.md)
+
 PriceRadar is a B2B market-intelligence and price-comparison platform for grocery stores,
 restaurants, retailers, wholesalers and small businesses in Uzbekistan.
 
@@ -27,9 +29,10 @@ recommends an offer that cannot fulfil the requested quantity.
 | Market Analytics | Trend chart, category averages, supply health, demand indicators, product history selector, 30/90/180-day ranges |
 | AI Assistant | Transparent rule-based engine (no external model) that compares offers, explains winners, calculates totals and summarises trends |
 | Saved Offers | Save / remove, price and status change tracking, side-by-side comparison of selected offers |
-| Settings | Profile, business details, language, notification preferences, password change |
+| Settings | Profile, business details, interface language, notification preferences, password change |
+| Languages | **English, Uzbek and Russian** across the entire interface, including demo product names and server-generated explanations |
 | Backend | FastAPI + SQLAlchemy 2 + Pydantic v2, PostgreSQL-ready with SQLite dev fallback, seeded demo data, OpenAPI docs |
-| Quality | 133 backend tests, 98 frontend tests, 110-check live API smoke suite + 57 adversarial edge probes, QA report |
+| Quality | 159 backend tests, 116 frontend tests, 110-check live API smoke suite + 57 adversarial edge probes, QA report |
 
 Killer Flow (implemented end to end): Dilshod needs **100 kg of potatoes** → searches →
 enters 100 kg → sees Supplier A 450 000, Supplier B 400 000, Supplier C 420 000 UZS →
@@ -287,10 +290,53 @@ SQLAlchemy 2 models: `users`, `products`, `suppliers`, `offers`, `price_history`
 
 ---
 
-## 8. Tests
+## 8. Languages (English · Uzbek · Russian)
+
+The whole product speaks three languages: **English (en)**, **Uzbek (uz)** and **Russian (ru)**.
+
+* **Switching** — the `EN / UZ / RU` control sits in the top bar of every page, in the
+  sidebar, and on the sign-in screen. The choice is applied immediately and remembered
+  in `localStorage` (`priceradar_lang`), so it survives reloads.
+* **What is translated** — navigation, dashboards, tables, charts, forms, validation
+  messages, toasts, empty/error states, the assistant screen, the copyable purchase
+  order, and the demo dataset labels (product names, categories, units, cities and
+  product/supplier descriptions).
+* **Server-side text too** — the API returns the recommendation explanation,
+  eligibility/rejection reasons and all assistant answers in the active language.
+  The browser sends `Accept-Language: <lang>` with every request; the API also accepts
+  an explicit `?lang=uz|ru|en` query parameter.
+* **Account preference** — the language picked in **Settings → Language & notifications**
+  is stored on the user profile (`PATCH /api/auth/me`), so a new device starts in the
+  right language.
+* **Numbers, dates and plurals** follow the locale (`ru` gets one/few/many plural forms,
+  Uzbek uses the single form, money stays in UZS with space grouping).
+
+Implementation:
+
+```
+frontend/src/i18n/
+├─ core.ts            language store, tr(), plural(), locale-aware helpers
+├─ keys.json          every translatable string used by the UI (476 keys)
+├─ locales/en.ts      source language (keys fall back to themselves)
+├─ locales/uz/ui.ts   Uzbek UI strings
+├─ locales/uz/content.ts  Uzbek demo-dataset labels
+├─ locales/ru/ui.ts   Russian UI strings
+└─ locales/ru/content.ts  Russian demo-dataset labels
+backend/app/core/i18n.py   server-side templates + dataset names (en/uz/ru)
+```
+
+**Adding a language** — copy `locales/uz/ui.ts` to `locales/xx/ui.ts`, translate the values,
+add `xx` to `LANGUAGES` in `i18n/core.ts` and to `SUPPORTED_LANGUAGES` in
+`backend/app/core/i18n.py`. Run `npm run i18n:keys` after changing UI text; the test
+`src/test/i18n.test.tsx` fails if any key is missing, still English, or lost a
+`{placeholder}`.
+
+---
+
+## 9. Tests
 
 ```bash
-# backend unit + integration tests (133)
+# backend unit + integration tests (159)
 cd backend
 pip install -r requirements-dev.txt
 python -m pytest tests -q
@@ -311,7 +357,7 @@ npm run build
 npm run preview       # serves the built app on :4173 with the /api proxy
 ```
 
-Current results: **133/133** backend tests, **98/98** frontend tests,
+Current results: **159/159** backend tests, **116/116** frontend tests,
 **110/110** live API checks, **57/57** edge probes, clean type-check and
 production build (routes and API verified through `vite preview`).
 Full details, defect log and coverage notes: [`QA_REPORT.md`](./QA_REPORT.md).
@@ -324,10 +370,11 @@ What the frontend suite covers:
 | `src/test/errorPaths.test.tsx` | API offline / 500 / 409, missing records, navigation while mounted, modal keys |
 | `src/test/a11y.test.tsx` | Accessible names, form labels, mobile/desktop layouts, live regions |
 | `src/test/utils.test.ts` | Cost formula, savings, order summary, formatters |
+| `src/test/i18n.test.tsx` | Dictionary coverage, plural rules, language switching in the UI |
 
 ---
 
-## 9. Docker (optional)
+## 10. Docker (optional)
 
 ```bash
 cp .env.example .env        # set SECRET_KEY
@@ -344,14 +391,15 @@ docker compose up --build
 
 ---
 
-## 10. Known limitations
+## 11. Known limitations
 
 * **All data is fictional.** There is no supplier feed, scraping, or live market
   integration; analytics describe the seeded demo series only.
 * The "AI" assistant is a deterministic rule-based engine. No language model is
   connected, and it says so in every response. It understands product names,
   quantities and a small set of intents in English.
-* Language selection is stored and persisted but the interface is English-only.
+* Interface language covers the whole UI plus server-generated text (why an offer won,
+  rejection reasons, assistant answers). Supplier *company names* stay as given.
   Notification preferences are stored; no email/push delivery exists.
 * Contact Supplier is a demonstration flow: it shows the supplier phone number,
   builds a copyable purchase order and offers a `tel:` link. It does not send
@@ -366,7 +414,7 @@ docker compose up --build
 
 ---
 
-## 11. Security notes
+## 12. Security notes
 
 * Passwords hashed with **bcrypt** (cost 12) after a SHA-256 pre-hash, so long
   passwords are never silently truncated at 72 bytes.

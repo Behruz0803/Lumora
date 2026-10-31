@@ -9,6 +9,7 @@ import {
 } from 'react'
 import { api, ApiError, tokenStore } from '../services/api'
 import type { User } from '../types'
+import { STORAGE_KEY, getLanguage, setLanguage as applyLanguage, tr, type Language } from '../i18n'
 
 interface AuthContextValue {
   user: User | null
@@ -61,7 +62,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
           setConnectionError(null)
         } else {
           setConnectionError(
-            error instanceof ApiError ? error.message : 'Could not reach the PriceRadar API.',
+            error instanceof ApiError ? error.message : tr('Could not reach the PriceRadar API.'),
           )
         }
       } finally {
@@ -82,9 +83,25 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     return () => window.removeEventListener('priceradar:unauthorized', handleUnauthorized)
   }, [])
 
+  /**
+   * Adopt the language stored on the user's profile, but never override a choice
+   * the visitor already made on this device.
+   */
+  const adoptProfileLanguage = (language: string | undefined) => {
+    if (!language) return
+    let stored: string | null = null
+    try {
+      stored = localStorage.getItem(STORAGE_KEY)
+    } catch {
+      /* storage disabled */
+    }
+    if (!stored && language !== getLanguage()) applyLanguage(language as Language)
+  }
+
   const login = useCallback(async (email: string, password: string) => {
     const data = await api.login(email, password)
     tokenStore.set(data.access_token)
+    adoptProfileLanguage(data.user.language)
     setUser(data.user)
     return data.user
   }, [])
@@ -93,6 +110,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     async (payload: { full_name: string; email: string; password: string; business_name?: string }) => {
       const data = await api.register(payload)
       tokenStore.set(data.access_token)
+      adoptProfileLanguage(data.user.language)
       setUser(data.user)
       return data.user
     },

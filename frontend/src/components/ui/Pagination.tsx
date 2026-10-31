@@ -1,4 +1,5 @@
 import { ChevronLeft, ChevronRight } from 'lucide-react'
+import { tr } from '../../i18n/core'
 
 interface PaginationProps {
   page: number
@@ -21,17 +22,17 @@ export function Pagination({ page, pages, total, pageSize, onPageChange }: Pagin
   return (
     <div className="flex flex-col items-center justify-between gap-3 border-t border-line px-1 pt-4 sm:flex-row">
       <p className="text-xs text-ink-muted">
-        Showing <span className="font-semibold text-ink-soft">{from}</span>–
-        <span className="font-semibold text-ink-soft">{to}</span> of{' '}
+        {tr("Showing")} <span className="font-semibold text-ink-soft">{from}</span>–
+        <span className="font-semibold text-ink-soft">{to}</span> {tr("of")}{' '}
         <span className="font-semibold text-ink-soft">{total}</span>
       </p>
-      <nav className="flex items-center gap-1" aria-label="Pagination">
+      <nav className="flex items-center gap-1" aria-label={tr("Pagination")}>
         <button
           type="button"
           onClick={() => onPageChange(page - 1)}
           disabled={page <= 1}
           className="btn-secondary px-2.5 py-2"
-          aria-label="Previous page"
+          aria-label={tr("Previous page")}
         >
           <ChevronLeft className="h-4 w-4" />
         </button>
@@ -59,7 +60,7 @@ export function Pagination({ page, pages, total, pageSize, onPageChange }: Pagin
           onClick={() => onPageChange(page + 1)}
           disabled={page >= pages}
           className="btn-secondary px-2.5 py-2"
-          aria-label="Next page"
+          aria-label={tr("Next page")}
         >
           <ChevronRight className="h-4 w-4" />
         </button>
