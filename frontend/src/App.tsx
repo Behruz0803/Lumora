@@ -16,19 +16,23 @@ import { SavedOffersPage } from './pages/SavedOffersPage'
 import { SettingsPage } from './pages/SettingsPage'
 import { NotFoundPage } from './pages/NotFoundPage'
 import { FullPageLoader } from './components/FullPageLoader'
+import { ConnectionErrorScreen } from './components/ConnectionErrorScreen'
 
 function ProtectedRoute({ children }: { children: ReactNode }) {
-  const { user, loading } = useAuth()
+  const { user, loading, connectionError } = useAuth()
   const location = useLocation()
 
   if (loading) return <FullPageLoader />
+  // A valid session exists but the API is unreachable: do not sign the user out.
+  if (!user && connectionError) return <ConnectionErrorScreen />
   if (!user) return <Navigate to="/login" replace state={{ from: location.pathname + location.search }} />
   return <>{children}</>
 }
 
 function PublicOnlyRoute({ children }: { children: ReactNode }) {
-  const { user, loading } = useAuth()
+  const { user, loading, connectionError } = useAuth()
   if (loading) return <FullPageLoader />
+  if (!user && connectionError) return <ConnectionErrorScreen />
   if (user) return <Navigate to="/" replace />
   return <>{children}</>
 }

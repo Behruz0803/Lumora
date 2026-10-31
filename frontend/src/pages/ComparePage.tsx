@@ -175,40 +175,53 @@ export function ComparePage() {
     }
   }, [popular, selectProduct, toast])
 
-  // Deep link support: /compare?product=1&qty=100
-  const initialised = useRef(false)
-  useEffect(() => {
-    if (initialised.current) return
-    initialised.current = true
-    const productParam = searchParams.get('product')
-    const qtyParam = searchParams.get('qty')
-    const searchParam = searchParams.get('search')
+  // Deep links and external navigation: /compare?product=1&qty=100 or ?search=potato.
+  // This must react to URL changes that happen while the page is already mounted
+  // (e.g. picking a result in the header search while on the comparison page).
+  const currentProductId = useRef<number | null>(null)
+  currentProductId.current = product?.id ?? null
+  const loadingProductId = useRef<number | null>(null)
+  const urlProduct = searchParams.get('product')
+  const urlSearch = searchParams.get('search')
+  const urlQty = searchParams.get('qty')
 
+  useEffect(() => {
+    if (!urlProduct && !urlSearch) return
+    const targetId = urlProduct ? Number(urlProduct) : null
+    if (targetId !== null && (!Number.isFinite(targetId) || targetId <= 0)) return
+    if (targetId !== null && (currentProductId.current === targetId || loadingProductId.current === targetId)) {
+      return
+    }
+
+    let active = true
     const resolve = async () => {
-      if (productParam) {
-        try {
-          const found = await api.product(Number(productParam))
-          const qty = Number(qtyParam) > 0 ? Number(qtyParam) : defaultQuantity(found.unit)
+      try {
+        if (targetId !== null) {
+          loadingProductId.current = targetId
+          const found = await api.product(targetId)
+          if (!active) return
+          const requested = Number(urlQty)
+          const qty = requested > 0 ? requested : defaultQuantity(found.unit)
           setProduct(found)
           setQuantityText(String(qty))
           void runComparison(found, qty)
-          return
-        } catch {
-          /* fall through to search */
+        } else if (urlSearch) {
+          const results = await api.products({ search: urlSearch, page_size: 1 })
+          if (active && results.items[0]) selectProduct(results.items[0], Number(urlQty) || undefined)
         }
-      }
-      if (searchParam) {
-        try {
-          const results = await api.products({ search: searchParam, page_size: 1 })
-          if (results.items[0]) selectProduct(results.items[0], Number(qtyParam) || undefined)
-        } catch {
-          /* ignore */
-        }
+      } catch (err) {
+        if (!active) return
+        setError(err instanceof ApiError ? err.message : 'Could not load that product.')
+      } finally {
+        loadingProductId.current = null
       }
     }
     void resolve()
+    return () => {
+      active = false
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
+  }, [urlProduct, urlSearch])
 
   // Live recalculation when the quantity changes
   useEffect(() => {

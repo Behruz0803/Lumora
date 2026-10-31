@@ -5,7 +5,12 @@
 **Date:** 31 October 2026
 **Branch:** `arena/69672421-lumora`
 **Verdict:** ✅ **Release-ready for an MVP demonstration** — 0 open critical or major defects.
-All automated suites pass: **105 backend tests, 42 UI tests, 110 live API checks**, clean type-check and production build.
+All automated suites pass: **133 backend tests, 98 UI/unit tests, 110 live API checks, 57 adversarial edge probes**,
+clean type-check and production build.
+
+> **Pass history:** pass 1 (functional QA) found and fixed 13 defects. Pass 2 (adversarial / error-path QA,
+> run afterwards) found and fixed 7 further defects — including three that only appear when the API or the
+> network misbehaves. Both passes are recorded below; the numbers in this report are from pass 2.
 
 ---
 
@@ -30,13 +35,15 @@ $ git log --oneline
 
 | Suite | Tests | Passed | Failed |
 | --- | --- | --- | --- |
-| Backend unit + integration (pytest) | 105 | 105 | 0 |
-| Frontend UI/interaction (Vitest + Testing Library) | 42 | 42 | 0 |
+| Backend unit + integration (pytest) | 133 | 133 | 0 |
+| Frontend UI, error-path, a11y and unit tests (Vitest) | 98 | 98 | 0 |
 | Live API smoke suite (all endpoints) | 110 | 110 | 0 |
+| Adversarial edge probes (validation, auth, injection, limits) | 57 | 57 | 0 |
 | TypeScript type-check | — | ✅ | — |
-| Production build (`vite build`) | — | ✅ | — |
+| Production build (`vite build` + `vite preview` smoke) | — | ✅ | — |
 
-Defects found during QA: **13** (5 major, 8 minor) — **13 fixed and re-tested**, 0 deferred.
+Defects found during QA across both passes: **20** (9 major, 11 minor) — **20 fixed and re-tested**, 0 deferred,
+0 open critical/major.
 
 ---
 
@@ -135,6 +142,31 @@ live smoke check) and the full suites were re-run afterwards.
 before D-01/D-02 were fixed, ambiguous text matchers, and a clipboard stub conflicting with `user-event`.
 All resolved; fixtures are regenerated from the live API.
 
+### 5.1 Pass 2 — adversarial and error-path defects
+
+Pass 2 deliberately drove the API with hostile input (forged tokens, `1e400`, `NaN`, malformed JSON, SQL/XSS
+strings, 1 001-character messages, wrong HTTP verbs) and drove the UI with a failing, slow and unreachable
+backend. Everything below was found in that pass and is fixed.
+
+| ID | Severity | Area | Defect | Fix | Regression test |
+| --- | --- | --- | --- | --- | --- |
+| D-14 | **Major** | API error handling | Any request rejected by a **custom** Pydantic validator (whitespace-only `full_name`, `status: "pending"`, blank chat message) returned **HTTP 500 and dropped the connection**: the validation handler passed Pydantic's raw `ctx` (a live `ValueError` object) into `JSONResponse`, so serialisation raised `TypeError: Object of type ValueError is not JSON serializable`. The client saw a connection reset instead of a readable 422 | Added `_json_safe_errors()`: coerce `type`/`loc`/`msg`/`input`/`ctx` to JSON-safe values and strip Pydantic's `"Value error, "` prefix | `tests/test_robustness.py::TestValidationErrorHandling` (4 tests) |
+| D-15 | **Major** | API error handling | A JSON body containing a non-finite number (`{"quantity": 1e400}` or `NaN`) hit the same path from the other direction: Starlette serialises with `allow_nan=False`, so echoing `inf` back raised `ValueError: Out of range float values are not JSON compliant` → **500 + dropped connection** | `_json_safe()` now converts non-finite floats to strings at any depth before serialising | `test_infinite_quantity_returns_422_not_500`, `test_nan_like_quantity_returns_422_not_500`, live probe |
+| D-16 | **Major** | Auth / session | If `/api/auth/me` failed for **any** reason — server down, network drop, 500 — the context cleared the stored token and bounced the user to `/login` with no explanation. A one-second backend restart silently destroyed a valid session | Only a **401** ends the session now. Other failures keep the token and render a `ConnectionErrorScreen` with “Try again” (retries `/auth/me`) and “Sign out instead” | 3 tests in `errorPaths.test.tsx::Backend unavailable`; asserts the token survives |
+| D-17 | **Major** | Navigation | The comparison page read `?product=`/`?search=` once on mount. Using the **header search while already on `/compare`** changed the URL but the page kept showing the previous product — a silently broken flow reachable from every screen | The deep-link effect is keyed on the URL params with an in-flight guard, so any navigation updates the comparison; bad ids also surface an error instead of failing silently | `errorPaths.test.tsx::Navigation while mounted` (2 tests) |
+| D-18 | Minor | Assistant | A whitespace-only message was accepted (200) and answered with the generic help text instead of being rejected | `AssistantRequest.message` validator trims and rejects blank input with a 422 | `test_assistant_rejects_blank_message`, `test_assistant_trims_message`, live probe |
+| D-19 | Minor | Saved offers | Clearing the comparison-quantity field silently computed totals at quantity 0, so the table showed delivery-only prices (50 000 UZS) that look like real totals | Invalid quantity now blanks the totals, shows “Enter a quantity greater than zero.”, hides the savings banner and marks the field `aria-invalid` | `SavedOffersPage` quantity guard |
+| D-20 | Minor | Tooling | `npm run preview` served the production build **without** an `/api` proxy, so a built bundle could not be verified locally against the backend; and `package.json` had no `test` script although the suite existed | Added the `/api` proxy to the `preview` server and `test` / `test:watch` scripts | `npm run preview` → routes 200 and `/api/health` OK; `npm test` runs 98 tests |
+
+**Verification of D-14/D-15** (the exact payloads that previously killed the process):
+
+```
+POST /api/auth/register {"full_name":"   ",...}  → 422  detail "full name: Full name cannot be empty"
+POST /api/recommendations/compare {"quantity":1e400} → 422  (previously 500 + connection reset)
+POST /api/assistant/chat {"message":"   "}       → 422  (previously 200 + help text)
+```
+
+
 ---
 
 ## 6. Authentication & authorization matrix
@@ -176,7 +208,7 @@ All resolved; fixtures are regenerated from the live API.
 * **Recommendations:** full Killer Flow, ranking order, savings, eligibility, MOQ boundary, over-stock, 422s, 404, formula invariant.
 * **Assistant:** compare, trend intent, help fallback, rule-based disclosure, referenced offers, empty message 422.
 
-### 7.2 Interactive controls — all exercised (42 UI tests)
+### 7.2 Interactive controls — all exercised (98 UI/unit tests)
 
 Sign in · demo sign-in · register · password visibility toggle · form validation (email, password, confirm) ·
 sidebar links (all 8) · mobile menu open/close · header search → comparison · dashboard CTAs ·
@@ -188,11 +220,18 @@ suggestion chips, clear chat, product/quantity context · saved-offer selection,
 settings profile/business/preferences/password/sign out · error-state Retry · 404 page links.
 
 **Result:** no dead buttons, no decorative controls, no broken links detected after fixes.
+Pass 2 additionally proved the *failure* behaviour of these controls: with the API offline, the dashboard,
+login form and assistant all show a readable error and a working retry instead of a blank screen, and the
+session survives the outage (D-16). Every interactive control on all 9 authenticated pages plus `/login` was
+also machine-checked for an accessible name (see §8.1).
 
 ### 7.3 Routes
 
 `/login`, `/register`, `/` (Overview), `/compare`, `/products`, `/products/:id`, `/suppliers`,
 `/suppliers/:id`, `/analytics`, `/assistant`, `/saved-offers`, `/settings`, `*` (404).
+Every route was also loaded from the **production build** (`vite preview` on :4173): `/`, `/login`, `/compare`,
+`/analytics`, `/settings` and an unknown path all return 200 with the SPA fallback, and `/api/health` plus a
+full comparison request succeed through the preview proxy.
 Direct URL loads return HTTP 200 (SPA fallback verified through the dev server), guarded routes redirect
 correctly, and the 404 page renders for unknown paths.
 
@@ -222,6 +261,21 @@ was inspected to confirm `sm 640 / md 768 / lg 1024 / xl 1280 / 2xl 1536` media 
 
 No element uses a fixed width that can overflow a 320 px viewport except the desktop-only sidebar and
 `max-w` containers; no uncontrolled horizontal scrolling was found outside intentional table wrappers.
+
+### 8.1 Automated accessibility / structure checks (pass 2)
+
+`frontend/src/test/a11y.test.tsx` asserts, for `/login` and all nine authenticated pages:
+
+* every visible `button`, `a[href]`, `input`, `select`, `textarea` and `role="switch"` resolves an accessible
+  name (aria-label → aria-labelledby → `label[for]` → wrapping label → text content → title);
+* every input on the settings and comparison pages is programmatically labelled;
+* the desktop sidebar (`hidden lg:block`) and the mobile trigger (`lg:hidden`) coexist, the offers table is
+  wrapped in `hidden md:block` with a `md:hidden` card list beside it, every analytics table sits inside an
+  `overflow-x-auto` wrapper, and modals use a viewport-bounded layout (`max-h-[92vh]`, bottom sheet on mobile);
+* toasts live in an `aria-live="polite"` region and error states expose `role="alert"`.
+
+17 checks, all passing. They also caught two regressions-in-waiting during the pass: an unlabelled password
+field and a modal that did not restore `body` scrolling on close.
 
 > **Caveat:** without real browser rendering, pixel-level visual verification (font loading, actual wrapping,
 > touch targets) was not possible. A short manual pass in Chrome at 360/768/1440 px is recommended before a
@@ -266,23 +320,31 @@ No element uses a fixed width that can overflow a 320 px viewport except the des
 
 ```bash
 # 1. Backend unit + integration tests
-cd backend && python -m pytest tests -q                     # 105 passed
+cd backend && python -m pytest tests -q                     # 133 passed
 
-# 2. Start a throwaway API instance for the live smoke run (keeps demo data clean)
-cd backend && DATABASE_URL=sqlite:///./qa_smoke.db uvicorn app.main:app --port 8001
+# 2. Start a throwaway API instance for the live suites (keeps demo data clean)
+cd backend && rm -f qa_smoke.db && \
+  DATABASE_URL=sqlite:///./qa_smoke.db uvicorn app.main:app --port 8001
 
 # 3. Live API smoke suite (all endpoints + formula invariants)
 python scripts/qa_smoke.py http://127.0.0.1:8001             # 110/110 passed
 
-# 4. Frontend checks
+# 4. Adversarial edge probes (validation, auth, limits, injection)
+python scripts/qa_edge_probes.py http://127.0.0.1:8001       # 57/57 passed
+
+# 5. Frontend checks
 cd frontend
 npm run typecheck                                           # clean
+npm test                                                    # 98 passed
 npm run build                                               # success
-npm test                                                    # 42 passed
+npm run preview                                             # serves build + /api proxy on :4173
 
-# 5. Frontend fixtures (only if API payloads change)
+# 6. Frontend fixtures (only if API payloads change)
 python backend/scripts/record_fixtures.py                    # optional helper
 ```
+
+Both QA scripts create demo users and offers, so always point them at a throwaway database
+(`qa_smoke.db` / `qa_probe.db`) and delete the file afterwards — the labelled demo database must stay pristine.
 
 ---
 
@@ -297,9 +359,9 @@ python backend/scripts/record_fixtures.py                    # optional helper
 | Authentication and per-user data isolation correct | ✅ |
 | No dead buttons or broken navigation | ✅ |
 | Responsive layouts implemented with mobile fallbacks | ✅ (structural; manual visual pass advised) |
-| Critical/major defects | **0 open** (5 fixed) |
-| Minor defects | **0 open** (8 fixed) |
-| Automated regression coverage | 105 backend + 42 UI + 110 live API checks |
+| Critical/major defects | **0 open** (9 fixed across two passes) |
+| Minor defects | **0 open** (11 fixed across two passes) |
+| Automated regression coverage | 133 backend + 98 UI/unit + 110 live API + 57 edge probes |
 
 **Recommendation:** approved for MVP demo. Before a public/production launch, close the environment gaps in
 §10 (real-browser pass, Docker + PostgreSQL integration run, and a security/dependency scan).

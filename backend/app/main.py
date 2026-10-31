@@ -2,6 +2,7 @@
 from __future__ import annotations
 
 import logging
+import math
 from contextlib import asynccontextmanager
 
 from fastapi import FastAPI, Request, status
@@ -50,14 +51,56 @@ app.add_middleware(
 )
 
 
+def _json_safe(value):
+    """Coerce a value into something `json.dumps(..., allow_nan=False)` accepts.
+
+    Starlette serialises responses with allow_nan=False, so the ``inf``/``nan``
+    floats Pydantic echoes for out-of-range numbers would raise a ValueError and
+    turn a 422 into a 500 (with a dropped connection).
+    """
+    if isinstance(value, float):
+        return value if math.isfinite(value) else str(value)
+    if isinstance(value, (str, int, bool)) or value is None:
+        return value
+    if isinstance(value, dict):
+        return {str(key): _json_safe(item) for key, item in value.items()}
+    if isinstance(value, (list, tuple, set)):
+        return [_json_safe(item) for item in value]
+    return str(value)
+
+
+def _json_safe_errors(errors: list[dict]) -> list[dict]:
+    """Make Pydantic error dicts JSON-serialisable.
+
+    For custom validators Pydantic puts the raised exception in ``ctx``
+    (e.g. ``{"error": ValueError("...")}``) and arbitrary values in ``input``.
+    Passing those straight to JSONResponse raises a TypeError and FastAPI would
+    return a 500 instead of a 422, so everything is coerced to JSON-safe values.
+    """
+    safe: list[dict] = []
+    for error in errors:
+        item: dict = {"type": str(error.get("type", "value_error"))}
+        item["loc"] = [str(part) for part in error.get("loc", [])]
+        item["msg"] = str(error.get("msg", "Invalid request"))
+        if "input" in error:
+            item["input"] = _json_safe(error["input"])
+        ctx = error.get("ctx")
+        if isinstance(ctx, dict):
+            item["ctx"] = {str(key): _json_safe(ctx_value) for key, ctx_value in ctx.items()}
+        safe.append(item)
+    return safe
+
+
 @app.exception_handler(RequestValidationError)
 async def validation_exception_handler(request: Request, exc: RequestValidationError) -> JSONResponse:
     """Return a readable message alongside the detailed field errors."""
-    errors = exc.errors()
+    errors = _json_safe_errors(list(exc.errors()))
     first = errors[0] if errors else {}
-    field = ".".join(str(p) for p in first.get("loc", []) if p not in ("body", "query", "path"))
+    field = ".".join(p for p in first.get("loc", []) if p not in ("body", "query", "path"))
     message = first.get("msg", "Invalid request")
-    detail = f"{field}: {message}".lstrip(": ") if field else message
+    # Pydantic prefixes custom validator messages with "Value error, "
+    detail = message.removeprefix("Value error, ").strip()
+    detail = f"{field}: {detail}" if field else detail
     return JSONResponse(
         status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
         content={"detail": detail, "errors": errors},

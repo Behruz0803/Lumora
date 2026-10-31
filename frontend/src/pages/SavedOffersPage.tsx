@@ -38,6 +38,10 @@ export function SavedOffersPage() {
     [saved, selected],
   )
 
+  const parsedQuantity = Number(compareQuantity)
+  const compareQtyValid = Number.isFinite(parsedQuantity) && parsedQuantity > 0
+  const effectiveQuantity = compareQtyValid ? parsedQuantity : 0
+
   const handleRemove = async (savedId: number, productName: string) => {
     setRemovingId(savedId)
     try {
@@ -271,8 +275,12 @@ export function SavedOffersPage() {
               step="any"
               value={compareQuantity}
               onChange={(event) => setCompareQuantity(event.target.value)}
-              className="field w-32 py-2"
+              aria-invalid={!compareQtyValid}
+              className={cn('field w-32 py-2', !compareQtyValid && 'border-danger/50')}
             />
+            {!compareQtyValid && (
+              <p className="mt-1 text-[11px] text-danger">Enter a quantity greater than zero.</p>
+            )}
           </div>
           <p className="pb-2 text-[11px] text-ink-muted">
             {differentProducts
@@ -303,13 +311,13 @@ export function SavedOffersPage() {
                 {[...selectedSaved]
                   .sort(
                     (a, b) =>
-                      totalCost(a.offer.unit_price, Number(compareQuantity) || 0, a.offer.delivery_cost) -
-                      totalCost(b.offer.unit_price, Number(compareQuantity) || 0, b.offer.delivery_cost),
+                      totalCost(a.offer.unit_price, effectiveQuantity, a.offer.delivery_cost) -
+                      totalCost(b.offer.unit_price, effectiveQuantity, b.offer.delivery_cost),
                   )
                   .map((item, index) => {
                     const total = totalCost(
                       item.offer.unit_price,
-                      Number(compareQuantity) || 0,
+                      effectiveQuantity,
                       item.offer.delivery_cost,
                     )
                     return (
@@ -325,7 +333,7 @@ export function SavedOffersPage() {
                           {item.offer.delivery_cost === 0 ? 'Free' : formatUZS(item.offer.delivery_cost)}
                         </td>
                         <td className="whitespace-nowrap text-right font-semibold text-ink">
-                          {formatUZS(total)}
+                          {compareQtyValid ? formatUZS(total) : '—'}
                         </td>
                         <td className="text-right">
                           {index === 0 && <Badge tone="green">Cheapest</Badge>}
@@ -341,9 +349,9 @@ export function SavedOffersPage() {
         {selectedSaved.length >= 2 &&
           (() => {
             const totals = selectedSaved.map((item) =>
-              totalCost(item.offer.unit_price, Number(compareQuantity) || 0, item.offer.delivery_cost),
+              totalCost(item.offer.unit_price, effectiveQuantity, item.offer.delivery_cost),
             )
-            const diff = Math.max(...totals) - Math.min(...totals)
+            const diff = compareQtyValid ? Math.max(...totals) - Math.min(...totals) : 0
             return diff > 0 ? (
               <p className="mt-3 rounded-xl border border-brand-200 bg-brand-50/60 px-3.5 py-2.5 text-xs text-brand-900">
                 Choosing the cheapest selected offer saves{' '}

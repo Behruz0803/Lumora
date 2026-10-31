@@ -23,5 +23,14 @@ export default defineConfig({
     host: '0.0.0.0',
     port: 4173,
     allowedHosts: true,
+    // Keep the same /api contract when serving the production build locally,
+    // so `npm run preview` is a faithful test of the nginx setup.
+    proxy: {
+      '/api': {
+        target: backendTarget,
+        changeOrigin: true,
+        secure: false,
+      },
+    },
   },
 })

@@ -26,12 +26,29 @@ function jsonResponse(data: unknown, status = 200): Response {
 }
 
 export function installFetchMock(
-  options: { authenticated?: boolean; failOverview?: boolean; emptySaved?: boolean } = {},
+  options: {
+    authenticated?: boolean
+    failOverview?: boolean
+    emptySaved?: boolean
+    /** Reject the comparison request with a server error */
+    failCompare?: boolean
+    /** Simulate the backend being unreachable (fetch rejects) */
+    offline?: boolean
+    /** Force POST /saved-offers to answer 409 */
+    duplicateSave?: boolean
+    /** Fail the assistant request */
+    failAssistant?: boolean
+    /** Product ids that should answer 404 */
+    missingProductIds?: number[]
+    /** Supplier ids that should answer 404 */
+    missingSupplierIds?: number[]
+  } = {},
 ) {
   const savedState = (options.emptySaved ? [] : clone(fixtures.saved)) as Array<Record<string, unknown>>
   let saved = savedState
 
   const handler = async (input: RequestInfo | URL, init?: RequestInit): Promise<Response> => {
+    if (options.offline) throw new TypeError('Failed to fetch')
     const rawUrl = typeof input === 'string' ? input : input.toString()
     const url = new URL(rawUrl, 'http://localhost')
     const path = url.pathname
@@ -72,10 +89,25 @@ export function installFetchMock(
     // ------------------------------------------------------------ products
     if (path === '/api/products/categories') return jsonResponse(fixtures.categories)
     if (path === '/api/products') {
-      if (url.searchParams.get('search')) return jsonResponse(fixtures.products)
-      return jsonResponse(fixtures.products_all)
+      const term = url.searchParams.get('search')?.toLowerCase()
+      const all = fixtures.products_all
+      if (term) {
+        const matches = all.items.filter(
+          (item) =>
+            item.name.toLowerCase().includes(term) ||
+            item.category.toLowerCase().includes(term) ||
+            (item.description ?? '').toLowerCase().includes(term),
+        )
+        return jsonResponse({ ...all, items: matches, total: matches.length, pages: matches.length ? 1 : 0 })
+      }
+      return jsonResponse(all)
     }
-    if (/^\/api\/products\/\d+$/.test(path)) return jsonResponse(fixtures.product)
+    if (/^\/api\/products\/\d+$/.test(path)) {
+      const id = Number(path.split('/').pop())
+      if (options.missingProductIds?.includes(id)) return jsonResponse({ detail: 'Product not found' }, 404)
+      const match = fixtures.products_all.items.find((item) => item.id === id)
+      return jsonResponse(match ?? fixtures.product)
+    }
     if (/^\/api\/products\/\d+\/offers$/.test(path)) {
       const quantity = Number(url.searchParams.get('quantity') ?? 0)
       const items = fixtures.offers.items
@@ -100,7 +132,11 @@ export function installFetchMock(
     if (path === '/api/suppliers/locations') return jsonResponse(fixtures.locations)
     if (path === '/api/suppliers') return jsonResponse(fixtures.suppliers)
     if (/^\/api\/suppliers\/\d+\/offers$/.test(path)) return jsonResponse(fixtures.supplier_offers)
-    if (/^\/api\/suppliers\/\d+$/.test(path)) return jsonResponse(fixtures.supplier)
+    if (/^\/api\/suppliers\/\d+$/.test(path)) {
+      const id = Number(path.split('/').pop())
+      if (options.missingSupplierIds?.includes(id)) return jsonResponse({ detail: 'Supplier not found' }, 404)
+      return jsonResponse(fixtures.supplier)
+    }
 
     // -------------------------------------------------------------- offers
     if (path === '/api/offers') return jsonResponse(fixtures.offers)
@@ -115,10 +151,17 @@ export function installFetchMock(
 
     // ------------------------------------------------------- recommendations
     if (path === '/api/recommendations/compare' && method === 'POST') {
+      if (options.failCompare) return jsonResponse({ detail: 'A database error occurred. Please try again.' }, 500)
       const quantity = Number(body?.quantity ?? 0)
-      if (quantity === 25) return jsonResponse(fixtures.compare_25)
-      if (quantity === 10) return jsonResponse(fixtures.compare_10)
-      return jsonResponse(fixtures.compare_100)
+      const base =
+        quantity === 25 ? fixtures.compare_25 : quantity === 10 ? fixtures.compare_10 : fixtures.compare_100
+      // echo the requested product so the page reflects what was actually asked for
+      const requested = fixtures.products_all.items.find((item) => item.id === Number(body?.product_id))
+      return jsonResponse(
+        requested
+          ? { ...base, product: { ...requested, description: undefined, is_demo: undefined } }
+          : base,
+      )
     }
 
     // ---------------------------------------------------------- saved offers
@@ -126,7 +169,7 @@ export function installFetchMock(
       if (method === 'GET') return jsonResponse(saved)
       if (method === 'POST') {
         const offerId = Number(body?.offer_id)
-        if (saved.some((item) => item.offer_id === offerId)) {
+        if (options.duplicateSave || saved.some((item) => item.offer_id === offerId)) {
           return jsonResponse({ detail: 'Offer is already saved' }, 409)
         }
         const offer = fixtures.offers.items.find((item) => item.id === offerId) ?? fixtures.offers.items[0]
@@ -153,6 +196,7 @@ export function installFetchMock(
 
     // ------------------------------------------------------------ assistant
     if (path === '/api/assistant/chat' && method === 'POST') {
+      if (options.failAssistant) return jsonResponse({ detail: 'Assistant is temporarily unavailable.' }, 503)
       return jsonResponse({ ...fixtures.assistant, answer: `${fixtures.assistant.answer}\n\n[asked: ${body?.message}]` })
     }
 

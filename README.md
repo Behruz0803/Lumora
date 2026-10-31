@@ -29,7 +29,7 @@ recommends an offer that cannot fulfil the requested quantity.
 | Saved Offers | Save / remove, price and status change tracking, side-by-side comparison of selected offers |
 | Settings | Profile, business details, language, notification preferences, password change |
 | Backend | FastAPI + SQLAlchemy 2 + Pydantic v2, PostgreSQL-ready with SQLite dev fallback, seeded demo data, OpenAPI docs |
-| Quality | 105 backend tests, 42 UI tests, 110-check live API smoke suite, QA report |
+| Quality | 133 backend tests, 98 frontend tests, 110-check live API smoke suite + 57 adversarial edge probes, QA report |
 
 Killer Flow (implemented end to end): Dilshod needs **100 kg of potatoes** → searches →
 enters 100 kg → sees Supplier A 450 000, Supplier B 400 000, Supplier C 420 000 UZS →
@@ -53,7 +53,9 @@ priceradar/                       (= repository root)
 │  │  ├─ services/                pricing (total-cost + ranking), catalog, analytics, assistant
 │  │  └─ main.py                  FastAPI app, CORS, error handlers, routers
 │  ├─ scripts/qa_smoke.py         live API smoke suite (110 checks)
-│  ├─ tests/                      pytest: pricing, API, killer flow
+│  ├─ scripts/qa_edge_probes.py   adversarial edge probes (57 checks)
+│  ├─ scripts/record_fixtures.py  regenerate UI test fixtures from a live API
+│  ├─ tests/                      pytest: pricing, API, killer flow, robustness
 │  ├─ requirements.txt            runtime dependencies (pinned)
 │  ├─ requirements-dev.txt        + pytest / httpx
 │  ├─ Dockerfile
@@ -288,26 +290,40 @@ SQLAlchemy 2 models: `users`, `products`, `suppliers`, `offers`, `price_history`
 ## 8. Tests
 
 ```bash
-# backend unit + integration tests (105)
+# backend unit + integration tests (133)
 cd backend
 pip install -r requirements-dev.txt
 python -m pytest tests -q
 
-# live API smoke suite (110 checks). It creates a throwaway offer/account, so run
-# it against a separate database to keep your demo data pristine:
-#   terminal A: DATABASE_URL=sqlite:///./qa_smoke.db uvicorn app.main:app --port 8001
+# live API suites (110 smoke checks + 57 adversarial edge probes).
+# They create throwaway accounts/offers, so run them against a separate database
+# to keep your demo data pristine:
+#   terminal A: rm -f qa_smoke.db && DATABASE_URL=sqlite:///./qa_smoke.db \
+#               uvicorn app.main:app --port 8001
 python scripts/qa_smoke.py http://127.0.0.1:8001
+python scripts/qa_edge_probes.py http://127.0.0.1:8001
 
-# frontend type-check, production build and UI tests (42)
+# frontend type-check, UI/unit tests and production build (98 tests)
 cd frontend
 npm run typecheck
+npm test              # vitest run   (npm run test:watch for watch mode)
 npm run build
-npm test
+npm run preview       # serves the built app on :4173 with the /api proxy
 ```
 
-Current results: **105/105** backend tests, **42/42** UI tests,
-**110/110** live API checks, clean type-check and production build.
+Current results: **133/133** backend tests, **98/98** frontend tests,
+**110/110** live API checks, **57/57** edge probes, clean type-check and
+production build (routes and API verified through `vite preview`).
 Full details, defect log and coverage notes: [`QA_REPORT.md`](./QA_REPORT.md).
+
+What the frontend suite covers:
+
+| File | Scope |
+| --- | --- |
+| `src/test/app.test.tsx` | Every page, every control, the Killer Flow, auth, navigation |
+| `src/test/errorPaths.test.tsx` | API offline / 500 / 409, missing records, navigation while mounted, modal keys |
+| `src/test/a11y.test.tsx` | Accessible names, form labels, mobile/desktop layouts, live regions |
+| `src/test/utils.test.ts` | Cost formula, savings, order summary, formatters |
 
 ---
 

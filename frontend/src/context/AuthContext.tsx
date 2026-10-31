@@ -7,12 +7,15 @@ import {
   useState,
   type ReactNode,
 } from 'react'
-import { api, tokenStore } from '../services/api'
+import { api, ApiError, tokenStore } from '../services/api'
 import type { User } from '../types'
 
 interface AuthContextValue {
   user: User | null
   loading: boolean
+  /** Set when the stored session could not be validated because the API was unreachable. */
+  connectionError: string | null
+  retryConnection: () => void
   login: (email: string, password: string) => Promise<User>
   register: (data: {
     full_name: string
@@ -30,20 +33,37 @@ const AuthContext = createContext<AuthContextValue | null>(null)
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<User | null>(null)
   const [loading, setLoading] = useState(true)
+  const [connectionError, setConnectionError] = useState<string | null>(null)
+  const [retryCount, setRetryCount] = useState(0)
 
   useEffect(() => {
     let active = true
     const bootstrap = async () => {
       if (!tokenStore.get()) {
+        setUser(null)
+        setConnectionError(null)
         setLoading(false)
         return
       }
+      setLoading(true)
       try {
         const me = await api.me()
-        if (active) setUser(me)
-      } catch {
-        tokenStore.clear()
-        if (active) setUser(null)
+        if (!active) return
+        setUser(me)
+        setConnectionError(null)
+      } catch (error) {
+        if (!active) return
+        // Only an authentication failure should end the session. A network or
+        // server outage must not silently sign the user out and destroy a valid token.
+        if (error instanceof ApiError && error.status === 401) {
+          tokenStore.clear()
+          setUser(null)
+          setConnectionError(null)
+        } else {
+          setConnectionError(
+            error instanceof ApiError ? error.message : 'Could not reach the PriceRadar API.',
+          )
+        }
       } finally {
         if (active) setLoading(false)
       }
@@ -52,7 +72,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     return () => {
       active = false
     }
-  }, [])
+  }, [retryCount])
+
+  const retryConnection = useCallback(() => setRetryCount((count) => count + 1), [])
 
   useEffect(() => {
     const handleUnauthorized = () => setUser(null)
@@ -89,8 +111,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   }, [])
 
   const value = useMemo<AuthContextValue>(
-    () => ({ user, loading, login, register, logout, refresh, setUser }),
-    [user, loading, login, register, logout, refresh],
+    () => ({ user, loading, connectionError, retryConnection, login, register, logout, refresh, setUser }),
+    [user, loading, connectionError, retryConnection, login, register, logout, refresh],
   )
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>

@@ -310,6 +310,14 @@ class AssistantRequest(BaseModel):
     product_id: int | None = None
     quantity: float | None = Field(default=None, gt=0, le=1_000_000)
 
+    @field_validator("message")
+    @classmethod
+    def message_not_blank(cls, value: str) -> str:
+        cleaned = value.strip()
+        if not cleaned:
+            raise ValueError("Message cannot be empty")
+        return cleaned
+
 
 class AssistantResponse(BaseModel):
     answer: str
