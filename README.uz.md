@@ -32,7 +32,8 @@ bajara olmaydigan taklifni hech qachon tavsiya qilmaydi.
 | Sozlamalar | Profil, biznes ma’lumotlari, interfeys tili, bildirishnoma sozlamalari, parolni o‘zgartirish |
 | **Tillar** | **O‘zbek, rus va ingliz tillari** butun interfeysda, shu jumladan demo mahsulot nomlari va server yozadigan tushuntirishlarda |
 | Backend | FastAPI + SQLAlchemy 2 + Pydantic v2, PostgreSQL’ga tayyor, SQLite dev varianti, demo ma’lumotlar, OpenAPI hujjati |
-| Sifat | 159 backend testi, 117 frontend testi, 110 tekshiruvli jonli API smoke to‘plami + 57 adversarial probe, QA hisoboti |
+| Haqiqiy ma’lumot | CSV prays-list importi (dry-run + qator-darajali xatolar), mahsulot/ta’minotchi endpointlari, ma’lumot manbasi (demo / aralash / haqiqiy) va shunga mos ogohlantirish |
+| Sifat | 185 backend testi, 128 frontend testi, 126 tekshiruvli jonli API smoke to‘plami + 60 adversarial probe, QA hisoboti |
 
 Killer Flow (to‘liq ishlaydi): Dilshodga **100 kg kartoshka** kerak → qidiradi → 100 kg kiritadi →
 A ta’minotchi 450 000, B 400 000, C 420 000 UZS ni ko‘radi → **umumiy** eng past xarajat
@@ -66,7 +67,7 @@ priceradar/                       (repozitoriy ildizi)
 │  │  ├─ layouts/                 AppLayout (yon menyu + yuqori panel + mobil drawer)
 │  │  ├─ pages/                   12 sahifa
 │  │  ├─ services/api.ts          tiplashtirilgan API klienti (Accept-Language yuboradi)
-│  │  └─ test/                    117 test
+│  │  └─ test/                    128 test
 │  └─ package.json
 ├─ README.md · README.uz.md · README.ru.md
 └─ QA_REPORT.md · QA_REPORT.uz.md · QA_REPORT.ru.md
@@ -247,6 +248,38 @@ curl -X POST http://localhost:8000/api/recommendations/compare \
 
 ---
 
+## 6.1. Haqiqiy ta’minotchi narxlari (demodan haqiqiy ma’lumotga)
+
+Dastur uydirma demo ma’lumot bilan ishlaydi, lekin **haqiqiy ta’minotchi
+narxlariga** kod o‘zgartirmasdan o‘tish mumkin:
+
+1. **Shablonni yuklab oling** — `/api/import/template` (yoki *Narxlarni import
+   qilish* sahifasidagi havola).
+2. **Prays-listdan to‘ldiring** — majburiy ustunlar: `product`, `supplier`,
+   `unit_price`; ixtiyoriy: `delivery_cost`, `minimum_order_quantity`,
+   `available_quantity`, `status`, `category`, `unit`, `phone`, `location`.
+   Ustun nomlari o‘zbekcha, ruscha yoki inglizcha bo‘lishi mumkin (`mahsulot`,
+   `taminotchi`, `narx`, `товар`, `поставщик`, `цена`, ...).
+3. **Faylni tekshiring** — sahifa avval validatsiya qiladi va hech narsa
+   saqlamasdan qator-darajali xatolar jadvalini ko‘rsatadi
+   (`POST /api/import/prices?dry_run=true`).
+4. **Import qiling** — to‘g‘ri qatorlar haqiqiy taklifga aylanadi
+   (`is_demo = false`), yo‘q mahsulot/ta’minotchi yaratiladi, bir xil
+   mahsulot+ta’minotchi juftligidagi taklif yangilanadi va har bir qator uchun
+   narx tarixi yoziladi — grafik va analitika darhol haqiqiy narxlarda ishlaydi.
+
+Ma’lumot manbai hech qachon taxmin qilinmaydi: `GET /api/dataset/status` nechta
+mahsulot, ta’minotchi va narx qatori haqiqiyligini ko‘rsatadi, har bir taqqoslash
+va analitika javobida `data_source` = `demo` | `mixed` | `real` hamda mos
+`disclaimer` bo‘ladi. Interfeysdagi demo yorlig‘i **barcha** narxlar importdan
+kelgandagina yashil “Import qilingan prays-list” ga almashadi.
+
+Demo qatorlar himoyalangan: import ularni yangilay oladi (haqiqiy narx demo
+narxni almashtiradi), lekin `is_demo` qatorlarni `/products/{id}` yoki
+`/suppliers/{id}` orqali o‘chirib bo‘lmaydi.
+
+---
+
 ## 7. Ma’lumotlar bazasi
 
 * Baza jadvallari ishga tushishda `create_all` bilan yaratiladi (idempotent).
@@ -280,17 +313,17 @@ Yangi til qo‘shish: `frontend/src/i18n/locales/uz/ui.ts` ni nusxalab tarjima q
 ## 9. Testlar
 
 ```bash
-# backend (159 test)
+# backend (185 test)
 cd backend
 pip install -r requirements-dev.txt
 python -m pytest tests -q
 
-# jonli API to‘plamlari (110 smoke + 57 probe) — alohida bazada ishlating
+# jonli API to‘plamlari (126 smoke + 60 probe) — alohida bazada ishlating
 #   rm -f qa_smoke.db && DATABASE_URL=sqlite:///./qa_smoke.db uvicorn app.main:app --port 8001
 python scripts/qa_smoke.py http://127.0.0.1:8001
 python scripts/qa_edge_probes.py http://127.0.0.1:8001
 
-# frontend (117 test)
+# frontend (128 test)
 cd frontend
 npm run typecheck
 npm test
@@ -298,8 +331,8 @@ npm run build
 npm run preview        # :4173 da build + /api proxy
 ```
 
-Joriy natijalar: **159/159** backend, **117/117** frontend, **110/110** jonli smoke,
-**57/57** probe; type-check va production build toza.
+Joriy natijalar: **185/185** backend, **128/128** frontend, **126/126** jonli smoke,
+**60/60** probe; type-check va production build toza.
 Batafsil: [`QA_REPORT.uz.md`](./QA_REPORT.uz.md).
 
 ---

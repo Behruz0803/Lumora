@@ -42,6 +42,10 @@ export function installFetchMock(
     missingProductIds?: number[]
     /** Supplier ids that should answer 404 */
     missingSupplierIds?: number[]
+    /** Provenance the API reports for the catalogue: demo, mixed or real */
+    dataSource?: 'demo' | 'mixed' | 'real'
+    /** Simulate a CSV upload the backend rejects (bad columns) */
+    failImport?: boolean
   } = {},
 ) {
   const savedState = (options.emptySaved ? [] : clone(fixtures.saved)) as Array<Record<string, unknown>>
@@ -53,7 +57,11 @@ export function installFetchMock(
     const url = new URL(rawUrl, 'http://localhost')
     const path = url.pathname
     const method = (init?.method ?? 'GET').toUpperCase()
-    const body = init?.body ? JSON.parse(String(init.body)) : undefined
+    // Multipart uploads (FormData) are not JSON, so never assume a JSON body.
+    const body =
+      typeof init?.body === 'string' && init.body.startsWith('{')
+        ? JSON.parse(init.body)
+        : undefined
     calls.push({ method, url: `${path}${url.search}`, body })
 
     // ---------------------------------------------------------------- auth
@@ -198,6 +206,64 @@ export function installFetchMock(
     if (path === '/api/assistant/chat' && method === 'POST') {
       if (options.failAssistant) return jsonResponse({ detail: 'Assistant is temporarily unavailable.' }, 503)
       return jsonResponse({ ...fixtures.assistant, answer: `${fixtures.assistant.answer}\n\n[asked: ${body?.message}]` })
+    }
+
+    // ------------------------------------------------ dataset + price import
+    if (path === '/api/dataset/status') {
+      const source = options.dataSource ?? 'demo'
+      const real = source === 'demo' ? 0 : source === 'real' ? 28 : 6
+      return jsonResponse({
+        data_source: source,
+        has_real_data: real > 0,
+        products_total: 8,
+        products_real: source === 'real' ? 8 : source === 'mixed' ? 2 : 0,
+        products_demo: source === 'real' ? 0 : source === 'mixed' ? 6 : 8,
+        suppliers_total: 6,
+        suppliers_real: source === 'real' ? 6 : source === 'mixed' ? 1 : 0,
+        suppliers_demo: source === 'real' ? 0 : source === 'mixed' ? 5 : 6,
+        offers_total: 28,
+        offers_real: real,
+        offers_demo: 28 - real,
+        real_data_updated_at: real > 0 ? '2026-10-31T09:00:00' : null,
+        disclaimer:
+          source === 'real'
+            ? 'Prices, delivery costs and availability come from supplier price lists imported into PriceRadar.'
+            : 'Demo dataset: prices, suppliers and trends are fictional and for product demonstration only - not real market data.',
+      })
+    }
+    if (path === '/api/import/prices' && method === 'POST') {
+      if (options.failImport) {
+        return jsonResponse(
+          { detail: 'Missing required column(s): unit_price. Required columns are: product, supplier, unit_price.' },
+          422,
+        )
+      }
+      const dryRun = url.searchParams.get('dry_run') === 'true'
+      return jsonResponse({
+        dry_run: dryRun,
+        rows_received: 3,
+        rows_valid: 2,
+        rows_failed: 1,
+        offers_created: dryRun ? 2 : 0,
+        offers_updated: 0,
+        products_created: 1,
+        suppliers_created: 1,
+        errors: [{ row: 3, field: 'unit_price', message: 'Value is required' }],
+        warnings: [],
+        preview: [
+          {
+            row: 2,
+            product: 'Potatoes',
+            supplier: 'Tashkent Agro Trade',
+            unit_price: 3900,
+            delivery_cost: 40000,
+            minimum_order_quantity: 50,
+            available_quantity: 1200,
+            status: 'in_stock',
+          },
+        ],
+        dataset: { data_source: dryRun ? 'demo' : 'mixed', has_real_data: !dryRun },
+      })
     }
 
     return jsonResponse({ detail: `No mock handler for ${method} ${path}` }, 404)

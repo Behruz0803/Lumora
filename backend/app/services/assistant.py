@@ -11,7 +11,7 @@ from datetime import timedelta
 from sqlalchemy import select
 from sqlalchemy.orm import Session
 
-from app.core.i18n import localise, t
+from app.core.i18n import DATA_NAMES, localise, t
 from app.models import PriceHistory, Product
 from app.schemas import AssistantResponse, ProductBrief
 from app.services.catalog import offer_input, offers_for_product, reference_quantity
@@ -32,9 +32,55 @@ SYNONYMS = {
     "sugar": "Sugar",
     "egg": "Eggs",
     "eggs": "Eggs",
+    # Uzbek stems (users type "kartoshka", "kartoshkadan", "pomidor", ...)
+    "kartoshka": "Potatoes",
+    "kartosh": "Potatoes",
+    "pomidor": "Tomatoes",
+    "piyoz": "Onions",
+    "guruch": "Rice",
+    "un": "Flour",
+    "yog": "Cooking oil",
+    "osimlik": "Cooking oil",
+    "shakar": "Sugar",
+    "tuxum": "Eggs",
+    # Russian stems (картофель/картошки, помидоры, лук, рис, мука, масло, ...)
+    "картоф": "Potatoes",
+    "картошк": "Potatoes",
+    "помидор": "Tomatoes",
+    "томат": "Tomatoes",
+    "лук": "Onions",
+    "рис": "Rice",
+    "мук": "Flour",
+    "масл": "Cooking oil",
+    "сахар": "Sugar",
+    "яйц": "Eggs",
+    "яиц": "Eggs",
 }
 
+APOSTROPHES = "\u2018\u2019\u02bc`\u00b4'"
+
+
+def _normalise(text: str) -> str:
+    """Lowercase and unify apostrophes so "yog'", "yog‘" and "yog`" all match."""
+    lowered = text.lower()
+    for char in APOSTROPHES:
+        lowered = lowered.replace(char, "'")
+    return lowered
+
+
+def _tokens(text: str) -> list[str]:
+    return re.findall(r"[^\W\d_]+(?:'[^\W\d_]+)*", _normalise(text))
+
 UNIT_WORDS = {
+    "кг": "kg",
+    "литр": "l",
+    "литров": "l",
+    "л": "l",
+    "шт": "unit",
+    "дона": "unit",
+    "донаси": "unit",
+    "патнис": "tray",
+    "лоток": "tray",
     "kg": "kg",
     "kgs": "kg",
     "kilo": "kg",
@@ -53,8 +99,10 @@ UNIT_WORDS = {
 }
 
 QUANTITY_RE = re.compile(
-    r"(\d+(?:[.,]\d+)?)\s*(kg|kgs|kilo|kilos|kilogram|kilograms|l|liter|liters|litre|litres|"
-    r"tray|trajs|trays|unit|units)?",
+    r"(\d+(?:[.,]\d+)?)\s*(kg|kgs|kilo|kilos|kilogram|kilograms|k\u0433|l|liter|liters|litre|litres|"
+    r"\u043b\u0438\u0442\u0440|\u043b\u0438\u0442\u0440\u043e\u0432|\u043b|"
+    r"tray|trajs|trays|\u043f\u0430\u0442\u043d\u0438\u0441|\u043b\u043e\u0442\u043e\u043a|"
+    r"unit|units|\u0434\u043e\u043d\u0430|\u0448\u0442)?",
     re.IGNORECASE,
 )
 
@@ -74,18 +122,45 @@ def money(value: float | int) -> str:
     return f"{int(round(value)):,}".replace(",", " ")
 
 
+def _alias_table() -> dict[str, str]:
+    """English names plus every localised product name from the i18n catalogue."""
+    aliases = {_normalise(word): name for word, name in SYNONYMS.items()}
+    for names in DATA_NAMES.values():
+        for english, localised in names.items():
+            aliases.setdefault(_normalise(localised), english)
+    return aliases
+
+
 def find_product(db: Session, message: str) -> Product | None:
-    text = message.lower()
+    """Match a product whether the user writes English, Uzbek or Russian.
+
+    Tokens are matched exactly first, then by stem (so "kartoshkani",
+    "картофеля" and "помидора" still resolve). Longest alias wins.
+    """
+    text = _normalise(message)
     products = list(db.scalars(select(Product)))
-    for product in products:
-        if product.name.lower() in text:
+    by_name = {_normalise(p.name): p for p in products}
+    aliases = _alias_table()
+
+    for name, product in by_name.items():
+        if name and name in text:
             return product
-    for word, name in SYNONYMS.items():
-        if re.search(rf"\b{re.escape(word)}\b", text):
-            match = next((p for p in products if p.name == name), None)
-            if match:
-                return match
-    return None
+
+    tokens = _tokens(message)
+    best: tuple[int, Product] | None = None
+    for token in tokens:
+        for alias, product_name in aliases.items():
+            if not alias:
+                continue
+            matched = token == alias or (len(alias) >= 3 and token.startswith(alias))
+            if not matched:
+                continue
+            product = by_name.get(_normalise(product_name))
+            if product is None:
+                continue
+            if best is None or len(alias) > best[0]:
+                best = (len(alias), product)
+    return best[1] if best else None
 
 
 def find_quantity(message: str, product: Product) -> tuple[float | None, bool]:
@@ -174,7 +249,7 @@ def answer(
 
     def help_response() -> AssistantResponse:
         products = list(db.scalars(select(Product).order_by(Product.name)))
-        catalogue = ", ".join(p.name for p in products)
+        catalogue = ", ".join(localise(language, p.name) for p in products)
         return AssistantResponse(
             answer=t(
                 language,

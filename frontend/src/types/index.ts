@@ -251,3 +251,54 @@ export interface AssistantReply {
   engine: string
   disclaimer: string
 }
+
+// ------------------------------------------------------------- data provenance
+export type DataSource = 'demo' | 'mixed' | 'real'
+
+export interface DatasetStatus {
+  data_source: DataSource
+  has_real_data: boolean
+  products_total: number
+  products_real: number
+  products_demo: number
+  suppliers_total: number
+  suppliers_real: number
+  suppliers_demo: number
+  offers_total: number
+  offers_real: number
+  offers_demo: number
+  real_data_updated_at: string | null
+  disclaimer: string
+}
+
+export interface ImportRowError {
+  row: number
+  field: string | null
+  message: string
+}
+
+export interface ImportPreviewRow {
+  row: number
+  product: string
+  supplier: string
+  unit_price: number
+  delivery_cost: number
+  minimum_order_quantity: number
+  available_quantity: number
+  status: OfferStatus
+}
+
+export interface ImportReport {
+  dry_run: boolean
+  rows_received: number
+  rows_valid: number
+  rows_failed: number
+  offers_created: number
+  offers_updated: number
+  products_created: number
+  suppliers_created: number
+  errors: ImportRowError[]
+  warnings: string[]
+  preview: ImportPreviewRow[]
+  dataset: DatasetStatus | null
+}

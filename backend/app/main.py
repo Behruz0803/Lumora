@@ -11,7 +11,17 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 from sqlalchemy.exc import SQLAlchemyError
 
-from app.api import analytics, assistant, auth, offers, products, recommendations, saved_offers, suppliers
+from app.api import (
+    analytics,
+    assistant,
+    auth,
+    imports,
+    offers,
+    products,
+    recommendations,
+    saved_offers,
+    suppliers,
+)
 from app.core.config import settings
 from app.database.init_db import init_database
 
@@ -130,6 +140,7 @@ for api_router in (
     saved_offers.router,
     recommendations.router,
     assistant.router,
+    imports.router,
 ):
     app.include_router(api_router, prefix=settings.api_prefix)
 

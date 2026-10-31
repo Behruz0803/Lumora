@@ -5,11 +5,18 @@ from fastapi import APIRouter, Depends, HTTPException, Query, status
 from sqlalchemy import func, select
 from sqlalchemy.orm import Session, selectinload
 
-from app.api.deps import Pagination
+from app.api.deps import Pagination, get_current_user
 from app.database.session import get_db
 from app.models import Offer, Supplier
-from app.schemas import OfferOut, Page, SupplierOut
-from app.services.catalog import offer_to_out, supplier_to_out
+from app.schemas import (
+    Message,
+    OfferOut,
+    Page,
+    SupplierCreate,
+    SupplierOut,
+    SupplierUpdate,
+)
+from app.services.catalog import offer_to_out, supplier_categories, supplier_to_out
 
 router = APIRouter(prefix="/suppliers", tags=["Suppliers"])
 
@@ -97,3 +104,129 @@ def get_supplier_offers(supplier_id: int, db: Session = Depends(get_db)) -> list
         )
     )
     return [offer_to_out(o) for o in offers]
+
+
+def _join_categories(values: list[str] | None) -> str | None:
+    if not values:
+        return None
+    cleaned = [value.strip() for value in values if value and value.strip()]
+    return ", ".join(cleaned) or None
+
+
+@router.post(
+    "",
+    response_model=SupplierOut,
+    status_code=status.HTTP_201_CREATED,
+    summary="Add a real supplier (not demo data)",
+)
+def create_supplier(
+    payload: SupplierCreate,
+    db: Session = Depends(get_db),
+    current_user=Depends(get_current_user),
+) -> SupplierOut:
+    existing = db.scalar(
+        select(Supplier).where(func.lower(Supplier.name) == payload.name.strip().lower())
+    )
+    if existing is not None:
+        raise HTTPException(
+            status_code=status.HTTP_409_CONFLICT,
+            detail="A supplier with this name already exists.",
+        )
+    supplier = Supplier(
+        name=payload.name.strip(),
+        phone=payload.phone.strip(),
+        location=payload.location.strip(),
+        description=payload.description,
+        categories=_join_categories(payload.categories),
+        rating=payload.rating,
+        delivery_days=payload.delivery_days,
+        is_verified=payload.is_verified,
+        is_demo=False,
+    )
+    db.add(supplier)
+    db.commit()
+    db.refresh(supplier)
+    return SupplierOut(
+        id=supplier.id,
+        name=supplier.name,
+        phone=supplier.phone,
+        location=supplier.location,
+        description=supplier.description,
+        categories=supplier_categories(supplier),
+        rating=supplier.rating,
+        delivery_days=supplier.delivery_days,
+        is_verified=supplier.is_verified,
+        is_demo=supplier.is_demo,
+        offer_count=0,
+        product_count=0,
+        created_at=supplier.created_at,
+    )
+
+
+@router.patch(
+    "/{supplier_id}",
+    response_model=SupplierOut,
+    summary="Edit a supplier (marking it as real data)",
+)
+def update_supplier(
+    supplier_id: int,
+    payload: SupplierUpdate,
+    db: Session = Depends(get_db),
+    current_user=Depends(get_current_user),
+) -> SupplierOut:
+    supplier = db.get(Supplier, supplier_id)
+    if supplier is None:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Supplier not found")
+
+    data = payload.model_dump(exclude_unset=True, exclude_none=True)
+    if "name" in data:
+        clash = db.scalar(
+            select(Supplier).where(
+                func.lower(Supplier.name) == str(data["name"]).strip().lower(),
+                Supplier.id != supplier.id,
+            )
+        )
+        if clash is not None:
+            raise HTTPException(
+                status_code=status.HTTP_409_CONFLICT,
+                detail="Another supplier already uses this name.",
+            )
+    if "categories" in data:
+        supplier.categories = _join_categories(data.pop("categories"))
+    for field_name, value in data.items():
+        setattr(supplier, field_name, value.strip() if isinstance(value, str) else value)
+    supplier.is_demo = False
+    db.commit()
+    db.refresh(supplier)
+    supplier = db.scalar(
+        select(Supplier).options(selectinload(Supplier.offers)).where(Supplier.id == supplier.id)
+    )
+    return supplier_to_out(supplier)
+
+
+@router.delete(
+    "/{supplier_id}",
+    response_model=Message,
+    summary="Delete a supplier you added (demo suppliers are protected)",
+)
+def delete_supplier(
+    supplier_id: int,
+    db: Session = Depends(get_db),
+    current_user=Depends(get_current_user),
+) -> Message:
+    supplier = db.get(Supplier, supplier_id)
+    if supplier is None:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Supplier not found")
+    if supplier.is_demo:
+        raise HTTPException(
+            status_code=status.HTTP_409_CONFLICT,
+            detail="Demo suppliers cannot be deleted; add real suppliers instead.",
+        )
+    if db.scalar(select(func.count()).select_from(Offer).where(Offer.supplier_id == supplier.id)):
+        raise HTTPException(
+            status_code=status.HTTP_409_CONFLICT,
+            detail="Delete this supplier's offers first.",
+        )
+    db.delete(supplier)
+    db.commit()
+    return Message(detail="Supplier deleted.")

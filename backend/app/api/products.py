@@ -5,10 +5,19 @@ from fastapi import APIRouter, Depends, HTTPException, Query, status
 from sqlalchemy import func, select
 from sqlalchemy.orm import Session
 
-from app.api.deps import Pagination
+from app.api.deps import Pagination, get_current_user
 from app.database.session import get_db
-from app.models import Product
-from app.schemas import CategoryOut, OfferOut, Page, PriceHistoryOut, ProductOut
+from app.models import Offer, Product
+from app.schemas import (
+    CategoryOut,
+    Message,
+    OfferOut,
+    Page,
+    PriceHistoryOut,
+    ProductCreate,
+    ProductOut,
+    ProductUpdate,
+)
 from app.services.analytics import category_breakdown, price_history
 from app.services.catalog import load_products_out, offer_to_out, offers_for_product
 
@@ -118,3 +127,101 @@ def get_product_price_history(
     days: int = Query(90, ge=7, le=365),
 ) -> PriceHistoryOut:
     return price_history(db, product_id, days)
+
+
+@router.post(
+    "",
+    response_model=ProductOut,
+    status_code=status.HTTP_201_CREATED,
+    summary="Add a real product to the catalogue (not demo data)",
+)
+def create_product(
+    payload: ProductCreate,
+    db: Session = Depends(get_db),
+    current_user=Depends(get_current_user),
+) -> ProductOut:
+    existing = db.scalar(
+        select(Product).where(func.lower(Product.name) == payload.name.strip().lower())
+    )
+    if existing is not None:
+        raise HTTPException(
+            status_code=status.HTTP_409_CONFLICT,
+            detail="A product with this name already exists.",
+        )
+    product = Product(
+        name=payload.name.strip(),
+        category=payload.category.strip(),
+        unit=payload.unit.strip(),
+        description=payload.description,
+        image_url=payload.image_url,
+        is_demo=False,
+    )
+    db.add(product)
+    db.commit()
+    db.refresh(product)
+    return ProductOut.model_validate(product)
+
+
+@router.patch(
+    "/{product_id}",
+    response_model=ProductOut,
+    summary="Edit a product (marking it as real data)",
+)
+def update_product(
+    product_id: int,
+    payload: ProductUpdate,
+    db: Session = Depends(get_db),
+    current_user=Depends(get_current_user),
+) -> ProductOut:
+    product = db.get(Product, product_id)
+    if product is None:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Product not found")
+
+    data = payload.model_dump(exclude_unset=True, exclude_none=True)
+    if "name" in data:
+        clash = db.scalar(
+            select(Product).where(
+                func.lower(Product.name) == str(data["name"]).strip().lower(),
+                Product.id != product.id,
+            )
+        )
+        if clash is not None:
+            raise HTTPException(
+                status_code=status.HTTP_409_CONFLICT,
+                detail="Another product already uses this name.",
+            )
+    for field_name, value in data.items():
+        setattr(product, field_name, value.strip() if isinstance(value, str) else value)
+    if data:
+        product.is_demo = False
+    db.commit()
+    db.refresh(product)
+    return ProductOut.model_validate(product)
+
+
+@router.delete(
+    "/{product_id}",
+    response_model=Message,
+    summary="Delete a product and its offers (demo rows cannot be deleted)",
+)
+def delete_product(
+    product_id: int,
+    db: Session = Depends(get_db),
+    current_user=Depends(get_current_user),
+) -> Message:
+    product = db.get(Product, product_id)
+    if product is None:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Product not found")
+    if product.is_demo:
+        raise HTTPException(
+            status_code=status.HTTP_409_CONFLICT,
+            detail="Demo products cannot be deleted; add real products instead.",
+        )
+    if db.scalar(select(func.count()).select_from(Offer).where(Offer.product_id == product.id)):
+        raise HTTPException(
+            status_code=status.HTTP_409_CONFLICT,
+            detail="Delete this product's offers first.",
+        )
+    db.delete(product)
+    db.commit()
+    return Message(detail="Product deleted.")

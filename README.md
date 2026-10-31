@@ -32,7 +32,8 @@ recommends an offer that cannot fulfil the requested quantity.
 | Settings | Profile, business details, interface language, notification preferences, password change |
 | Languages | **English, Uzbek and Russian** across the entire interface, including demo product names and server-generated explanations |
 | Backend | FastAPI + SQLAlchemy 2 + Pydantic v2, PostgreSQL-ready with SQLite dev fallback, seeded demo data, OpenAPI docs |
-| Quality | 159 backend tests, 117 frontend tests, 110-check live API smoke suite + 57 adversarial edge probes, QA report |
+| Real data | CSV price-list import (dry-run + row-level errors), product/supplier endpoints, dataset provenance (demo / mixed / real) and a notice that follows it |
+| Quality | 185 backend tests, 128 frontend tests, 126-check live API smoke suite + 60 adversarial edge probes, QA report |
 
 Killer Flow (implemented end to end): Dilshod needs **100 kg of potatoes** → searches →
 enters 100 kg → sees Supplier A 450 000, Supplier B 400 000, Supplier C 420 000 UZS →
@@ -55,8 +56,8 @@ priceradar/                       (= repository root)
 │  │  ├─ schemas/                 Pydantic request/response models
 │  │  ├─ services/                pricing (total-cost + ranking), catalog, analytics, assistant
 │  │  └─ main.py                  FastAPI app, CORS, error handlers, routers
-│  ├─ scripts/qa_smoke.py         live API smoke suite (110 checks)
-│  ├─ scripts/qa_edge_probes.py   adversarial edge probes (57 checks)
+│  ├─ scripts/qa_smoke.py         live API smoke suite (126 checks)
+│  ├─ scripts/qa_edge_probes.py   adversarial edge probes (60 checks)
 │  ├─ scripts/record_fixtures.py  regenerate UI test fixtures from a live API
 │  ├─ tests/                      pytest: pricing, API, killer flow, robustness
 │  ├─ requirements.txt            runtime dependencies (pinned)
@@ -227,7 +228,46 @@ lowest unit price: the cheapest *order* is what matters.
 
 ---
 
-## 6. API reference
+## 6. Real supplier prices (demo → real data)
+
+The app ships with a fictional demo dataset, but it can run on **real supplier
+prices** without a code change:
+
+1. **Download the template** — `/api/import/template` (also linked from the
+   *Import Prices* page).
+2. **Fill it from your supplier price lists** — required columns `product`,
+   `supplier`, `unit_price`; optional `delivery_cost`,
+   `minimum_order_quantity`, `available_quantity`, `status`, `category`, `unit`,
+   `phone`, `location`. Column headers are accepted in English, Uzbek or Russian
+   (`mahsulot`, `taminotchi`, `narx`, `товар`, `поставщик`, `цена`, ...).
+3. **Check the file** — the *Import Prices* page validates first and shows a
+   per-row error table without writing anything (`POST /api/import/prices?dry_run=true`).
+4. **Import** — the valid rows become real offers (`is_demo = false`), missing
+   products/suppliers are created, existing offers for the same product/supplier
+   pair are updated, and every row appends a price-history point, so charts and
+   analytics work on real data immediately.
+
+Provenance is never guessed: `GET /api/dataset/status` reports how many products,
+suppliers and price rows are real, and every comparison/analytics response carries
+`data_source` = `demo` | `mixed` | `real` with a matching `disclaimer`. In the UI
+the demo notice turns green ("Imported price list") only when **every** price comes
+from an import.
+
+```bash
+# validate, then import
+curl -X POST "http://localhost:8000/api/import/prices?dry_run=true" \
+  -H "Authorization: Bearer $TOKEN" -F "file=@prices.csv"
+curl -X POST http://localhost:8000/api/import/prices \
+  -H "Authorization: Bearer $TOKEN" -F "file=@prices.csv"
+```
+
+Demo rows are protected: they can be updated by an import (real data replaces the
+demo price) but `/products/{id}` and `/suppliers/{id}` refuse to delete `is_demo`
+rows, so a demo catalogue can never be silently destroyed.
+
+---
+
+## 7. API reference
 
 Base URL: `http://localhost:8000/api` — interactive docs at `/docs`.
 
@@ -259,7 +299,12 @@ Base URL: `http://localhost:8000/api` — interactive docs at `/docs`.
 | POST | `/saved-offers` | ✅ | Save offer (201); 409 if already saved |
 | DELETE | `/saved-offers/{id}` | ✅ | Remove saved offer (204); 404 if not owned |
 | POST | `/recommendations/compare` | — | **Killer Flow**: ranked offers, recommendation, savings, explanation |
-| POST | `/assistant/chat` | — | Rule-based assistant answer |
+| POST | `/assistant/chat` | — | Rule-based assistant answer (understands en / uz / ru product names) |
+| GET | `/dataset/status` | — | How many products, suppliers and price rows are real |
+| GET | `/import/template` | — | CSV price-list template |
+| POST | `/import/prices` | ✅ | Import a CSV price list; `?dry_run=true` validates only |
+| POST | `/products`, `PATCH/DELETE /products/{id}` | ✅ | Add/edit/delete real products (demo rows protected) |
+| POST | `/suppliers`, `PATCH/DELETE /suppliers/{id}` | ✅ | Add/edit/delete real suppliers (demo rows protected) |
 
 Errors return `{"detail": "human readable message"}` with proper status codes
 (400/401/404/409/422/500). Validation errors add an `errors` array.
@@ -273,7 +318,7 @@ curl -X POST http://localhost:8000/api/recommendations/compare \
 
 ---
 
-## 7. Database
+## 8. Database
 
 SQLAlchemy 2 models: `users`, `products`, `suppliers`, `offers`, `price_history`,
 `saved_offers` — with FKs (cascade delete), unique constraints, check constraints
@@ -290,7 +335,7 @@ SQLAlchemy 2 models: `users`, `products`, `suppliers`, `offers`, `price_history`
 
 ---
 
-## 8. Languages (English · Uzbek · Russian)
+## 9. Languages (English · Uzbek · Russian)
 
 The whole product speaks three languages: **English (en)**, **Uzbek (uz)** and **Russian (ru)**.
 
@@ -333,15 +378,15 @@ add `xx` to `LANGUAGES` in `i18n/core.ts` and to `SUPPORTED_LANGUAGES` in
 
 ---
 
-## 9. Tests
+## 10. Tests
 
 ```bash
-# backend unit + integration tests (159)
+# backend unit + integration tests (185)
 cd backend
 pip install -r requirements-dev.txt
 python -m pytest tests -q
 
-# live API suites (110 smoke checks + 57 adversarial edge probes).
+# live API suites (126 smoke checks + 60 adversarial edge probes).
 # They create throwaway accounts/offers, so run them against a separate database
 # to keep your demo data pristine:
 #   terminal A: rm -f qa_smoke.db && DATABASE_URL=sqlite:///./qa_smoke.db \
@@ -357,8 +402,8 @@ npm run build
 npm run preview       # serves the built app on :4173 with the /api proxy
 ```
 
-Current results: **159/159** backend tests, **117/117** frontend tests,
-**110/110** live API checks, **57/57** edge probes, clean type-check and
+Current results: **185/185** backend tests, **128/128** frontend tests,
+**126/126** live API checks, **60/60** edge probes, clean type-check and
 production build (routes and API verified through `vite preview`).
 Full details, defect log and coverage notes: [`QA_REPORT.md`](./QA_REPORT.md).
 
@@ -374,7 +419,7 @@ What the frontend suite covers:
 
 ---
 
-## 10. Docker (optional)
+## 11. Docker (optional)
 
 ```bash
 cp .env.example .env        # set SECRET_KEY
@@ -391,21 +436,24 @@ docker compose up --build
 
 ---
 
-## 11. Known limitations
+## 12. Known limitations
 
-* **All data is fictional.** There is no supplier feed, scraping, or live market
-  integration; analytics describe the seeded demo series only.
+* **Demo data is fictional unless you import real prices.** Analytics describe the
+  seeded demo series until a price list is imported; the API and UI always say which
+  one you are looking at (`data_source` = demo / mixed / real). There is no automatic
+  scraping of public market sites — real prices arrive through the CSV import.
 * The "AI" assistant is a deterministic rule-based engine. No language model is
   connected, and it says so in every response. It understands product names,
-  quantities and a small set of intents in English.
+  quantities and a small set of intents in English, Uzbek and Russian (including
+  inflected forms such as "kartoshkadan" or "картофеля").
 * Interface language covers the whole UI plus server-generated text (why an offer won,
   rejection reasons, assistant answers). Supplier *company names* stay as given.
   Notification preferences are stored; no email/push delivery exists.
 * Contact Supplier is a demonstration flow: it shows the supplier phone number,
   builds a copyable purchase order and offers a `tel:` link. It does not send
   messages or place orders.
-* No offer editing/deletion endpoints (creation only), no admin role, no file
-  uploads, no refresh-token rotation, and no rate limiting — all out of MVP scope.
+* No admin role, no refresh-token rotation, no rate limiting, and no Excel (.xlsx)
+  import — spreadsheets must be exported to CSV first.
 * Schema creation uses `create_all` rather than Alembic migrations.
 * Real-browser visual regression, screenshots and cross-device testing were not
   possible in the QA sandbox (no browser binaries); UI behaviour was verified with
@@ -414,7 +462,7 @@ docker compose up --build
 
 ---
 
-## 12. Security notes
+## 13. Security notes
 
 * Passwords hashed with **bcrypt** (cost 12) after a SHA-256 pre-hash, so long
   passwords are never silently truncated at 72 bytes.

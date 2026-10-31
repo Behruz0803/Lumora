@@ -381,8 +381,9 @@ class TestAnalytics:
         assert len(body["trend"]) > 0
         assert len(body["top_categories"]) > 0
         assert len(body["recent_offers"]) > 0
-        assert body["data_source"] == "demo"
-        assert "fictional" in body["disclaimer"]
+        dataset = client.get("/api/dataset/status").json()
+        assert body["data_source"] == dataset["data_source"]
+        assert body["disclaimer"] == dataset["disclaimer"]
 
     def test_overview_trend_has_dates_and_prices(self, client):
         trend = client.get("/api/analytics/overview").json()["trend"]

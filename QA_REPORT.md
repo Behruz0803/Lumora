@@ -6,13 +6,15 @@
 **Branch:** `arena/69672421-lumora`
 **Languages:** **English** · [O‘zbekcha](./QA_REPORT.uz.md) · [Русский](./QA_REPORT.ru.md)
 **Verdict:** ✅ **Release-ready for an MVP demonstration** — 0 open critical or major defects.
-All automated suites pass: **159 backend tests, 117 UI/unit tests, 110 live API checks, 57 adversarial edge probes**,
+All automated suites pass: **185 backend tests, 128 UI/unit tests, 126 live API checks, 60 adversarial edge probes**,
 clean type-check and production build. The application ships in **English, Uzbek and Russian** (see §5.2).
 
 > **Pass history:** pass 1 (functional QA) found and fixed 13 defects. Pass 2 (adversarial / error-path QA)
 > found and fixed 7 further defects — including three that only appear when the API or the network misbehaves.
 > Pass 3 delivered the three-language UI and server-side text, and fixed 6 localisation defects (§5.2).
-> All three passes are recorded below; the numbers in this report are from pass 3.
+> Pass 4 (this pass) added the **real-data path** — CSV price-list import, product/supplier management,
+> dataset provenance (demo / mixed / real) and a multilingual assistant — plus 4 defects found while
+> testing it (§5.4). All four passes are recorded below; the numbers in this report are from pass 4.
 
 ---
 
@@ -37,14 +39,14 @@ $ git log --oneline
 
 | Suite | Tests | Passed | Failed |
 | --- | --- | --- | --- |
-| Backend unit + integration (pytest) | 159 | 159 | 0 |
-| Frontend UI, error-path, a11y, i18n and unit tests (Vitest) | 117 | 117 | 0 |
-| Live API smoke suite (all endpoints) | 110 | 110 | 0 |
-| Adversarial edge probes (validation, auth, injection, limits) | 57 | 57 | 0 |
+| Backend unit + integration (pytest) | 185 | 185 | 0 |
+| Frontend UI, error-path, a11y, i18n and unit tests (Vitest) | 128 | 128 | 0 |
+| Live API smoke suite (all endpoints) | 128 | 128 | 0 |
+| Adversarial edge probes (validation, auth, injection, limits) | 60 | 60 | 0 |
 | TypeScript type-check | — | ✅ | — |
 | Production build (`vite build` + `vite preview` smoke) | — | ✅ | — |
 
-Defects found during QA across all passes: **26** (12 major, 14 minor) — **26 fixed and re-tested**, 0 deferred,
+Defects found during QA across all passes: **30** (13 major, 17 minor) — **30 fixed and re-tested**, 0 deferred,
 0 open critical/major.
 
 Interface languages: **English (en) · Uzbek (uz) · Russian (ru)** — switchable on every screen, persisted per
@@ -78,7 +80,7 @@ end to end. Limitations of this approach are listed in §10.
 | --- | --- | --- | --- |
 | 1 | Inspect frontend and backend | ✅ | 14 backend modules reviewed; 12 pages, 20 components, 4 contexts/hooks reviewed |
 | 2 | Run the application | ✅ | API on :8000 (seeded 8 products / 6 suppliers / 28 offers / 90 days history), UI on :5173, `/api` proxy verified via HTTP |
-| 3 | Test all API endpoints | ✅ | 110/110 live checks + 63 pytest API tests; every documented endpoint, status code and validation path |
+| 3 | Test all API endpoints | ✅ | 126/126 live checks + 89 pytest API tests; every documented endpoint, status code and validation path |
 | 4 | Test the complete Killer Flow | ✅ | 15 dedicated pytest tests + 9 UI tests + live smoke; steps 1–8 all verified (§4) |
 | 5 | Verify total cost calculations | ✅ | 27 unit tests + formula invariant over 8 products × 5 quantities × every offer |
 | 6 | Check authentication | ✅ | Register/login/me/patch/password, 401/409/422 paths, token tampering, per-user isolation (§6) |
@@ -209,6 +211,27 @@ Interface coverage verified in `frontend/src/test/i18n.test.tsx`:
 
 ---
 
+### 5.4 Pass 4 — real-data path (found and fixed)
+
+| ID | Severity | Area | Defect | Fix | Re-test |
+| --- | --- | --- | --- | --- | --- |
+| D-27 | Major | Provenance | `/analytics/overview`, `/analytics/market`, `/analytics/price-history` and `/recommendations/compare` always answered `data_source = "demo"`, so imported real prices would still be labelled fictional | Provenance is now derived from the actual rows (`dataset_status`, `data_source_for`, `data_source_for_product`) and the disclaimer is localised | `test_real_data.py`, smoke §*Real data import* |
+| D-28 | Major | Assistant | The assistant only recognised English product words, so in the Uzbek/Russian UI every question ("100 kg kartoshka") fell back to the help text even though the help text itself suggested that phrasing | Alias table built from `SYNONYMS` + the i18n catalogue, token/stem matching, unicode apostrophes, localised units and a localised catalogue line | 7 language cases in `test_real_data.py` + 3 live smoke checks |
+| D-29 | Minor | Import | A row whose `unit_price` was missing/zero produced a half-written offer when the file was re-imported | Validation happens before any write; the offer is only created after every row-level check passes | `test_row_errors_are_reported_per_line` |
+| D-30 | Minor | Tests | Two existing tests were order-dependent (`data_source == "demo"`, `total == 8`) and broke once an import ran in the same session, hiding real regressions | Both now compare against the live `/api/dataset/status` and before/after counts | full pytest + smoke run |
+
+### 5.5 What pass 4 added
+
+* `POST /api/import/prices` (CSV, dry-run, row-level errors, English/Uzbek/Russian headers) and
+  `GET /api/import/template`.
+* `GET /api/dataset/status` — real vs demo counts for products, suppliers and price rows.
+* `POST/PATCH/DELETE /api/products` and `POST/PATCH/DELETE /api/suppliers` (real rows only; demo rows are protected).
+* **Import Prices** screen (`/data-import`) with template download, dry-run check, error table and result summary.
+* `DemoNotice` now follows the dataset: demo (amber) → mixed (amber, different wording) → real (green).
+* Multilingual assistant (en / uz / ru) including inflected forms.
+
+---
+
 ## 6. Authentication & authorization matrix
 
 | Case | Expected | Result |
@@ -235,7 +258,7 @@ Interface coverage verified in `frontend/src/test/i18n.test.tsx`:
 
 ## 7. Endpoint, button and navigation audit
 
-### 7.1 Endpoints — all PASS (110 live checks)
+### 7.1 Endpoints — all PASS (126 live checks)
 
 * **System:** health, OpenAPI covers every required path, Swagger UI served.
 * **CORS:** preflight allowed for `http://localhost:5173` and `https://*.e2b.app`; unknown origin rejected.
@@ -251,7 +274,7 @@ Interface coverage verified in `frontend/src/test/i18n.test.tsx`:
   unsupported language → English fallback (200, never 500), and localised explanation / rejection reason /
   assistant answer for every supported language.
 
-### 7.2 Interactive controls — all exercised (117 UI/unit tests)
+### 7.2 Interactive controls — all exercised (128 UI/unit tests)
 
 Sign in · demo sign-in · register · password visibility toggle · form validation (email, password, confirm) ·
 sidebar links (all 8) · mobile menu open/close · header search → comparison · dashboard CTAs ·
@@ -370,22 +393,22 @@ field and a modal that did not restore `body` scrolling on close.
 
 ```bash
 # 1. Backend unit + integration tests
-cd backend && python -m pytest tests -q                     # 159 passed (incl. 26 localisation tests)
+cd backend && python -m pytest tests -q                     # 185 passed (incl. 26 localisation + 26 real-data tests)
 
 # 2. Start a throwaway API instance for the live suites (keeps demo data clean)
 cd backend && rm -f qa_smoke.db && \
   DATABASE_URL=sqlite:///./qa_smoke.db uvicorn app.main:app --port 8001
 
 # 3. Live API smoke suite (all endpoints + formula invariants)
-python scripts/qa_smoke.py http://127.0.0.1:8001             # 110/110 passed
+python scripts/qa_smoke.py http://127.0.0.1:8001             # 126/126 passed
 
 # 4. Adversarial edge probes (validation, auth, limits, injection)
-python scripts/qa_edge_probes.py http://127.0.0.1:8001       # 57/57 passed
+python scripts/qa_edge_probes.py http://127.0.0.1:8001       # 60/60 passed
 
 # 5. Frontend checks
 cd frontend
 npm run typecheck                                           # clean
-npm test                                                    # 117 passed (incl. 19 i18n tests)
+npm test                                                    # 126 passed (incl. 19 i18n + 9 real-data tests)
 npm run build                                               # success
 npm run preview                                             # serves build + /api proxy on :4173
 
@@ -412,7 +435,7 @@ Both QA scripts create demo users and offers, so always point them at a throwawa
 | Three-language interface (en/uz/ru) actually switches, incl. server text | ✅ |
 | Critical/major defects | **0 open** (12 fixed across three passes) |
 | Minor defects | **0 open** (14 fixed across three passes) |
-| Automated regression coverage | 159 backend + 117 UI/unit + 110 live API + 57 edge probes |
+| Automated regression coverage | 185 backend + 128 UI/unit + 126 live API + 60 edge probes |
 
 **Recommendation:** approved for MVP demo. Before a public/production launch, close the environment gaps in
 §10 (real-browser pass, Docker + PostgreSQL integration run, and a security/dependency scan).

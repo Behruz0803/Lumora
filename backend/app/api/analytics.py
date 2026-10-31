@@ -1,4 +1,8 @@
-"""Analytics endpoints. Every response is labelled as demo data."""
+"""Analytics endpoints.
+
+Every response states where its numbers come from (demo, mixed or real imported
+data) so demo figures are never mistaken for real market research.
+"""
 from __future__ import annotations
 
 from fastapi import APIRouter, Depends, Query
@@ -6,10 +10,12 @@ from pydantic import BaseModel
 from sqlalchemy import func, select
 from sqlalchemy.orm import Session
 
+from app.api.deps import response_language
 from app.database.session import get_db
 from app.models import Offer, Product, Supplier
 from app.schemas import CategoryOut, OverviewOut, PriceChange, PriceHistoryOut, TrendPoint
 from app.services import analytics as service
+from app.services.dataset import data_source_for_product, dataset_status, disclaimer_for
 
 router = APIRouter(prefix="/analytics", tags=["Analytics"])
 
@@ -56,8 +62,15 @@ class MarketOut(BaseModel):
 
 
 @router.get("/overview", response_model=OverviewOut, summary="Dashboard overview figures")
-def get_overview(db: Session = Depends(get_db)) -> OverviewOut:
-    return service.overview(db)
+def get_overview(
+    db: Session = Depends(get_db),
+    language: str = Depends(response_language),
+) -> OverviewOut:
+    result = service.overview(db)
+    source = dataset_status(db, language).data_source
+    result.data_source = source
+    result.disclaimer = disclaimer_for(language, source)
+    return result
 
 
 @router.get("/price-history/{product_id}", response_model=PriceHistoryOut)
@@ -65,8 +78,11 @@ def get_price_history(
     product_id: int,
     db: Session = Depends(get_db),
     days: int = Query(90, ge=7, le=365),
+    language: str = Depends(response_language),
 ) -> PriceHistoryOut:
-    return service.price_history(db, product_id, days)
+    result = service.price_history(db, product_id, days)
+    result.data_source = data_source_for_product(db, product_id)
+    return result
 
 
 @router.get("/categories", response_model=list[CategoryOut])
@@ -78,7 +94,9 @@ def get_categories(db: Session = Depends(get_db)) -> list[CategoryOut]:
 def get_market(
     db: Session = Depends(get_db),
     days: int = Query(30, ge=7, le=365),
+    language: str = Depends(response_language),
 ) -> MarketOut:
+    data_source = dataset_status(db, language).data_source
     total_offers = int(db.scalar(select(func.count(Offer.id))) or 0)
     in_stock = int(db.scalar(select(func.count(Offer.id)).where(Offer.status == "in_stock")) or 0)
     low_stock = int(db.scalar(select(func.count(Offer.id)).where(Offer.status == "low_stock")) or 0)
@@ -133,5 +151,6 @@ def get_market(
             avg_delivery_days=round(avg_delivery, 1),
         ),
         demand=sorted(demand, key=lambda d: -d.offer_count),
-        disclaimer=DEMO_NOTE,
+        data_source=data_source,
+        disclaimer=disclaimer_for(language, data_source),
     )
