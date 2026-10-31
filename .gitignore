@@ -1,0 +1,7 @@
+node_modules
+dist
+.vite
+*.local
+BozorPulse_AI_Lumora_Case_D_Pitch_Deck.pdf
+BozorPulse_AI_Lumora_Case_D_Pitch_Deck.pptx
+PITCH_SCRIPT_AND_QA.md
