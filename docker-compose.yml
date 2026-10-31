@@ -1,0 +1,45 @@
+# Optional containerised setup.
+# NOTE: these files were provided for convenience but were NOT executed in the
+# QA sandbox (no Docker daemon available). The tested path is the local
+# Python venv + Vite dev server described in README.md.
+
+services:
+  db:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-priceradar}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-priceradar}
+      POSTGRES_DB: ${POSTGRES_DB:-priceradar}
+    volumes:
+      - priceradar_pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-priceradar} -d ${POSTGRES_DB:-priceradar}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    ports:
+      - "5432:5432"
+
+  backend:
+    build: ./backend
+    environment:
+      DATABASE_URL: postgresql+psycopg2://${POSTGRES_USER:-priceradar}:${POSTGRES_PASSWORD:-priceradar}@db:5432/${POSTGRES_DB:-priceradar}
+      SECRET_KEY: ${SECRET_KEY:-change-me-to-a-long-random-string}
+      SEED_DEMO_DATA: "true"
+      CORS_ORIGINS: http://localhost:8080,http://localhost:5173
+      ENVIRONMENT: production
+    depends_on:
+      db:
+        condition: service_healthy
+    ports:
+      - "8000:8000"
+
+  frontend:
+    build: ./frontend
+    depends_on:
+      - backend
+    ports:
+      - "8080:80"
+
+volumes:
+  priceradar_pgdata:
