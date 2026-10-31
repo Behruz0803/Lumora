@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>MarketPulse B2B — Smart Market Prices</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+<div class="app">
+  <aside class="sidebar">
+    <div class="brand">
+      <div class="logo">MP</div>
+      <div>
+        <div class="brand-name">MarketPulse</div>
+        <div class="brand-sub">B2B narx indeksi</div>
+      </div>
+    </div>
+
+    <nav class="nav">
+      <button class="nav-item active" data-view="dashboard"><span>▦</span> Dashboard</button>
+      <button class="nav-item" data-view="compare"><span>⇄</span> Narxlar taqqoslash</button>
+      <button class="nav-item" data-view="suppliers"><span>◎</span> Ta'minotchilar</button>
+      <button class="nav-item" data-view="flow"><span>⚡</span> Killer Flow</button>
+      <button class="nav-item" data-view="negotiator"><span>✦</span> AI Negotiator</button>
+    </nav>
+
+    <div class="side-card">
+      <div class="side-card-title">Tarifingiz</div>
+      <div class="side-card-plan">Pro Analytics</div>
+      <div class="side-card-meta">1 490 000 UZS / oy · QQS 12%</div>
+      <div class="progress"><div class="progress-bar" style="width:62%"></div></div>
+      <div class="side-card-meta">API: 6 200 / 10 000 call</div>
+    </div>
+
+    <div class="side-footer">
+      <div class="live"><span class="dot"></span> Ma'lumot oqimi faol</div>
+      <div class="muted small">Demo · 31.10.2026</div>
+    </div>
+  </aside>
+
+  <main class="main">
+    <header class="topbar">
+      <div class="search-wrap">
+        <span class="search-icon">⌕</span>
+        <input id="globalSearch" type="text" placeholder="Tovar, brend yoki SKU qidirish…" autocomplete="off" />
+        <kbd>/</kbd>
+      </div>
+      <div class="topbar-actions">
+        <label class="switch" title="Barcha narxlarni QQS bilan ko'rsatish">
+          <input type="checkbox" id="vatToggle" />
+          <span class="slider"></span>
+          <span class="switch-label">QQS 12%</span>
+        </label>
+        <div class="user">
+          <div class="avatar">BM</div>
+          <div class="user-meta"><b>Behruz M.</b><span>Xaridlar menejeri</span></div>
+        </div>
+      </div>
+    </header>
+
+    <!-- DASHBOARD -->
+    <section class="view active" id="view-dashboard">
+      <div class="view-head">
+        <div>
+          <h1>Bozor pulsi</h1>
+          <p class="muted">O'zbekiston B2B bozori bo'yicha real vaqt ko'rsatkichlari · UZS</p>
+        </div>
+        <div class="chip-row">
+          <span class="chip active">Toshkent</span>
+          <span class="chip">Respublika</span>
+          <span class="chip">90 kun</span>
+        </div>
+      </div>
+
+      <div class="kpi-grid">
+        <div class="kpi">
+          <div class="kpi-label">MPI bozor indeksi</div>
+          <div class="kpi-value" id="kpiIndex">—</div>
+          <div class="kpi-delta up" id="kpiIndexDelta">—</div>
+        </div>
+        <div class="kpi">
+          <div class="kpi-label">O'rtacha tejamkorlik (SKU)</div>
+          <div class="kpi-value" id="kpiSave">—</div>
+          <div class="kpi-delta up">eng qimmat narxga nisbatan</div>
+        </div>
+        <div class="kpi">
+          <div class="kpi-label">Faol ta'minotchilar</div>
+          <div class="kpi-value">12</div>
+          <div class="kpi-delta">6 verified · 12 940 bitim</div>
+        </div>
+        <div class="kpi">
+          <div class="kpi-label">O'rtacha narx farqi</div>
+          <div class="kpi-value" id="kpiSpread">—</div>
+          <div class="kpi-delta down">15–40% oralig'i (bozor)</div>
+        </div>
+      </div>
+
+      <div class="grid-2">
+        <div class="card">
+          <div class="card-head">
+            <h2>MPI narx indeksi <span class="muted small">(90 kun)</span></h2>
+            <span class="badge">median asosida</span>
+          </div>
+          <canvas id="indexChart" height="230"></canvas>
+        </div>
+        <div class="card">
+          <div class="card-head"><h2>Kategoriyalar bo'yicha dinamika</h2></div>
+          <div id="catList" class="cat-list"></div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-head">
+          <h2>Eng katta narx farqi (bugun)</h2>
+          <span class="muted small">teng tovar, turli ta'minotchi</span>
+        </div>
+        <div class="table-wrap">
+          <table class="table" id="spreadTable">
+            <thead>
+              <tr><th>Tovar</th><th>Kategoriya</th><th class="num">Min</th><th class="num">Median</th><th class="num">Max</th><th class="num">Farq</th><th></th></tr>
+            </thead>
+            <tbody></tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- COMPARE -->
+    <section class="view" id="view-compare">
+      <div class="view-head">
+        <div>
+          <h1>Narxlarni taqqoslash</h1>
+          <p class="muted" id="compareSub">Tovar tanlang yoki qidiruvdan foydalaning</p>
+        </div>
+        <div class="select-wrap">
+          <select id="categoryFilter"><option value="">Barcha kategoriyalar</option></select>
+          <select id="productSelect"></select>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-head">
+          <h2 id="productTitle">—</h2>
+          <div class="legend">
+            <span class="dot green"></span> Eng maqbul
+            <span class="dot orange"></span> O'rtacha
+            <span class="dot red"></span> Eng qimmat
+          </div>
+        </div>
+        <div class="table-wrap">
+          <table class="table" id="offerTable">
+            <thead>
+              <tr>
+                <th>Ta'minotchi</th><th>Hudud</th>
+                <th class="num">Narx (QQSsiz)</th>
+                <th class="num">QQS 12%</th>
+                <th class="num">Yakuniy narx</th>
+                <th class="num">Reyting</th>
+                <th class="num">Yetkazish</th>
+                <th>Manba</th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody></tbody>
+          </table>
+        </div>
+        <div class="card-foot" id="compareStats"></div>
+      </div>
+    </section>
+
+    <!-- SUPPLIERS -->
+    <section class="view" id="view-suppliers">
+      <div class="view-head">
+        <div>
+          <h1>Ta'minotchilar</h1>
+          <p class="muted">Reyting = sifat 40% + muddat 30% + narx 20% + tarix 10%</p>
+        </div>
+      </div>
+      <div class="supplier-grid" id="supplierGrid"></div>
+    </section>
+
+    <!-- KILLER FLOW -->
+    <section class="view" id="view-flow">
+      <div class="view-head">
+        <div>
+          <h1>Killer Flow <span class="muted small">· 15 daqiqada shartnoma</span></h1>
+          <p class="muted">Muammoni aniqlashdan tejamkorlik aktigacha — 8 bosqich</p>
+        </div>
+        <button class="btn primary" id="runFlow">▶ Jarayonni ishga tushirish</button>
+      </div>
+      <div class="flow" id="flowSteps"></div>
+      <div class="card flow-result" id="flowResult" hidden></div>
+    </section>
+
+    <!-- NEGOTIATOR -->
+    <section class="view" id="view-negotiator">
+      <div class="view-head">
+        <div>
+          <h1>AI Smart Procurement Negotiator</h1>
+          <p class="muted">Maqsadli narx, leverage va muzokara skripti — barcha raqamlar hisoblash dvigatelidan</p>
+        </div>
+      </div>
+
+      <div class="grid-2">
+        <div class="card">
+          <div class="card-head"><h2>Xarid konteksti</h2></div>
+          <div class="form">
+            <label>Tovar
+              <select id="negProduct"></select>
+            </label>
+            <div class="form-row">
+              <label>Miqdor
+                <input id="negQty" type="number" value="2000" min="1" step="1" />
+              </label>
+              <label>Muddat (kun)
+                <input id="negDays" type="number" value="14" min="1" step="1" />
+              </label>
+            </div>
+            <label>To'lov sharti
+              <select id="negPay">
+                <option value="0.0">100% oldindan</option>
+                <option value="0.05" selected>50% oldindan / 50% yetkazilgach</option>
+                <option value="0.10">30 kunlik kredit</option>
+                <option value="0.14">60 kunlik kredit</option>
+              </select>
+            </label>
+            <button class="btn primary wide" id="runNeg">✦ Muzokara rejasini tuzish</button>
+            <p class="muted small">Guardrail: model faqat matn yozadi, narx raqamlari indeks dvigatelidan olinadi.</p>
+          </div>
+        </div>
+        <div class="card" id="negResultCard">
+          <div class="card-head"><h2>Natija</h2></div>
+          <div id="negResult" class="neg-empty">
+            <div class="empty-icon">✦</div>
+            <p class="muted">Kontekstni to'ldiring va "Muzokara rejasini tuzish" tugmasini bosing.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <footer class="footer">
+      <span>MarketPulse B2B · Lumora Case D prototipi · barcha narxlar UZSda, QQS 12% (LRU-573, 9-modda)</span>
+      <span class="muted">Demo ma'lumotlar sintetik</span>
+    </footer>
+  </main>
+</div>
+<script src="data.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
