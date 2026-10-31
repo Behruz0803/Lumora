@@ -3,6 +3,8 @@ import type {
   AuthResponse,
   Category,
   Comparison,
+  DatasetStatus,
+  ImportReport,
   Market,
   Offer,
   Overview,
@@ -94,6 +96,42 @@ const patch = <T>(path: string, body: unknown) =>
   request<T>(path, { method: 'PATCH', body: JSON.stringify(body) })
 const del = (path: string) => request<void>(path, { method: 'DELETE' })
 
+/** Multipart upload: the CSV price list travels as `file`, never as JSON. */
+async function upload<T>(path: string, file: File, params: Record<string, QueryValue> = {}): Promise<T> {
+  const headers = new Headers()
+  const token = tokenStore.get()
+  if (token) headers.set('Authorization', `Bearer ${token}`)
+  headers.set('Accept-Language', getLanguage())
+  const form = new FormData()
+  form.append('file', file, file.name)
+
+  let response: Response
+  try {
+    response = await fetch(`${BASE_URL}/api${path}${buildQuery(params)}`, {
+      method: 'POST',
+      headers,
+      body: form,
+    })
+  } catch {
+    throw new ApiError(tr('Cannot reach the PriceRadar API. Check that the backend server is running.'), 0)
+  }
+
+  if (response.status === 401) {
+    tokenStore.clear()
+    window.dispatchEvent(new CustomEvent('priceradar:unauthorized'))
+  }
+
+  const isJson = response.headers.get('content-type')?.includes('application/json')
+  const payload = isJson ? await response.json().catch(() => null) : null
+  if (!response.ok) {
+    const detail =
+      (payload && typeof payload.detail === 'string' && payload.detail) ||
+      tr('Request failed with status {status}.', { status: response.status })
+    throw new ApiError(detail, response.status)
+  }
+  return payload as T
+}
+
 export interface ProductQuery {
   search?: string
   category?: string
@@ -169,4 +207,10 @@ export const api = {
     post<Comparison>('/recommendations/compare', { product_id, quantity }),
   ask: (message: string, product_id?: number, quantity?: number) =>
     post<AssistantReply>('/assistant/chat', { message, product_id, quantity }),
+
+  // data provenance + real price import
+  datasetStatus: () => get<DatasetStatus>('/dataset/status'),
+  importPrices: (file: File, dryRun = false) =>
+    upload<ImportReport>('/import/prices', file, dryRun ? { dry_run: true } : {}),
+  priceListTemplateUrl: () => `${BASE_URL}/api/import/template`,
 }

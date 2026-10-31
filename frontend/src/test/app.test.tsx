@@ -47,7 +47,9 @@ describe('Authentication', () => {
     await user.click(screen.getByRole('button', { name: /^sign in$/i }))
 
     expect(await screen.findByText(/enter a valid email address/i)).toBeInTheDocument()
-    expect(fetchMock).not.toHaveBeenCalled()
+    // The shell may fetch public dataset provenance, but no sign-in request is sent.
+    expect(callsTo('/api/auth/login')).toHaveLength(0)
+    expect(fetchMock).toHaveBeenCalled()
   })
 
   it('signs in with the demo account and lands on the dashboard', async () => {

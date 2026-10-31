@@ -9,6 +9,7 @@ from app.database.session import get_db
 from app.models import Product
 from app.schemas import CompareRequest, CompareResponse, ProductBrief
 from app.services.catalog import offer_input, offers_for_product
+from app.services.dataset import data_source_for, disclaimer_for
 from app.core.i18n import t
 from app.services.pricing import build_comparison
 
@@ -36,9 +37,13 @@ def compare(
             detail=t(language, "No supplier offers exist for this product yet."),
         )
 
-    return build_comparison(
+    result = build_comparison(
         ProductBrief.model_validate(product),
         [offer_input(o) for o in offers],
         float(payload.quantity),
         language,
     )
+    source = data_source_for(offers)
+    result.data_source = source
+    result.disclaimer = disclaimer_for(language, source)
+    return result

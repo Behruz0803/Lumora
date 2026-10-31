@@ -214,7 +214,12 @@ def main() -> int:
     check("Overview includes trend series", len(ov["trend"]) > 0 and all(p["avg_price"] > 0 for p in ov["trend"]))
     check("Overview includes price changes", len(ov["price_changes"]) > 0)
     check("Overview includes categories and recent offers", len(ov["top_categories"]) > 0 and len(ov["recent_offers"]) > 0)
-    check("Overview flags demo data", ov["data_source"] == "demo" and "fictional" in ov["disclaimer"])
+    dataset = client.get(f"{API}/dataset/status").json()
+    check(
+        "Overview reports the real provenance of its numbers",
+        ov["data_source"] == dataset["data_source"] and bool(ov["disclaimer"]),
+        f'{ov["data_source"]} vs {dataset["data_source"]}',
+    )
     check("Overview potential savings is positive", ov["potential_savings"] > 0)
     r = client.get(f"{API}/analytics/price-history/{potatoes['id']}", params={"days": 30})
     check("GET /api/analytics/price-history works", r.status_code == 200 and 28 <= len(r.json()["points"]) <= 32)
@@ -260,7 +265,7 @@ def main() -> int:
     check("Out-of-stock supplier is not recommended", by_supplier["Namangan Food Supply"]["eligible"] is False and by_supplier["Namangan Food Supply"]["rank"] is None)
     check("Explanation names the winner and the saving", "Fergana Fresh Produce" in cmp["explanation"] and "50 000 UZS" in cmp["explanation"])
     check("Cost per delivered kg is provided", cmp["recommended"]["cost_per_unit"] == 4000.0)
-    check("Recommendation flags demo data", cmp["data_source"] == "demo" and "fictional" in cmp["disclaimer"])
+    check("Recommendation states where its prices come from", cmp["data_source"] in {"demo", "mixed", "real"} and bool(cmp["disclaimer"]))
     check("Every eligible offer satisfies the formula", all(
         o["total_cost"] == o["unit_price"] * 100 + o["delivery_cost"] for o in cmp["offers"] if o["eligible"]
     ))
@@ -301,6 +306,78 @@ def main() -> int:
     check("Assistant handles trend questions", client.post(f"{API}/assistant/chat", json={"message": "price trend for potatoes"}).json()["intent"] == "trend")
     check("Assistant handles unknown products gracefully", client.post(f"{API}/assistant/chat", json={"message": "hello"}).json()["intent"] == "help")
     check("Assistant validates empty message", client.post(f"{API}/assistant/chat", json={"message": ""}).status_code == 422)
+
+    section("Real data import")
+    before = client.get(f"{API}/dataset/status").json()
+    check("GET /api/dataset/status is public", before["offers_total"] > 0 and before["data_source"] in {"demo", "mixed", "real"})
+    check(
+        "Dataset status counts add up",
+        before["offers_total"] == before["offers_real"] + before["offers_demo"]
+        and before["products_total"] == before["products_real"] + before["products_demo"],
+    )
+    tpl = client.get(f"{API}/import/template")
+    check("GET /api/import/template returns a CSV", tpl.status_code == 200 and "unit_price" in tpl.text and "text/csv" in tpl.headers.get("content-type", ""))
+    check(
+        "Price import requires authentication",
+        client.post(f"{API}/import/prices", files={"file": ("p.csv", b"product,supplier,unit_price\n")}).status_code == 401,
+    )
+
+    headers = {"Authorization": f"Bearer {token}"}
+    csv_rows = (
+        "product,supplier,unit_price,delivery_cost,minimum_order_quantity,available_quantity,status,category,unit,phone,location\n"
+        f"Smoke Melon {run_id},Smoke Supplier {run_id},4200,12000,10,300,in_stock,Fruits,kg,+998 90 123 45 67,Tashkent\n"
+        f"Smoke Melon {run_id},Smoke Supplier {run_id},bad,12000,10,300,in_stock,Fruits,kg,+998 90 123 45 67,Tashkent\n"
+    )
+    dry = client.post(
+        f"{API}/import/prices?dry_run=true",
+        files={"file": ("smoke.csv", csv_rows.encode(), "text/csv")},
+        headers=headers,
+    )
+    dry_body = dry.json()
+    check("Dry-run import validates rows without saving", dry.status_code == 200 and dry_body["rows_valid"] == 1 and dry_body["rows_failed"] == 1, dry.text[:200])
+    check("Dry-run reports the bad line", any(error["row"] == 3 for error in dry_body["errors"]))
+    check(
+        "Dry-run writes nothing",
+        client.get(f"{API}/dataset/status").json()["offers_real"] == before["offers_real"],
+    )
+    real = client.post(
+        f"{API}/import/prices",
+        files={"file": ("smoke.csv", csv_rows.encode(), "text/csv")},
+        headers=headers,
+    ).json()
+    check("Real import creates one price", real["offers_created"] == 1 and real["products_created"] == 1 and real["suppliers_created"] == 1, str(real))
+    after = client.get(f"{API}/dataset/status").json()
+    check("Dataset becomes mixed or real after an import", after["offers_real"] == before["offers_real"] + 1 and after["data_source"] in {"mixed", "real"})
+    melon = client.get(f"{API}/products", params={"search": f"Smoke Melon {run_id}"}).json()["items"][0]
+    check("Imported product is not demo data", melon["is_demo"] is False)
+    melon_cmp = client.post(f"{API}/recommendations/compare", json={"product_id": melon["id"], "quantity": 20}).json()
+    check("Imported price is ranked by total cost", melon_cmp["recommended"]["total_cost"] == 4200 * 20 + 12000 and melon_cmp["data_source"] == "real")
+    bad_columns = client.post(
+        f"{API}/import/prices",
+        files={"file": ("bad.csv", b"product,narx\nPotato,3900\n", "text/csv")},
+        headers=headers,
+    )
+    check("Import rejects a file without the required columns", bad_columns.status_code == 422 and "unit_price" in bad_columns.text)
+    check(
+        "Import rejects non-CSV uploads",
+        client.post(f"{API}/import/prices", files={"file": ("p.xlsx", b"PK", "application/vnd.ms-excel")}, headers=headers).status_code == 415,
+    )
+
+    section("Assistant in Uzbek and Russian")
+    check(
+        "Assistant understands an Uzbek product name",
+        client.post(f"{API}/assistant/chat", json={"message": "100 kg kartoshka"}).json()["intent"] == "compare",
+    )
+    check(
+        "Assistant understands a Russian product name",
+        client.post(f"{API}/assistant/chat", json={"message": "100 кг картофеля"}).json()["intent"] == "compare",
+    )
+    check(
+        "Assistant answers in the requested language",
+        "Kartoshka" in client.post(
+            f"{API}/assistant/chat", json={"message": "100 kg kartoshka"}, headers={"Accept-Language": "uz"}
+        ).json()["answer"],
+    )
 
     section("Summary")
     passed = sum(1 for _, ok, _ in results if ok)

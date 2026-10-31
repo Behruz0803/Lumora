@@ -11,6 +11,7 @@ import {
   Package,
   Scale,
   Settings,
+  Upload,
   Store,
   X,
 } from 'lucide-react'
@@ -29,6 +30,7 @@ const NAV_ITEMS = [
   { to: '/analytics', label: 'Market Analytics', icon: BarChart3 },
   { to: '/assistant', label: 'AI Assistant', icon: Bot },
   { to: '/saved-offers', label: 'Saved Offers', icon: Bookmark },
+  { to: '/data-import', label: 'Import Prices', icon: Upload },
   { to: '/settings', label: 'Settings', icon: Settings },
 ]
 

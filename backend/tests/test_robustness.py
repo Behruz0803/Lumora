@@ -150,11 +150,15 @@ class TestRequestLimits:
 
     def test_unknown_method_returns_405(self, client):
         assert client.put("/api/products").status_code == 405
-        assert client.delete("/api/products/1").status_code == 405
+        # Deleting a product is now a real (authenticated) endpoint, so it must
+        # answer 401 without a token instead of 405.
+        assert client.delete("/api/products/1").status_code == 401
+        assert client.delete("/api/analytics/overview").status_code == 405
 
     def test_search_injection_attempt_is_safe(self, client):
+        before = client.get("/api/products").json()["total"]
         response = client.get("/api/products", params={"search": "'; DROP TABLE products;--"})
         assert response.status_code == 200
         assert response.json()["total"] == 0
-        # table still there
-        assert client.get("/api/products").json()["total"] == 8
+        # table still there, and nothing was deleted
+        assert client.get("/api/products").json()["total"] == before

@@ -53,6 +53,13 @@ TRANSLATIONS: dict[str, dict[str, str]] = {
         "No supplier offers exist for this product yet.": "Bu mahsulot uchun hozircha takliflar yo‘q.",
         "All PriceRadar data is fictional demo data.":
             "PriceRadar’dagi barcha ma’lumotlar uydirma demo ma’lumotlardir.",
+        # --- dataset transparency ------------------------------------------------
+        "Demo dataset: prices, suppliers and trends are fictional and for product demonstration only - not real market data.":
+            "Demo ma’lumotlar to‘plami: narxlar, ta’minotchilar va tendensiyalar uydirma bo‘lib, faqat mahsulot namoyishi uchun — haqiqiy bozor ma’lumoti emas.",
+        "Partially real data: imported supplier prices are real, but demo rows are still mixed in. Rows labelled as demo are fictional examples.":
+            "Qisman haqiqiy ma’lumot: import qilingan ta’minotchi narxlari haqiqiy, ammo demo qatorlar ham aralashgan. Demo deb belgilangan qatorlar — uydirma misollar.",
+        "Prices, delivery costs and availability come from supplier price lists imported into PriceRadar. Confirm the final terms with the supplier before ordering.":
+            "Narxlar, yetkazib berish xarajati va mavjudlik PriceRadar’ga import qilingan ta’minotchi prays-listlaridan olingan. Buyurtmadan oldin yakuniy shartlarni ta’minotchi bilan tasdiqlang.",
         # --- assistant ----------------------------------------------------------
         "I can compare supplier offers and calculate total purchasing costs including delivery. Try naming a product from the demo catalogue ({catalogue}) and a quantity, for example: '100 kg of potatoes'. I run on transparent business rules - no external AI model is connected.":
             "Men ta’minotchi takliflarini taqqoslayman va yetkazib berish bilan umumiy xarid xarajatini hisoblayman. Demo katalogdan ({catalogue}) mahsulot va miqdorni ayting, masalan: “100 kg kartoshka”. Men shaffof biznes qoidalari asosida ishlayman — tashqi AI modeli ulanmagan.",
@@ -151,6 +158,13 @@ TRANSLATIONS: dict[str, dict[str, str]] = {
         "({delivery} UZS delivery)": "(доставка {delivery} UZS)",
         "No supplier offers exist for this product yet.": "Для этого товара пока нет предложений.",
         "All PriceRadar data is fictional demo data.": "Все данные PriceRadar — вымышленные демо-данные.",
+        # --- dataset transparency ------------------------------------------------
+        "Demo dataset: prices, suppliers and trends are fictional and for product demonstration only - not real market data.":
+            "Демо-набор данных: цены, поставщики и тренды вымышлены и предназначены только для демонстрации — это не реальные рыночные данные.",
+        "Partially real data: imported supplier prices are real, but demo rows are still mixed in. Rows labelled as demo are fictional examples.":
+            "Данные частично реальные: импортированные цены поставщиков настоящие, но демо-строки всё ещё присутствуют. Строки с пометкой «демо» — вымышленные примеры.",
+        "Prices, delivery costs and availability come from supplier price lists imported into PriceRadar. Confirm the final terms with the supplier before ordering.":
+            "Цены, стоимость доставки и наличие взяты из прайс-листов поставщиков, импортированных в PriceRadar. Перед заказом подтвердите итоговые условия у поставщика.",
         # --- assistant ----------------------------------------------------------
         "I can compare supplier offers and calculate total purchasing costs including delivery. Try naming a product from the demo catalogue ({catalogue}) and a quantity, for example: '100 kg of potatoes'. I run on transparent business rules - no external AI model is connected.":
             "Я сравниваю предложения поставщиков и рассчитываю общую стоимость закупки с учётом доставки. Назовите товар из демо-каталога ({catalogue}) и количество, например: «100 кг картофеля». Я работаю по прозрачным бизнес-правилам — внешняя ИИ-модель не подключена.",

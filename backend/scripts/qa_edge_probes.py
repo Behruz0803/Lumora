@@ -137,7 +137,12 @@ def main() -> int:
 
     # ------------------------------------------------------------- methods
     probe("PUT /products returns 405", lambda: client.put(f"{API}/products"), 405)
-    probe("DELETE /products/1 returns 405", lambda: client.delete(f"{API}/products/1"), 405)
+    # Deleting products/suppliers is a real endpoint now: without a token it must
+    # answer 401 (authentication), never 405.
+    probe("DELETE /products/1 requires auth", lambda: client.delete(f"{API}/products/1"), 401)
+    probe("DELETE /suppliers/1 requires auth", lambda: client.delete(f"{API}/suppliers/1"), 401)
+    probe("POST /products requires auth", lambda: client.post(f"{API}/products"), 401)
+    probe("POST /import/prices requires auth", lambda: client.post(f"{API}/import/prices"), 401)
     probe("PATCH /offers returns 405", lambda: client.patch(f"{API}/offers"), 405)
     probe("GET /auth/login returns 405", lambda: client.get(f"{API}/auth/login"), 405)
 
