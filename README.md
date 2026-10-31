@@ -32,7 +32,7 @@ recommends an offer that cannot fulfil the requested quantity.
 | Settings | Profile, business details, interface language, notification preferences, password change |
 | Languages | **English, Uzbek and Russian** across the entire interface, including demo product names and server-generated explanations |
 | Backend | FastAPI + SQLAlchemy 2 + Pydantic v2, PostgreSQL-ready with SQLite dev fallback, seeded demo data, OpenAPI docs |
-| Quality | 159 backend tests, 116 frontend tests, 110-check live API smoke suite + 57 adversarial edge probes, QA report |
+| Quality | 159 backend tests, 117 frontend tests, 110-check live API smoke suite + 57 adversarial edge probes, QA report |
 
 Killer Flow (implemented end to end): Dilshod needs **100 kg of potatoes** → searches →
 enters 100 kg → sees Supplier A 450 000, Supplier B 400 000, Supplier C 420 000 UZS →
@@ -357,7 +357,7 @@ npm run build
 npm run preview       # serves the built app on :4173 with the /api proxy
 ```
 
-Current results: **159/159** backend tests, **116/116** frontend tests,
+Current results: **159/159** backend tests, **117/117** frontend tests,
 **110/110** live API checks, **57/57** edge probes, clean type-check and
 production build (routes and API verified through `vite preview`).
 Full details, defect log and coverage notes: [`QA_REPORT.md`](./QA_REPORT.md).

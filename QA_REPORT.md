@@ -6,7 +6,7 @@
 **Branch:** `arena/69672421-lumora`
 **Languages:** **English** · [O‘zbekcha](./QA_REPORT.uz.md) · [Русский](./QA_REPORT.ru.md)
 **Verdict:** ✅ **Release-ready for an MVP demonstration** — 0 open critical or major defects.
-All automated suites pass: **159 backend tests, 116 UI/unit tests, 110 live API checks, 57 adversarial edge probes**,
+All automated suites pass: **159 backend tests, 117 UI/unit tests, 110 live API checks, 57 adversarial edge probes**,
 clean type-check and production build. The application ships in **English, Uzbek and Russian** (see §5.2).
 
 > **Pass history:** pass 1 (functional QA) found and fixed 13 defects. Pass 2 (adversarial / error-path QA)
@@ -38,7 +38,7 @@ $ git log --oneline
 | Suite | Tests | Passed | Failed |
 | --- | --- | --- | --- |
 | Backend unit + integration (pytest) | 159 | 159 | 0 |
-| Frontend UI, error-path, a11y, i18n and unit tests (Vitest) | 116 | 116 | 0 |
+| Frontend UI, error-path, a11y, i18n and unit tests (Vitest) | 117 | 117 | 0 |
 | Live API smoke suite (all endpoints) | 110 | 110 | 0 |
 | Adversarial edge probes (validation, auth, injection, limits) | 57 | 57 | 0 |
 | TypeScript type-check | — | ✅ | — |
@@ -184,7 +184,7 @@ the prepared deliverables. Six localisation defects were found and fixed on the 
 | D-23 | **Major** | Demo data inside prose | Product names, categories, units and cities inside generated sentences stayed English (“100 kg of **Potatoes**” → Russian “…Помидоры”, “…100 kg”), visibly breaking the illusion in ru/uz | Added `DATA_NAMES`/`localise()` to `app/core/i18n.py`; prose placeholders now receive localised names and units (кг/л, шт/лоток) | `test_i18n.py`, plus a live curl matrix (en/ru/uz × compare + chat) |
 | D-24 | Minor | Translation quality | Russian sentences read poorly (“Для «Potatoes» на 100 kg”, “Не удалось найти поставщика…”) — wrong case and a first-person voice that does not match the rest of the engine | Reworded all five sentence templates to “Для заказа «…» …”, “Ни один поставщик не может выполнить заказ…”, “Варианты поставщиков по товару «…»” | Manual review of the en/ru/uz matrix; assertion on the new wording |
 | D-25 | Minor | Build break | Duplicate keys in `locales/uz/ui.ts` (and `ru/ui.ts`) made `tsc` fail with `TS1117` — the app would not type-check or build | De-duplicated with a block-aware script (multi-line entries) and removed the one remaining 404-string pair by hand | `npm run typecheck` (clean), full Vitest run |
-| D-26 | Minor | Coverage | The dictionary-coverage test could not detect strings that were only *partially* translated, and five legitimate identical strings (brand, `kg`, `l`, `UZS`, names) failed the “must differ from English” rule | Coverage test walks every `tr()` key against both dictionaries with an explicit allowlist of identical-by-design strings, and asserts placeholders survive translation | `i18n.test.tsx` 18 tests (coverage, plural rules, switch behaviour) |
+| D-26 | Minor | Coverage | The dictionary-coverage test could not detect strings that were only *partially* translated, and five legitimate identical strings (brand, `kg`, `l`, `UZS`, names) failed the “must differ from English” rule | Coverage test walks every `tr()` key against both dictionaries with an explicit allowlist of identical-by-design strings, and asserts placeholders survive translation | `i18n.test.tsx` 19 tests (coverage, plural rules, switch behaviour) |
 
 Localisation verification matrix (live API, real server):
 
@@ -204,6 +204,8 @@ Interface coverage verified in `frontend/src/test/i18n.test.tsx`:
   assistant screen; the choice survives a reload (`localStorage`) and is written to the account.
 * Plural handling: Russian `one/few/many`, Uzbek single form, English `one/other`; money stays UZS with
   space grouping and locale-aware decimals.
+* The API client is asserted to send `Accept-Language` matching the active language on **every** request
+  (`i18n.test.tsx::API language header`), so the shell and the server text can never drift apart.
 
 ---
 
@@ -249,7 +251,7 @@ Interface coverage verified in `frontend/src/test/i18n.test.tsx`:
   unsupported language → English fallback (200, never 500), and localised explanation / rejection reason /
   assistant answer for every supported language.
 
-### 7.2 Interactive controls — all exercised (116 UI/unit tests)
+### 7.2 Interactive controls — all exercised (117 UI/unit tests)
 
 Sign in · demo sign-in · register · password visibility toggle · form validation (email, password, confirm) ·
 sidebar links (all 8) · mobile menu open/close · header search → comparison · dashboard CTAs ·
@@ -383,7 +385,7 @@ python scripts/qa_edge_probes.py http://127.0.0.1:8001       # 57/57 passed
 # 5. Frontend checks
 cd frontend
 npm run typecheck                                           # clean
-npm test                                                    # 116 passed (incl. 18 i18n tests)
+npm test                                                    # 117 passed (incl. 19 i18n tests)
 npm run build                                               # success
 npm run preview                                             # serves build + /api proxy on :4173
 
@@ -410,7 +412,7 @@ Both QA scripts create demo users and offers, so always point them at a throwawa
 | Three-language interface (en/uz/ru) actually switches, incl. server text | ✅ |
 | Critical/major defects | **0 open** (12 fixed across three passes) |
 | Minor defects | **0 open** (14 fixed across three passes) |
-| Automated regression coverage | 159 backend + 116 UI/unit + 110 live API + 57 edge probes |
+| Automated regression coverage | 159 backend + 117 UI/unit + 110 live API + 57 edge probes |
 
 **Recommendation:** approved for MVP demo. Before a public/production launch, close the environment gaps in
 §10 (real-browser pass, Docker + PostgreSQL integration run, and a security/dependency scan).

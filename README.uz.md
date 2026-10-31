@@ -32,7 +32,7 @@ bajara olmaydigan taklifni hech qachon tavsiya qilmaydi.
 | Sozlamalar | Profil, biznes ma’lumotlari, interfeys tili, bildirishnoma sozlamalari, parolni o‘zgartirish |
 | **Tillar** | **O‘zbek, rus va ingliz tillari** butun interfeysda, shu jumladan demo mahsulot nomlari va server yozadigan tushuntirishlarda |
 | Backend | FastAPI + SQLAlchemy 2 + Pydantic v2, PostgreSQL’ga tayyor, SQLite dev varianti, demo ma’lumotlar, OpenAPI hujjati |
-| Sifat | 159 backend testi, 116 frontend testi, 110 tekshiruvli jonli API smoke to‘plami + 57 adversarial probe, QA hisoboti |
+| Sifat | 159 backend testi, 117 frontend testi, 110 tekshiruvli jonli API smoke to‘plami + 57 adversarial probe, QA hisoboti |
 
 Killer Flow (to‘liq ishlaydi): Dilshodga **100 kg kartoshka** kerak → qidiradi → 100 kg kiritadi →
 A ta’minotchi 450 000, B 400 000, C 420 000 UZS ni ko‘radi → **umumiy** eng past xarajat
@@ -66,7 +66,7 @@ priceradar/                       (repozitoriy ildizi)
 │  │  ├─ layouts/                 AppLayout (yon menyu + yuqori panel + mobil drawer)
 │  │  ├─ pages/                   12 sahifa
 │  │  ├─ services/api.ts          tiplashtirilgan API klienti (Accept-Language yuboradi)
-│  │  └─ test/                    116 test
+│  │  └─ test/                    117 test
 │  └─ package.json
 ├─ README.md · README.uz.md · README.ru.md
 └─ QA_REPORT.md · QA_REPORT.uz.md · QA_REPORT.ru.md
@@ -290,7 +290,7 @@ python -m pytest tests -q
 python scripts/qa_smoke.py http://127.0.0.1:8001
 python scripts/qa_edge_probes.py http://127.0.0.1:8001
 
-# frontend (116 test)
+# frontend (117 test)
 cd frontend
 npm run typecheck
 npm test
@@ -298,7 +298,7 @@ npm run build
 npm run preview        # :4173 da build + /api proxy
 ```
 
-Joriy natijalar: **159/159** backend, **116/116** frontend, **110/110** jonli smoke,
+Joriy natijalar: **159/159** backend, **117/117** frontend, **110/110** jonli smoke,
 **57/57** probe; type-check va production build toza.
 Batafsil: [`QA_REPORT.uz.md`](./QA_REPORT.uz.md).
 

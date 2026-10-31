@@ -5,7 +5,7 @@
 **Sana:** 2026-yil 31-oktabr
 **Tarmoq:** `arena/69672421-lumora`
 **Xulosa:** ✅ **MVP namoyishi uchun chiqarishga tayyor** — ochiq kritik yoki jiddiy nuqson yo‘q.
-Barcha avtomatik to‘plamlar yashil: **159 backend testi, 116 UI/unit testi, 110 jonli API tekshiruvi,
+Barcha avtomatik to‘plamlar yashil: **159 backend testi, 117 UI/unit testi, 110 jonli API tekshiruvi,
 57 adversarial probe**, type-check va production build toza.
 
 > **Bosqichlar tarixi:** 1-bosqich (funksional QA) 13 nuqsonni topib tuzatdi. 2-bosqich
@@ -41,7 +41,7 @@ $ git log --oneline
 | To‘plam | Testlar | O‘tdi | O‘tmadi |
 | --- | --- | --- | --- |
 | Backend unit + integratsiya (pytest) | 159 | 159 | 0 |
-| Frontend UI, xato yo‘llari, a11y, i18n va unit (Vitest) | 116 | 116 | 0 |
+| Frontend UI, xato yo‘llari, a11y, i18n va unit (Vitest) | 117 | 117 | 0 |
 | Jonli API smoke to‘plami (barcha endpointlar) | 110 | 110 | 0 |
 | Adversarial probe (validatsiya, auth, injection, limitlar) | 57 | 57 | 0 |
 | TypeScript type-check | — | ✅ | — |
@@ -174,7 +174,7 @@ tayyorlangan hujjatlarda ham. Yo‘l-yo‘lakay 6 mahalliylashtirish nuqsoni top
 | D-23 | **Jiddiy** | Matn ichidagi demo nomlar | Jumlalar ichida mahsulot nomlari, toifalar, birliklar va shaharlar inglizcha qolardi (“100 kg of **Potatoes**”) | `DATA_NAMES`/`localise()` qo‘shildi; joy egallovchilar mahalliylashtirilgan nom va birliklarni oladi (кг/л, шт/лоток) | `test_i18n.py` + jonli curl matritsasi |
 | D-24 | Kichik | Tarjima sifati | Ruscha jumlalar noqulay o‘qilardi (“Для «Potatoes» на 100 kg”) | Beshta shablon qayta yozildi: “Для заказа «…»”, “Ни один поставщик не может выполнить заказ…”, “Варианты поставщиков по товару «…»” | en/ru/uz matritsasini qo‘lda ko‘zdan kechirish |
 | D-25 | Kichik | Build buzilishi | `locales/uz/ui.ts` va `ru/ui.ts` dagi takroriy kalitlar `tsc` ni `TS1117` bilan yiqitardi | Blok-bo‘yicha skript bilan dedupe, bitta juftlik qo‘lda olib tashlandi | `npm run typecheck` toza, Vitest yashil |
-| D-26 | Kichik | Qamrov | Lug‘at qamrovi testi qisman tarjima qilingan satrlarni topa olmasdi | Test har bir `tr()` kalitini ikkala lug‘atga solishtiradi, “bir xil bo‘lishi kerak” ro‘yxatini aniq saqlaydi va joy egallovchilar saqlanishini tekshiradi | `i18n.test.tsx` (18 test) |
+| D-26 | Kichik | Qamrov | Lug‘at qamrovi testi qisman tarjima qilingan satrlarni topa olmasdi | Test har bir `tr()` kalitini ikkala lug‘atga solishtiradi, “bir xil bo‘lishi kerak” ro‘yxatini aniq saqlaydi va joy egallovchilar saqlanishini tekshiradi | `i18n.test.tsx` (19 test) |
 
 Mahalliylashtirish matritsasi (jonli API):
 
@@ -194,6 +194,8 @@ Interfeys qamrovi `frontend/src/test/i18n.test.tsx` da tekshiriladi:
   render qiladi; tanlov qayta yuklashdan keyin ham saqlanadi (`localStorage`) va hisobga yoziladi.
 * Ko‘plik: rus tilida `one/few/many`, o‘zbekchada yagona shakl, inglizchada `one/other`; pul UZS bo‘yicha
   bo‘sh joy bilan guruhlanadi.
+* API klienti **har bir** so‘rovda faol tilga mos `Accept-Language` yuborishi tekshiriladi
+  (`i18n.test.tsx::API language header`) — interfeys va server matni hech qachon ajralib qolmaydi.
 
 ### 5.4 Test asboblari bilan bog‘liq muammolar (mahsulot nuqsoni emas)
 
@@ -244,7 +246,7 @@ email/telefon ishlatadi.
 * **Yordamchi:** taqqoslash, trend, yordam, qoidalar asosidaligi oshkorligi, havola qilingan takliflar, bo‘sh xabar 422.
 * **Mahalliylashtirish:** `Accept-Language: en|ru|uz`, `uz-UZ` mintaqa tegi, `?lang=` ustunligi, qo‘llanmaydigan til → inglizcha zaxira (200, hech qachon 500), har bir tilda tushuntirish/rad etish sababi/yordamchi javobi.
 
-### 7.2 Interaktiv boshqaruvlar — barchasi sinovdan o‘tgan (116 UI/unit testi)
+### 7.2 Interaktiv boshqaruvlar — barchasi sinovdan o‘tgan (117 UI/unit testi)
 
 Kirish · demo kirish · ro‘yxatdan o‘tish · parolni ko‘rsatish · forma validatsiyasi · yon menyu (8 ta) ·
 mobil menyu · sarlavha qidiruvi → taqqoslash · boshqaruv paneli CTA’lari · mahsulot qidiruvi va taklif
@@ -370,7 +372,7 @@ python scripts/qa_edge_probes.py http://127.0.0.1:8001       # 57/57 passed
 # 5. Frontend
 cd frontend
 npm run typecheck                                           # clean
-npm test                                                    # 116 passed (18 i18n)
+npm test                                                    # 117 passed (19 i18n)
 npm run build                                               # success
 npm run preview                                             # :4173 + /api proxy
 
@@ -401,7 +403,7 @@ bazaga (`qa_smoke.db` / `qa_probe.db`) qaratib, keyin faylni o‘chiring — nam
 | Moslashuvchan joylashuvlar va mobil fallbacklar mavjud | ✅ (tuzilmaviy; vizual tekshiruv tavsiya etiladi) |
 | Kritik/jiddiy nuqsonlar | **0 ochiq** (uch bosqichda 12 tuzatildi) |
 | Kichik nuqsonlar | **0 ochiq** (uch bosqichda 14 tuzatildi) |
-| Avtomatik regressiya qamrovi | 159 backend + 116 UI/unit + 110 jonli API + 57 probe |
+| Avtomatik regressiya qamrovi | 159 backend + 117 UI/unit + 110 jonli API + 57 probe |
 
 **Tavsiya:** MVP namoyishi uchun tasdiqlangan. Ommaviy/production chiqish oldidan §10 dagi muhit
 bo‘shliqlarini yoping (haqiqiy brauzer yugurishi, Docker + PostgreSQL integratsiyasi, xavfsizlik skani).

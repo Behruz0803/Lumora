@@ -222,3 +222,25 @@ describe('language switch in the UI', () => {
     expect(await screen.findByText('Отслеживаемые товары')).toBeInTheDocument()
   })
 })
+
+describe('API language header', () => {
+  it('asks the server for text in the active language', async () => {
+    const seen: Array<string | null> = []
+    localStorage.setItem(TOKEN_KEY, 'test-token')
+    installFetchMock({ authenticated: true })
+    window.history.pushState({}, '', '/')
+    const inner = global.fetch
+    global.fetch = ((input: RequestInfo | URL, init?: RequestInit) => {
+      seen.push(new Headers(init?.headers).get('Accept-Language'))
+      return inner(input, init)
+    }) as typeof fetch
+    try {
+      setLanguage('ru')
+      render(<App />)
+      await waitFor(() => expect(seen.length).toBeGreaterThan(0))
+      expect(seen.every((value) => value === 'ru')).toBe(true)
+    } finally {
+      global.fetch = inner
+    }
+  })
+})
