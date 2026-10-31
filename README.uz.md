@@ -33,7 +33,7 @@ bajara olmaydigan taklifni hech qachon tavsiya qilmaydi.
 | **Tillar** | **O‘zbek, rus va ingliz tillari** butun interfeysda, shu jumladan demo mahsulot nomlari va server yozadigan tushuntirishlarda |
 | Backend | FastAPI + SQLAlchemy 2 + Pydantic v2, PostgreSQL’ga tayyor, SQLite dev varianti, demo ma’lumotlar, OpenAPI hujjati |
 | Haqiqiy ma’lumot | CSV prays-list importi (dry-run + qator-darajali xatolar), mahsulot/ta’minotchi endpointlari, ma’lumot manbasi (demo / aralash / haqiqiy) va shunga mos ogohlantirish |
-| Sifat | 185 backend testi, 126 frontend testi, 126 tekshiruvli jonli API smoke to‘plami + 60 adversarial probe, QA hisoboti |
+| Sifat | 185 backend testi, 128 frontend testi, 126 tekshiruvli jonli API smoke to‘plami + 60 adversarial probe, QA hisoboti |
 
 Killer Flow (to‘liq ishlaydi): Dilshodga **100 kg kartoshka** kerak → qidiradi → 100 kg kiritadi →
 A ta’minotchi 450 000, B 400 000, C 420 000 UZS ni ko‘radi → **umumiy** eng past xarajat
@@ -67,7 +67,7 @@ priceradar/                       (repozitoriy ildizi)
 │  │  ├─ layouts/                 AppLayout (yon menyu + yuqori panel + mobil drawer)
 │  │  ├─ pages/                   12 sahifa
 │  │  ├─ services/api.ts          tiplashtirilgan API klienti (Accept-Language yuboradi)
-│  │  └─ test/                    126 test
+│  │  └─ test/                    128 test
 │  └─ package.json
 ├─ README.md · README.uz.md · README.ru.md
 └─ QA_REPORT.md · QA_REPORT.uz.md · QA_REPORT.ru.md
@@ -323,7 +323,7 @@ python -m pytest tests -q
 python scripts/qa_smoke.py http://127.0.0.1:8001
 python scripts/qa_edge_probes.py http://127.0.0.1:8001
 
-# frontend (126 test)
+# frontend (128 test)
 cd frontend
 npm run typecheck
 npm test
@@ -331,7 +331,7 @@ npm run build
 npm run preview        # :4173 da build + /api proxy
 ```
 
-Joriy natijalar: **185/185** backend, **126/126** frontend, **126/126** jonli smoke,
+Joriy natijalar: **185/185** backend, **128/128** frontend, **126/126** jonli smoke,
 **60/60** probe; type-check va production build toza.
 Batafsil: [`QA_REPORT.uz.md`](./QA_REPORT.uz.md).
 

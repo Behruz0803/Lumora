@@ -6,7 +6,7 @@
 **Branch:** `arena/69672421-lumora`
 **Languages:** **English** · [O‘zbekcha](./QA_REPORT.uz.md) · [Русский](./QA_REPORT.ru.md)
 **Verdict:** ✅ **Release-ready for an MVP demonstration** — 0 open critical or major defects.
-All automated suites pass: **185 backend tests, 126 UI/unit tests, 126 live API checks, 60 adversarial edge probes**,
+All automated suites pass: **185 backend tests, 128 UI/unit tests, 126 live API checks, 60 adversarial edge probes**,
 clean type-check and production build. The application ships in **English, Uzbek and Russian** (see §5.2).
 
 > **Pass history:** pass 1 (functional QA) found and fixed 13 defects. Pass 2 (adversarial / error-path QA)
@@ -40,8 +40,8 @@ $ git log --oneline
 | Suite | Tests | Passed | Failed |
 | --- | --- | --- | --- |
 | Backend unit + integration (pytest) | 185 | 185 | 0 |
-| Frontend UI, error-path, a11y, i18n and unit tests (Vitest) | 126 | 126 | 0 |
-| Live API smoke suite (all endpoints) | 126 | 126 | 0 |
+| Frontend UI, error-path, a11y, i18n and unit tests (Vitest) | 128 | 128 | 0 |
+| Live API smoke suite (all endpoints) | 128 | 128 | 0 |
 | Adversarial edge probes (validation, auth, injection, limits) | 60 | 60 | 0 |
 | TypeScript type-check | — | ✅ | — |
 | Production build (`vite build` + `vite preview` smoke) | — | ✅ | — |
@@ -274,7 +274,7 @@ Interface coverage verified in `frontend/src/test/i18n.test.tsx`:
   unsupported language → English fallback (200, never 500), and localised explanation / rejection reason /
   assistant answer for every supported language.
 
-### 7.2 Interactive controls — all exercised (126 UI/unit tests)
+### 7.2 Interactive controls — all exercised (128 UI/unit tests)
 
 Sign in · demo sign-in · register · password visibility toggle · form validation (email, password, confirm) ·
 sidebar links (all 8) · mobile menu open/close · header search → comparison · dashboard CTAs ·
@@ -435,7 +435,7 @@ Both QA scripts create demo users and offers, so always point them at a throwawa
 | Three-language interface (en/uz/ru) actually switches, incl. server text | ✅ |
 | Critical/major defects | **0 open** (12 fixed across three passes) |
 | Minor defects | **0 open** (14 fixed across three passes) |
-| Automated regression coverage | 185 backend + 126 UI/unit + 126 live API + 60 edge probes |
+| Automated regression coverage | 185 backend + 128 UI/unit + 126 live API + 60 edge probes |
 
 **Recommendation:** approved for MVP demo. Before a public/production launch, close the environment gaps in
 §10 (real-browser pass, Docker + PostgreSQL integration run, and a security/dependency scan).

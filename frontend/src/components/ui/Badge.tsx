@@ -2,6 +2,7 @@ import type { ReactNode } from 'react'
 import { BadgeCheck, Star } from 'lucide-react'
 import { cn } from '../../utils/cn'
 import { tr } from '../../i18n/core'
+import { useDataSource } from '../../context/DatasetContext'
 
 type Tone = 'green' | 'amber' | 'red' | 'neutral' | 'blue'
 
@@ -56,7 +57,26 @@ export function Rating({ value, className }: { value: number; className?: string
   )
 }
 
+/**
+ * Provenance chip. It follows the dataset instead of the page, so once every
+ * price was imported the amber "Demo data" chip disappears for good.
+ */
 export function DemoBadge() {
+  const dataSource = useDataSource()
+  if (dataSource === 'real') {
+    return (
+      <Badge tone="green" className="uppercase tracking-wide">
+        {tr("Real data")}
+      </Badge>
+    )
+  }
+  if (dataSource === 'mixed') {
+    return (
+      <Badge tone="amber" className="uppercase tracking-wide">
+        {tr("Mixed data")}
+      </Badge>
+    )
+  }
   return (
     <Badge tone="amber" className="uppercase tracking-wide">
       {tr("Demo data")}

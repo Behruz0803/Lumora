@@ -5,7 +5,7 @@
 **Sana:** 2026-yil 31-oktabr
 **Tarmoq:** `arena/08f9f7d7-lumora`
 **Xulosa:** ✅ **MVP namoyishi uchun chiqarishga tayyor** — ochiq kritik yoki jiddiy nuqson yo‘q.
-Barcha avtomatik to‘plamlar yashil: **185 backend testi, 126 UI/unit testi, 126 jonli API tekshiruvi,
+Barcha avtomatik to‘plamlar yashil: **185 backend testi, 128 UI/unit testi, 126 jonli API tekshiruvi,
 60 adversarial probe**, type-check va production build toza.
 
 > **Bosqichlar tarixi:** 1-bosqich (funksional QA) 13 nuqsonni topib tuzatdi. 2-bosqich
@@ -44,8 +44,8 @@ $ git log --oneline
 | To‘plam | Testlar | O‘tdi | O‘tmadi |
 | --- | --- | --- | --- |
 | Backend unit + integratsiya (pytest) | 185 | 185 | 0 |
-| Frontend UI, xato yo‘llari, a11y, i18n va unit (Vitest) | 126 | 126 | 0 |
-| Jonli API smoke to‘plami (barcha endpointlar) | 126 | 126 | 0 |
+| Frontend UI, xato yo‘llari, a11y, i18n va unit (Vitest) | 128 | 128 | 0 |
+| Jonli API smoke to‘plami (barcha endpointlar) | 128 | 128 | 0 |
 | Adversarial probe (validatsiya, auth, injection, limitlar) | 60 | 60 | 0 |
 | TypeScript type-check | — | ✅ | — |
 | Production build (`vite build` + `vite preview` smoke) | — | ✅ | — |
@@ -269,7 +269,7 @@ email/telefon ishlatadi.
 * **Yordamchi:** taqqoslash, trend, yordam, qoidalar asosidaligi oshkorligi, havola qilingan takliflar, bo‘sh xabar 422.
 * **Mahalliylashtirish:** `Accept-Language: en|ru|uz`, `uz-UZ` mintaqa tegi, `?lang=` ustunligi, qo‘llanmaydigan til → inglizcha zaxira (200, hech qachon 500), har bir tilda tushuntirish/rad etish sababi/yordamchi javobi.
 
-### 7.2 Interaktiv boshqaruvlar — barchasi sinovdan o‘tgan (126 UI/unit testi)
+### 7.2 Interaktiv boshqaruvlar — barchasi sinovdan o‘tgan (128 UI/unit testi)
 
 Kirish · demo kirish · ro‘yxatdan o‘tish · parolni ko‘rsatish · forma validatsiyasi · yon menyu (8 ta) ·
 mobil menyu · sarlavha qidiruvi → taqqoslash · boshqaruv paneli CTA’lari · mahsulot qidiruvi va taklif
@@ -387,7 +387,7 @@ cd backend && rm -f qa_smoke.db && \
   DATABASE_URL=sqlite:///./qa_smoke.db uvicorn app.main:app --port 8001
 
 # 3. Jonli API smoke to'plami
-python scripts/qa_smoke.py http://127.0.0.1:8001             # 110/110 passed
+python scripts/qa_smoke.py http://127.0.0.1:8001             # 126/126 passed
 
 # 4. Adversarial probe
 python scripts/qa_edge_probes.py http://127.0.0.1:8001       # 60/60 passed
@@ -395,7 +395,7 @@ python scripts/qa_edge_probes.py http://127.0.0.1:8001       # 60/60 passed
 # 5. Frontend
 cd frontend
 npm run typecheck                                           # clean
-npm test                                                    # 117 passed (19 i18n)
+npm test                                                    # 128 passed (19 i18n + 11 real-data)
 npm run build                                               # success
 npm run preview                                             # :4173 + /api proxy
 
@@ -426,7 +426,7 @@ bazaga (`qa_smoke.db` / `qa_probe.db`) qaratib, keyin faylni o‘chiring — nam
 | Moslashuvchan joylashuvlar va mobil fallbacklar mavjud | ✅ (tuzilmaviy; vizual tekshiruv tavsiya etiladi) |
 | Kritik/jiddiy nuqsonlar | **0 ochiq** (uch bosqichda 12 tuzatildi) |
 | Kichik nuqsonlar | **0 ochiq** (uch bosqichda 14 tuzatildi) |
-| Avtomatik regressiya qamrovi | 159 backend + 117 UI/unit + 110 jonli API + 60 probe |
+| Avtomatik regressiya qamrovi | 185 backend + 128 UI/unit + 126 jonli API + 60 probe |
 
 **Tavsiya:** MVP namoyishi uchun tasdiqlangan. Ommaviy/production chiqish oldidan §10 dagi muhit
 bo‘shliqlarini yoping (haqiqiy brauzer yugurishi, Docker + PostgreSQL integratsiyasi, xavfsizlik skani).

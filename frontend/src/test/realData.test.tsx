@@ -47,6 +47,18 @@ describe('demo notice follows the dataset', () => {
     renderAt('/products', { dataSource: 'mixed' })
     await waitFor(() => expect(screen.getByText(/Mixed data set\./i)).toBeInTheDocument())
   })
+
+  it('replaces the amber provenance chip once the data is real', async () => {
+    renderAt('/suppliers', { dataSource: 'real' })
+    await waitFor(() => expect(screen.getAllByText(/^Real data$/i).length).toBeGreaterThan(0))
+    expect(screen.queryByText(/^Demo data$/i)).not.toBeInTheDocument()
+  })
+
+  it('keeps the demo chip while the catalogue is demo data', async () => {
+    renderAt('/suppliers', { dataSource: 'demo' })
+    await waitFor(() => expect(screen.getAllByText(/^Demo data$/i).length).toBeGreaterThan(0))
+    expect(screen.queryByText(/^Real data$/i)).not.toBeInTheDocument()
+  })
 })
 
 describe('price list import page', () => {

@@ -623,4 +623,5 @@ export const ruUi: Record<string, string> = {
   "Upload a CSV price list": "Загрузите CSV-прайс-лист",
   "Upload the price list you received from your suppliers. Imported prices replace demo values in every comparison, chart and recommendation.": "Загрузите прайс-лист, полученный от поставщиков. Импортированные цены заменяют демо-значения во всех сравнениях, графиках и рекомендациях.",
   "Upload CSV price list": "Загрузить CSV-файл прайс-листа",
+  "Mixed data": "Смешанные данные",
 }

@@ -630,4 +630,5 @@ export const uzUi: Record<string, string> = {
   "Upload a CSV price list": "CSV prays-list yuklash",
   "Upload the price list you received from your suppliers. Imported prices replace demo values in every comparison, chart and recommendation.": "Ta’minotchilardan olgan prays-listni yuklang. Import qilingan narxlar har bir taqqoslash, grafik va tavsiyada demo qiymatlar o‘rnini egallaydi.",
   "Upload CSV price list": "CSV prays-list faylini yuklash",
+  "Mixed data": "Aralash ma’lumot",
 }
