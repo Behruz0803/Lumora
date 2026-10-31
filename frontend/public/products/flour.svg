@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 96 96" width="96" height="96" role="img" aria-label="Flour">
+  <rect width="96" height="96" rx="16" fill="#F6F1E6"/>
+  <path d="M36 26h24l-3 12 10 12v26a4 4 0 0 1-4 4H33a4 4 0 0 1-4-4V50l10-12z" fill="#F2E8D6"/>
+  <path d="M36 26h24l-3 12H39z" fill="#E5D7BE"/>
+  <rect x="34" y="54" width="28" height="16" rx="3" fill="#0F8B5F" opacity=".9"/>
+  <path d="M40 62h16" stroke="#fff" stroke-width="2.4" stroke-linecap="round"/>
+  <path d="M44 67h8" stroke="#fff" stroke-width="2.4" stroke-linecap="round" opacity=".7"/>
+  <circle cx="29" cy="72" r="2" fill="#E5D7BE"/>
+  <circle cx="68" cy="68" r="1.6" fill="#E5D7BE"/>
+</svg>

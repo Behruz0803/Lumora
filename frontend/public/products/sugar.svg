@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 96 96" width="96" height="96" role="img" aria-label="Sugar">
+  <rect width="96" height="96" rx="16" fill="#F2F0FA"/>
+  <path d="M32 30h32l6 8v34a4 4 0 0 1-4 4H30a4 4 0 0 1-4-4V38z" fill="#F7F5FC"/>
+  <path d="M32 30h32l6 8H26z" fill="#E4E0F2"/>
+  <rect x="34" y="48" width="28" height="16" rx="3" fill="#6F5BA8" opacity=".9"/>
+  <path d="M40 56h16" stroke="#fff" stroke-width="2.4" stroke-linecap="round"/>
+  <g fill="#CFC7E8">
+    <rect x="66" y="60" width="6" height="6" rx="1.4"/>
+    <rect x="72" y="68" width="5" height="5" rx="1.2"/>
+    <rect x="63" y="70" width="5" height="5" rx="1.2"/>
+  </g>
+</svg>

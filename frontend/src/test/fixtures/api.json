@@ -1,0 +1,4866 @@
+{
+ "login": {
+  "access_token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxIiwiZXhwIjoxNzk0MDM2NDQzLCJpYXQiOjE3OTM0MzE2NDN9.dDthrMNFLl7U24qyPDQmzomjIWG6Fct6VEVXOww_OII",
+  "token_type": "bearer",
+  "user": {
+   "id": 1,
+   "full_name": "Dilshod Karimov",
+   "email": "dilshod@priceradar.uz",
+   "business_name": "Dilshod Grocery Market",
+   "phone": "+998 90 123 45 67",
+   "language": "en",
+   "notify_price_drops": true,
+   "notify_new_offers": false,
+   "notify_weekly_digest": true,
+   "created_at": "2026-10-31T07:27:04.333508"
+  }
+ },
+ "me": {
+  "id": 1,
+  "full_name": "Dilshod Karimov",
+  "email": "dilshod@priceradar.uz",
+  "business_name": "Dilshod Grocery Market",
+  "phone": "+998 90 123 45 67",
+  "language": "en",
+  "notify_price_drops": true,
+  "notify_new_offers": false,
+  "notify_weekly_digest": true,
+  "created_at": "2026-10-31T07:27:04.333508"
+ },
+ "products": {
+  "items": [
+   {
+    "id": 1,
+    "name": "Potatoes",
+    "category": "Vegetables",
+    "unit": "kg",
+    "image_url": "/products/potatoes.svg",
+    "description": "Local Uzbek potatoes, grade 1, washed. Typical wholesale purchase for grocery stores and restaurants.",
+    "is_demo": true,
+    "avg_price": 3900,
+    "min_price": 3300,
+    "max_price": 4200,
+    "offer_count": 4,
+    "available_supplier_count": 3,
+    "availability": "in_stock",
+    "updated_at": "2026-10-31T05:27:03.848378"
+   }
+  ],
+  "total": 1,
+  "page": 1,
+  "page_size": 20,
+  "pages": 1
+ },
+ "products_all": {
+  "items": [
+   {
+    "id": 6,
+    "name": "Cooking oil",
+    "category": "Oils & Fats",
+    "unit": "l",
+    "image_url": "/products/cooking-oil.svg",
+    "description": "Refined sunflower oil in 5 litre bottles or 20 litre jerry cans.",
+    "is_demo": true,
+    "avg_price": 21150,
+    "min_price": 19900,
+    "max_price": 22400,
+    "offer_count": 4,
+    "available_supplier_count": 4,
+    "availability": "in_stock",
+    "updated_at": "2026-10-31T05:27:03.848378"
+   },
+   {
+    "id": 8,
+    "name": "Eggs",
+    "category": "Dairy & Eggs",
+    "unit": "tray",
+    "image_url": "/products/eggs.svg",
+    "description": "Fresh chicken eggs, 30-egg tray, delivered daily from local poultry farms.",
+    "is_demo": true,
+    "avg_price": 42000,
+    "min_price": 40500,
+    "max_price": 43500,
+    "offer_count": 3,
+    "available_supplier_count": 3,
+    "availability": "in_stock",
+    "updated_at": "2026-10-31T05:27:03.848378"
+   },
+   {
+    "id": 5,
+    "name": "Flour",
+    "category": "Grains",
+    "unit": "kg",
+    "image_url": "/products/flour.svg",
+    "description": "Premium wheat flour, grade 1, 50 kg sacks from local mills.",
+    "is_demo": true,
+    "avg_price": 6167,
+    "min_price": 5900,
+    "max_price": 6400,
+    "offer_count": 3,
+    "available_supplier_count": 3,
+    "availability": "in_stock",
+    "updated_at": "2026-10-31T04:27:03.848378"
+   },
+   {
+    "id": 3,
+    "name": "Onions",
+    "category": "Vegetables",
+    "unit": "kg",
+    "image_url": "/products/onions.svg",
+    "description": "Dry yellow onions in 20 kg nets, suitable for long storage.",
+    "is_demo": true,
+    "avg_price": 3162,
+    "min_price": 2950,
+    "max_price": 3400,
+    "offer_count": 4,
+    "available_supplier_count": 4,
+    "availability": "in_stock",
+    "updated_at": "2026-10-31T05:27:03.848378"
+   },
+   {
+    "id": 1,
+    "name": "Potatoes",
+    "category": "Vegetables",
+    "unit": "kg",
+    "image_url": "/products/potatoes.svg",
+    "description": "Local Uzbek potatoes, grade 1, washed. Typical wholesale purchase for grocery stores and restaurants.",
+    "is_demo": true,
+    "avg_price": 3900,
+    "min_price": 3300,
+    "max_price": 4200,
+    "offer_count": 4,
+    "available_supplier_count": 3,
+    "availability": "in_stock",
+    "updated_at": "2026-10-31T05:27:03.848378"
+   },
+   {
+    "id": 4,
+    "name": "Rice",
+    "category": "Grains",
+    "unit": "kg",
+    "image_url": "/products/rice.svg",
+    "description": "Laser-grade long grain rice, 25 kg sacks, cleaned and sorted.",
+    "is_demo": true,
+    "avg_price": 14533,
+    "min_price": 13900,
+    "max_price": 15200,
+    "offer_count": 3,
+    "available_supplier_count": 3,
+    "availability": "in_stock",
+    "updated_at": "2026-10-30T19:27:03.848378"
+   },
+   {
+    "id": 7,
+    "name": "Sugar",
+    "category": "Pantry",
+    "unit": "kg",
+    "image_url": "/products/sugar.svg",
+    "description": "White granulated sugar, 50 kg sacks, food grade.",
+    "is_demo": true,
+    "avg_price": 11800,
+    "min_price": 11400,
+    "max_price": 12200,
+    "offer_count": 3,
+    "available_supplier_count": 3,
+    "availability": "in_stock",
+    "updated_at": "2026-10-31T04:27:03.848378"
+   },
+   {
+    "id": 2,
+    "name": "Tomatoes",
+    "category": "Vegetables",
+    "unit": "kg",
+    "image_url": "/products/tomatoes.svg",
+    "description": "Vine-ripened greenhouse tomatoes, sorted by size. Prices move quickly with the season.",
+    "is_demo": true,
+    "avg_price": 12175,
+    "min_price": 11200,
+    "max_price": 13200,
+    "offer_count": 4,
+    "available_supplier_count": 4,
+    "availability": "in_stock",
+    "updated_at": "2026-10-31T04:27:03.848378"
+   }
+  ],
+  "total": 8,
+  "page": 1,
+  "page_size": 100,
+  "pages": 1
+ },
+ "product": {
+  "id": 1,
+  "name": "Potatoes",
+  "category": "Vegetables",
+  "unit": "kg",
+  "image_url": "/products/potatoes.svg",
+  "description": "Local Uzbek potatoes, grade 1, washed. Typical wholesale purchase for grocery stores and restaurants.",
+  "is_demo": true,
+  "avg_price": 3900,
+  "min_price": 3300,
+  "max_price": 4200,
+  "offer_count": 4,
+  "available_supplier_count": 3,
+  "availability": "in_stock",
+  "updated_at": "2026-10-31T05:27:03.848378"
+ },
+ "categories": [
+  {
+   "category": "Vegetables",
+   "product_count": 3,
+   "avg_price": 6412,
+   "offer_count": 12
+  },
+  {
+   "category": "Grains",
+   "product_count": 2,
+   "avg_price": 10350,
+   "offer_count": 6
+  },
+  {
+   "category": "Oils & Fats",
+   "product_count": 1,
+   "avg_price": 21150,
+   "offer_count": 4
+  },
+  {
+   "category": "Dairy & Eggs",
+   "product_count": 1,
+   "avg_price": 42000,
+   "offer_count": 3
+  },
+  {
+   "category": "Pantry",
+   "product_count": 1,
+   "avg_price": 11800,
+   "offer_count": 3
+  }
+ ],
+ "compare_100": {
+  "product": {
+   "id": 1,
+   "name": "Potatoes",
+   "category": "Vegetables",
+   "unit": "kg",
+   "image_url": "/products/potatoes.svg"
+  },
+  "quantity": 100.0,
+  "unit": "kg",
+  "offers": [
+   {
+    "offer_id": 2,
+    "supplier_id": 2,
+    "supplier_name": "Fergana Fresh Produce",
+    "location": "Fergana",
+    "phone": "+998 73 244 18 65",
+    "rating": 4.4,
+    "delivery_days": 2,
+    "is_verified": true,
+    "unit_price": 3500,
+    "delivery_cost": 50000,
+    "minimum_order_quantity": 100.0,
+    "available_quantity": 1200.0,
+    "status": "in_stock",
+    "quantity": 100.0,
+    "product_cost": 350000,
+    "total_cost": 400000,
+    "cost_per_unit": 4000.0,
+    "eligible": true,
+    "reason": "Eligible - in stock",
+    "updated_at": "2026-10-30T05:27:03.848378",
+    "score": 407925.0,
+    "rank": 1,
+    "is_cheapest": true,
+    "is_best_overall": true,
+    "difference_vs_best": 0
+   },
+   {
+    "offer_id": 3,
+    "supplier_id": 4,
+    "supplier_name": "Bukhara Farm Direct",
+    "location": "Bukhara",
+    "phone": "+998 65 221 77 03",
+    "rating": 4.8,
+    "delivery_days": 2,
+    "is_verified": true,
+    "unit_price": 4200,
+    "delivery_cost": 0,
+    "minimum_order_quantity": 20.0,
+    "available_quantity": 400.0,
+    "status": "in_stock",
+    "quantity": 100.0,
+    "product_cost": 420000,
+    "total_cost": 420000,
+    "cost_per_unit": 4200.0,
+    "eligible": true,
+    "reason": "Eligible - in stock",
+    "updated_at": "2026-10-31T02:27:03.848378",
+    "score": 424620.0,
+    "rank": 2,
+    "is_cheapest": false,
+    "is_best_overall": false,
+    "difference_vs_best": 20000
+   },
+   {
+    "offer_id": 1,
+    "supplier_id": 1,
+    "supplier_name": "Tashkent Agro Trade",
+    "location": "Tashkent",
+    "phone": "+998 71 200 41 20",
+    "rating": 4.6,
+    "delivery_days": 1,
+    "is_verified": true,
+    "unit_price": 4000,
+    "delivery_cost": 50000,
+    "minimum_order_quantity": 50.0,
+    "available_quantity": 800.0,
+    "status": "in_stock",
+    "quantity": 100.0,
+    "product_cost": 400000,
+    "total_cost": 450000,
+    "cost_per_unit": 4500.0,
+    "eligible": true,
+    "reason": "Eligible - in stock",
+    "updated_at": "2026-10-31T05:27:03.848378",
+    "score": 455611.11,
+    "rank": 3,
+    "is_cheapest": false,
+    "is_best_overall": false,
+    "difference_vs_best": 50000
+   },
+   {
+    "offer_id": 4,
+    "supplier_id": 6,
+    "supplier_name": "Namangan Food Supply",
+    "location": "Namangan",
+    "phone": "+998 69 234 12 47",
+    "rating": 3.9,
+    "delivery_days": 2,
+    "is_verified": false,
+    "unit_price": 3300,
+    "delivery_cost": 30000,
+    "minimum_order_quantity": 100.0,
+    "available_quantity": 40.0,
+    "status": "out_of_stock",
+    "quantity": 100.0,
+    "product_cost": 330000,
+    "total_cost": 360000,
+    "cost_per_unit": 3600.0,
+    "eligible": false,
+    "reason": "Currently out of stock",
+    "updated_at": "2026-10-28T08:27:03.848378",
+    "score": null,
+    "rank": null,
+    "is_cheapest": false,
+    "is_best_overall": false,
+    "difference_vs_best": null
+   }
+  ],
+  "recommended": {
+   "offer_id": 2,
+   "supplier_id": 2,
+   "supplier_name": "Fergana Fresh Produce",
+   "location": "Fergana",
+   "phone": "+998 73 244 18 65",
+   "rating": 4.4,
+   "delivery_days": 2,
+   "is_verified": true,
+   "unit_price": 3500,
+   "delivery_cost": 50000,
+   "minimum_order_quantity": 100.0,
+   "available_quantity": 1200.0,
+   "status": "in_stock",
+   "quantity": 100.0,
+   "product_cost": 350000,
+   "total_cost": 400000,
+   "cost_per_unit": 4000.0,
+   "eligible": true,
+   "reason": "Eligible - in stock",
+   "updated_at": "2026-10-30T05:27:03.848378",
+   "score": 407925.0,
+   "rank": 1,
+   "is_cheapest": true,
+   "is_best_overall": true,
+   "difference_vs_best": 0
+  },
+  "cheapest": {
+   "offer_id": 2,
+   "supplier_id": 2,
+   "supplier_name": "Fergana Fresh Produce",
+   "location": "Fergana",
+   "phone": "+998 73 244 18 65",
+   "rating": 4.4,
+   "delivery_days": 2,
+   "is_verified": true,
+   "unit_price": 3500,
+   "delivery_cost": 50000,
+   "minimum_order_quantity": 100.0,
+   "available_quantity": 1200.0,
+   "status": "in_stock",
+   "quantity": 100.0,
+   "product_cost": 350000,
+   "total_cost": 400000,
+   "cost_per_unit": 4000.0,
+   "eligible": true,
+   "reason": "Eligible - in stock",
+   "updated_at": "2026-10-30T05:27:03.848378",
+   "score": 407925.0,
+   "rank": 1,
+   "is_cheapest": true,
+   "is_best_overall": true,
+   "difference_vs_best": 0
+  },
+  "best_overall": {
+   "offer_id": 2,
+   "supplier_id": 2,
+   "supplier_name": "Fergana Fresh Produce",
+   "location": "Fergana",
+   "phone": "+998 73 244 18 65",
+   "rating": 4.4,
+   "delivery_days": 2,
+   "is_verified": true,
+   "unit_price": 3500,
+   "delivery_cost": 50000,
+   "minimum_order_quantity": 100.0,
+   "available_quantity": 1200.0,
+   "status": "in_stock",
+   "quantity": 100.0,
+   "product_cost": 350000,
+   "total_cost": 400000,
+   "cost_per_unit": 4000.0,
+   "eligible": true,
+   "reason": "Eligible - in stock",
+   "updated_at": "2026-10-30T05:27:03.848378",
+   "score": 407925.0,
+   "rank": 1,
+   "is_cheapest": true,
+   "is_best_overall": true,
+   "difference_vs_best": 0
+  },
+  "eligible_count": 3,
+  "rejected_count": 1,
+  "highest_eligible_total": 450000,
+  "potential_savings": 50000,
+  "explanation": "Recommended: Fergana Fresh Produce - 100 kg x 3 500 UZS = 350 000 UZS product cost + 50 000 UZS delivery = 400 000 UZS total (4 000 UZS per kg delivered). It is 20 000 UZS (4.8%) cheaper than the next option, Bukhara Farm Direct (420 000 UZS). Other eligible options: Bukhara Farm Direct - 420 000 UZS (free delivery); Tashkent Agro Trade - 450 000 UZS (50 000 UZS delivery). Compared with the most expensive eligible option (Tashkent Agro Trade, 450 000 UZS), choosing Fergana Fresh Produce saves 50 000 UZS on this order. 1 offer(s) were excluded because they cannot fulfil the requested quantity or are out of stock.",
+  "data_source": "demo",
+  "disclaimer": "Demo dataset: prices, suppliers and trends are fictional and for product demonstration only - not real market data."
+ },
+ "compare_25": {
+  "product": {
+   "id": 1,
+   "name": "Potatoes",
+   "category": "Vegetables",
+   "unit": "kg",
+   "image_url": "/products/potatoes.svg"
+  },
+  "quantity": 25.0,
+  "unit": "kg",
+  "offers": [
+   {
+    "offer_id": 3,
+    "supplier_id": 4,
+    "supplier_name": "Bukhara Farm Direct",
+    "location": "Bukhara",
+    "phone": "+998 65 221 77 03",
+    "rating": 4.8,
+    "delivery_days": 2,
+    "is_verified": true,
+    "unit_price": 4200,
+    "delivery_cost": 0,
+    "minimum_order_quantity": 20.0,
+    "available_quantity": 400.0,
+    "status": "in_stock",
+    "quantity": 25.0,
+    "product_cost": 105000,
+    "total_cost": 105000,
+    "cost_per_unit": 4200.0,
+    "eligible": true,
+    "reason": "Eligible - in stock",
+    "updated_at": "2026-10-31T02:27:03.848378",
+    "score": 106155.0,
+    "rank": 1,
+    "is_cheapest": true,
+    "is_best_overall": true,
+    "difference_vs_best": 0
+   },
+   {
+    "offer_id": 4,
+    "supplier_id": 6,
+    "supplier_name": "Namangan Food Supply",
+    "location": "Namangan",
+    "phone": "+998 69 234 12 47",
+    "rating": 3.9,
+    "delivery_days": 2,
+    "is_verified": false,
+    "unit_price": 3300,
+    "delivery_cost": 30000,
+    "minimum_order_quantity": 100.0,
+    "available_quantity": 40.0,
+    "status": "out_of_stock",
+    "quantity": 25.0,
+    "product_cost": 82500,
+    "total_cost": 112500,
+    "cost_per_unit": 4500.0,
+    "eligible": false,
+    "reason": "Currently out of stock",
+    "updated_at": "2026-10-28T08:27:03.848378",
+    "score": null,
+    "rank": null,
+    "is_cheapest": false,
+    "is_best_overall": false,
+    "difference_vs_best": null
+   },
+   {
+    "offer_id": 2,
+    "supplier_id": 2,
+    "supplier_name": "Fergana Fresh Produce",
+    "location": "Fergana",
+    "phone": "+998 73 244 18 65",
+    "rating": 4.4,
+    "delivery_days": 2,
+    "is_verified": true,
+    "unit_price": 3500,
+    "delivery_cost": 50000,
+    "minimum_order_quantity": 100.0,
+    "available_quantity": 1200.0,
+    "status": "in_stock",
+    "quantity": 25.0,
+    "product_cost": 87500,
+    "total_cost": 137500,
+    "cost_per_unit": 5500.0,
+    "eligible": false,
+    "reason": "Minimum order is 100 units (requested 25)",
+    "updated_at": "2026-10-30T05:27:03.848378",
+    "score": null,
+    "rank": null,
+    "is_cheapest": false,
+    "is_best_overall": false,
+    "difference_vs_best": null
+   },
+   {
+    "offer_id": 1,
+    "supplier_id": 1,
+    "supplier_name": "Tashkent Agro Trade",
+    "location": "Tashkent",
+    "phone": "+998 71 200 41 20",
+    "rating": 4.6,
+    "delivery_days": 1,
+    "is_verified": true,
+    "unit_price": 4000,
+    "delivery_cost": 50000,
+    "minimum_order_quantity": 50.0,
+    "available_quantity": 800.0,
+    "status": "in_stock",
+    "quantity": 25.0,
+    "product_cost": 100000,
+    "total_cost": 150000,
+    "cost_per_unit": 6000.0,
+    "eligible": false,
+    "reason": "Minimum order is 50 units (requested 25)",
+    "updated_at": "2026-10-31T05:27:03.848378",
+    "score": null,
+    "rank": null,
+    "is_cheapest": false,
+    "is_best_overall": false,
+    "difference_vs_best": null
+   }
+  ],
+  "recommended": {
+   "offer_id": 3,
+   "supplier_id": 4,
+   "supplier_name": "Bukhara Farm Direct",
+   "location": "Bukhara",
+   "phone": "+998 65 221 77 03",
+   "rating": 4.8,
+   "delivery_days": 2,
+   "is_verified": true,
+   "unit_price": 4200,
+   "delivery_cost": 0,
+   "minimum_order_quantity": 20.0,
+   "available_quantity": 400.0,
+   "status": "in_stock",
+   "quantity": 25.0,
+   "product_cost": 105000,
+   "total_cost": 105000,
+   "cost_per_unit": 4200.0,
+   "eligible": true,
+   "reason": "Eligible - in stock",
+   "updated_at": "2026-10-31T02:27:03.848378",
+   "score": 106155.0,
+   "rank": 1,
+   "is_cheapest": true,
+   "is_best_overall": true,
+   "difference_vs_best": 0
+  },
+  "cheapest": {
+   "offer_id": 3,
+   "supplier_id": 4,
+   "supplier_name": "Bukhara Farm Direct",
+   "location": "Bukhara",
+   "phone": "+998 65 221 77 03",
+   "rating": 4.8,
+   "delivery_days": 2,
+   "is_verified": true,
+   "unit_price": 4200,
+   "delivery_cost": 0,
+   "minimum_order_quantity": 20.0,
+   "available_quantity": 400.0,
+   "status": "in_stock",
+   "quantity": 25.0,
+   "product_cost": 105000,
+   "total_cost": 105000,
+   "cost_per_unit": 4200.0,
+   "eligible": true,
+   "reason": "Eligible - in stock",
+   "updated_at": "2026-10-31T02:27:03.848378",
+   "score": 106155.0,
+   "rank": 1,
+   "is_cheapest": true,
+   "is_best_overall": true,
+   "difference_vs_best": 0
+  },
+  "best_overall": {
+   "offer_id": 3,
+   "supplier_id": 4,
+   "supplier_name": "Bukhara Farm Direct",
+   "location": "Bukhara",
+   "phone": "+998 65 221 77 03",
+   "rating": 4.8,
+   "delivery_days": 2,
+   "is_verified": true,
+   "unit_price": 4200,
+   "delivery_cost": 0,
+   "minimum_order_quantity": 20.0,
+   "available_quantity": 400.0,
+   "status": "in_stock",
+   "quantity": 25.0,
+   "product_cost": 105000,
+   "total_cost": 105000,
+   "cost_per_unit": 4200.0,
+   "eligible": true,
+   "reason": "Eligible - in stock",
+   "updated_at": "2026-10-31T02:27:03.848378",
+   "score": 106155.0,
+   "rank": 1,
+   "is_cheapest": true,
+   "is_best_overall": true,
+   "difference_vs_best": 0
+  },
+  "eligible_count": 1,
+  "rejected_count": 3,
+  "highest_eligible_total": 105000,
+  "potential_savings": 0,
+  "explanation": "Recommended: Bukhara Farm Direct - 25 kg x 4 200 UZS = 105 000 UZS product cost + 0 UZS delivery = 105 000 UZS total (4 200 UZS per kg delivered). It is the only offer that can fulfil this quantity, so there is no alternative to compare against. This supplier includes free delivery, which is why the higher unit price still wins on total cost. 3 offer(s) were excluded because they cannot fulfil the requested quantity or are out of stock.",
+  "data_source": "demo",
+  "disclaimer": "Demo dataset: prices, suppliers and trends are fictional and for product demonstration only - not real market data."
+ },
+ "compare_10": {
+  "product": {
+   "id": 1,
+   "name": "Potatoes",
+   "category": "Vegetables",
+   "unit": "kg",
+   "image_url": "/products/potatoes.svg"
+  },
+  "quantity": 10.0,
+  "unit": "kg",
+  "offers": [
+   {
+    "offer_id": 3,
+    "supplier_id": 4,
+    "supplier_name": "Bukhara Farm Direct",
+    "location": "Bukhara",
+    "phone": "+998 65 221 77 03",
+    "rating": 4.8,
+    "delivery_days": 2,
+    "is_verified": true,
+    "unit_price": 4200,
+    "delivery_cost": 0,
+    "minimum_order_quantity": 20.0,
+    "available_quantity": 400.0,
+    "status": "in_stock",
+    "quantity": 10.0,
+    "product_cost": 42000,
+    "total_cost": 42000,
+    "cost_per_unit": 4200.0,
+    "eligible": false,
+    "reason": "Minimum order is 20 units (requested 10)",
+    "updated_at": "2026-10-31T02:27:03.848378",
+    "score": null,
+    "rank": null,
+    "is_cheapest": false,
+    "is_best_overall": false,
+    "difference_vs_best": null
+   },
+   {
+    "offer_id": 4,
+    "supplier_id": 6,
+    "supplier_name": "Namangan Food Supply",
+    "location": "Namangan",
+    "phone": "+998 69 234 12 47",
+    "rating": 3.9,
+    "delivery_days": 2,
+    "is_verified": false,
+    "unit_price": 3300,
+    "delivery_cost": 30000,
+    "minimum_order_quantity": 100.0,
+    "available_quantity": 40.0,
+    "status": "out_of_stock",
+    "quantity": 10.0,
+    "product_cost": 33000,
+    "total_cost": 63000,
+    "cost_per_unit": 6300.0,
+    "eligible": false,
+    "reason": "Currently out of stock",
+    "updated_at": "2026-10-28T08:27:03.848378",
+    "score": null,
+    "rank": null,
+    "is_cheapest": false,
+    "is_best_overall": false,
+    "difference_vs_best": null
+   },
+   {
+    "offer_id": 2,
+    "supplier_id": 2,
+    "supplier_name": "Fergana Fresh Produce",
+    "location": "Fergana",
+    "phone": "+998 73 244 18 65",
+    "rating": 4.4,
+    "delivery_days": 2,
+    "is_verified": true,
+    "unit_price": 3500,
+    "delivery_cost": 50000,
+    "minimum_order_quantity": 100.0,
+    "available_quantity": 1200.0,
+    "status": "in_stock",
+    "quantity": 10.0,
+    "product_cost": 35000,
+    "total_cost": 85000,
+    "cost_per_unit": 8500.0,
+    "eligible": false,
+    "reason": "Minimum order is 100 units (requested 10)",
+    "updated_at": "2026-10-30T05:27:03.848378",
+    "score": null,
+    "rank": null,
+    "is_cheapest": false,
+    "is_best_overall": false,
+    "difference_vs_best": null
+   },
+   {
+    "offer_id": 1,
+    "supplier_id": 1,
+    "supplier_name": "Tashkent Agro Trade",
+    "location": "Tashkent",
+    "phone": "+998 71 200 41 20",
+    "rating": 4.6,
+    "delivery_days": 1,
+    "is_verified": true,
+    "unit_price": 4000,
+    "delivery_cost": 50000,
+    "minimum_order_quantity": 50.0,
+    "available_quantity": 800.0,
+    "status": "in_stock",
+    "quantity": 10.0,
+    "product_cost": 40000,
+    "total_cost": 90000,
+    "cost_per_unit": 9000.0,
+    "eligible": false,
+    "reason": "Minimum order is 50 units (requested 10)",
+    "updated_at": "2026-10-31T05:27:03.848378",
+    "score": null,
+    "rank": null,
+    "is_cheapest": false,
+    "is_best_overall": false,
+    "difference_vs_best": null
+   }
+  ],
+  "recommended": null,
+  "cheapest": null,
+  "best_overall": null,
+  "eligible_count": 0,
+  "rejected_count": 4,
+  "highest_eligible_total": null,
+  "potential_savings": 0,
+  "explanation": "No supplier can currently fulfil 10 kg of Potatoes. All offers are out of stock, below the minimum order quantity, or short on stock. The closest option is Bukhara Farm Direct (minimum order is 20 units (requested 10)).",
+  "data_source": "demo",
+  "disclaimer": "Demo dataset: prices, suppliers and trends are fictional and for product demonstration only - not real market data."
+ },
+ "overview": {
+  "total_products": 8,
+  "active_suppliers": 6,
+  "total_offers": 28,
+  "avg_market_price": 14361,
+  "potential_savings": 370000,
+  "savings_pct": 4.8,
+  "price_changes": [
+   {
+    "product_id": 1,
+    "product_name": "Potatoes",
+    "category": "Vegetables",
+    "unit": "kg",
+    "old_price": 4021,
+    "new_price": 4000,
+    "change_pct": -0.52,
+    "supplier_name": "Tashkent Agro Trade",
+    "changed_at": "2026-10-31T09:00:00"
+   },
+   {
+    "product_id": 1,
+    "product_name": "Potatoes",
+    "category": "Vegetables",
+    "unit": "kg",
+    "old_price": 3504,
+    "new_price": 3500,
+    "change_pct": -0.11,
+    "supplier_name": "Fergana Fresh Produce",
+    "changed_at": "2026-10-31T09:00:00"
+   },
+   {
+    "product_id": 1,
+    "product_name": "Potatoes",
+    "category": "Vegetables",
+    "unit": "kg",
+    "old_price": 4168,
+    "new_price": 4200,
+    "change_pct": 0.77,
+    "supplier_name": "Bukhara Farm Direct",
+    "changed_at": "2026-10-31T09:00:00"
+   },
+   {
+    "product_id": 1,
+    "product_name": "Potatoes",
+    "category": "Vegetables",
+    "unit": "kg",
+    "old_price": 3306,
+    "new_price": 3300,
+    "change_pct": -0.18,
+    "supplier_name": "Namangan Food Supply",
+    "changed_at": "2026-10-31T09:00:00"
+   },
+   {
+    "product_id": 2,
+    "product_name": "Tomatoes",
+    "category": "Vegetables",
+    "unit": "kg",
+    "old_price": 12494,
+    "new_price": 12500,
+    "change_pct": 0.05,
+    "supplier_name": "Tashkent Agro Trade",
+    "changed_at": "2026-10-31T09:00:00"
+   },
+   {
+    "product_id": 2,
+    "product_name": "Tomatoes",
+    "category": "Vegetables",
+    "unit": "kg",
+    "old_price": 11792,
+    "new_price": 11800,
+    "change_pct": 0.07,
+    "supplier_name": "Fergana Fresh Produce",
+    "changed_at": "2026-10-31T09:00:00"
+   }
+  ],
+  "trend": [
+   {
+    "date": "2026-10-01",
+    "avg_price": 13524.79
+   },
+   {
+    "date": "2026-10-02",
+    "avg_price": 13529.61
+   },
+   {
+    "date": "2026-10-03",
+    "avg_price": 13497.71
+   },
+   {
+    "date": "2026-10-04",
+    "avg_price": 13707.11
+   },
+   {
+    "date": "2026-10-05",
+    "avg_price": 13690.25
+   },
+   {
+    "date": "2026-10-06",
+    "avg_price": 13737.43
+   },
+   {
+    "date": "2026-10-07",
+    "avg_price": 13676.71
+   },
+   {
+    "date": "2026-10-08",
+    "avg_price": 13656.93
+   },
+   {
+    "date": "2026-10-09",
+    "avg_price": 13624.21
+   },
+   {
+    "date": "2026-10-10",
+    "avg_price": 13652.57
+   },
+   {
+    "date": "2026-10-11",
+    "avg_price": 13664.07
+   },
+   {
+    "date": "2026-10-12",
+    "avg_price": 13657.43
+   },
+   {
+    "date": "2026-10-13",
+    "avg_price": 13604.82
+   },
+   {
+    "date": "2026-10-14",
+    "avg_price": 13628.57
+   },
+   {
+    "date": "2026-10-15",
+    "avg_price": 13588.61
+   },
+   {
+    "date": "2026-10-16",
+    "avg_price": 13576.07
+   },
+   {
+    "date": "2026-10-17",
+    "avg_price": 13564.64
+   },
+   {
+    "date": "2026-10-18",
+    "avg_price": 13745.18
+   },
+   {
+    "date": "2026-10-19",
+    "avg_price": 13786.07
+   },
+   {
+    "date": "2026-10-20",
+    "avg_price": 13786.89
+   },
+   {
+    "date": "2026-10-21",
+    "avg_price": 13726.5
+   },
+   {
+    "date": "2026-10-22",
+    "avg_price": 13725.18
+   },
+   {
+    "date": "2026-10-23",
+    "avg_price": 13736.86
+   },
+   {
+    "date": "2026-10-24",
+    "avg_price": 13726.96
+   },
+   {
+    "date": "2026-10-25",
+    "avg_price": 13682.93
+   },
+   {
+    "date": "2026-10-26",
+    "avg_price": 13657.21
+   },
+   {
+    "date": "2026-10-27",
+    "avg_price": 13654.07
+   },
+   {
+    "date": "2026-10-28",
+    "avg_price": 13659.71
+   },
+   {
+    "date": "2026-10-29",
+    "avg_price": 13654.71
+   },
+   {
+    "date": "2026-10-30",
+    "avg_price": 13639.64
+   },
+   {
+    "date": "2026-10-31",
+    "avg_price": 13730.36
+   }
+  ],
+  "top_categories": [
+   {
+    "category": "Vegetables",
+    "product_count": 3,
+    "avg_price": 6412,
+    "offer_count": 12
+   },
+   {
+    "category": "Grains",
+    "product_count": 2,
+    "avg_price": 10350,
+    "offer_count": 6
+   },
+   {
+    "category": "Oils & Fats",
+    "product_count": 1,
+    "avg_price": 21150,
+    "offer_count": 4
+   },
+   {
+    "category": "Dairy & Eggs",
+    "product_count": 1,
+    "avg_price": 42000,
+    "offer_count": 3
+   },
+   {
+    "category": "Pantry",
+    "product_count": 1,
+    "avg_price": 11800,
+    "offer_count": 3
+   }
+  ],
+  "recent_offers": [
+   {
+    "id": 1,
+    "product_id": 1,
+    "supplier_id": 1,
+    "unit_price": 4000,
+    "delivery_cost": 50000,
+    "minimum_order_quantity": 50.0,
+    "available_quantity": 800.0,
+    "status": "in_stock",
+    "is_demo": true,
+    "updated_at": "2026-10-31T05:27:03.848378",
+    "product": {
+     "id": 1,
+     "name": "Potatoes",
+     "category": "Vegetables",
+     "unit": "kg",
+     "image_url": "/products/potatoes.svg"
+    },
+    "supplier": {
+     "id": 1,
+     "name": "Tashkent Agro Trade",
+     "location": "Tashkent",
+     "phone": "+998 71 200 41 20",
+     "rating": 4.6,
+     "delivery_days": 1,
+     "is_verified": true
+    },
+    "product_cost": null,
+    "total_cost": null,
+    "cost_per_unit": null,
+    "eligible": null
+   },
+   {
+    "id": 10,
+    "product_id": 3,
+    "supplier_id": 2,
+    "unit_price": 2950,
+    "delivery_cost": 55000,
+    "minimum_order_quantity": 100.0,
+    "available_quantity": 1500.0,
+    "status": "in_stock",
+    "is_demo": true,
+    "updated_at": "2026-10-31T05:27:03.848378",
+    "product": {
+     "id": 3,
+     "name": "Onions",
+     "category": "Vegetables",
+     "unit": "kg",
+     "image_url": "/products/onions.svg"
+    },
+    "supplier": {
+     "id": 2,
+     "name": "Fergana Fresh Produce",
+     "location": "Fergana",
+     "phone": "+998 73 244 18 65",
+     "rating": 4.4,
+     "delivery_days": 2,
+     "is_verified": true
+    },
+    "product_cost": null,
+    "total_cost": null,
+    "cost_per_unit": null,
+    "eligible": null
+   },
+   {
+    "id": 19,
+    "product_id": 6,
+    "supplier_id": 5,
+    "unit_price": 21500,
+    "delivery_cost": 65000,
+    "minimum_order_quantity": 50.0,
+    "available_quantity": 900.0,
+    "status": "in_stock",
+    "is_demo": true,
+    "updated_at": "2026-10-31T05:27:03.848378",
+    "product": {
+     "id": 6,
+     "name": "Cooking oil",
+     "category": "Oils & Fats",
+     "unit": "l",
+     "image_url": "/products/cooking-oil.svg"
+    },
+    "supplier": {
+     "id": 5,
+     "name": "Andijan Grain Co.",
+     "location": "Andijan",
+     "phone": "+998 74 223 56 88",
+     "rating": 4.3,
+     "delivery_days": 4,
+     "is_verified": true
+    },
+    "product_cost": null,
+    "total_cost": null,
+    "cost_per_unit": null,
+    "eligible": null
+   },
+   {
+    "id": 28,
+    "product_id": 8,
+    "supplier_id": 1,
+    "unit_price": 43500,
+    "delivery_cost": 25000,
+    "minimum_order_quantity": 10.0,
+    "available_quantity": 60.0,
+    "status": "low_stock",
+    "is_demo": true,
+    "updated_at": "2026-10-31T05:27:03.848378",
+    "product": {
+     "id": 8,
+     "name": "Eggs",
+     "category": "Dairy & Eggs",
+     "unit": "tray",
+     "image_url": "/products/eggs.svg"
+    },
+    "supplier": {
+     "id": 1,
+     "name": "Tashkent Agro Trade",
+     "location": "Tashkent",
+     "phone": "+998 71 200 41 20",
+     "rating": 4.6,
+     "delivery_days": 1,
+     "is_verified": true
+    },
+    "product_cost": null,
+    "total_cost": null,
+    "cost_per_unit": null,
+    "eligible": null
+   },
+   {
+    "id": 7,
+    "product_id": 2,
+    "supplier_id": 4,
+    "unit_price": 13200,
+    "delivery_cost": 0,
+    "minimum_order_quantity": 30.0,
+    "available_quantity": 150.0,
+    "status": "low_stock",
+    "is_demo": true,
+    "updated_at": "2026-10-31T04:27:03.848378",
+    "product": {
+     "id": 2,
+     "name": "Tomatoes",
+     "category": "Vegetables",
+     "unit": "kg",
+     "image_url": "/products/tomatoes.svg"
+    },
+    "supplier": {
+     "id": 4,
+     "name": "Bukhara Farm Direct",
+     "location": "Bukhara",
+     "phone": "+998 65 221 77 03",
+     "rating": 4.8,
+     "delivery_days": 2,
+     "is_verified": true
+    },
+    "product_cost": null,
+    "total_cost": null,
+    "cost_per_unit": null,
+    "eligible": null
+   },
+   {
+    "id": 16,
+    "product_id": 5,
+    "supplier_id": 5,
+    "unit_price": 6200,
+    "delivery_cost": 90000,
+    "minimum_order_quantity": 500.0,
+    "available_quantity": 6000.0,
+    "status": "in_stock",
+    "is_demo": true,
+    "updated_at": "2026-10-31T04:27:03.848378",
+    "product": {
+     "id": 5,
+     "name": "Flour",
+     "category": "Grains",
+     "unit": "kg",
+     "image_url": "/products/flour.svg"
+    },
+    "supplier": {
+     "id": 5,
+     "name": "Andijan Grain Co.",
+     "location": "Andijan",
+     "phone": "+998 74 223 56 88",
+     "rating": 4.3,
+     "delivery_days": 4,
+     "is_verified": true
+    },
+    "product_cost": null,
+    "total_cost": null,
+    "cost_per_unit": null,
+    "eligible": null
+   }
+  ],
+  "data_source": "demo",
+  "disclaimer": "Demo dataset: prices, suppliers and trends are fictional and for product demonstration only - not real market data."
+ },
+ "market": {
+  "days": 30,
+  "trend": [
+   {
+    "date": "2026-10-01",
+    "avg_price": 13524.79
+   },
+   {
+    "date": "2026-10-02",
+    "avg_price": 13529.61
+   },
+   {
+    "date": "2026-10-03",
+    "avg_price": 13497.71
+   },
+   {
+    "date": "2026-10-04",
+    "avg_price": 13707.11
+   },
+   {
+    "date": "2026-10-05",
+    "avg_price": 13690.25
+   },
+   {
+    "date": "2026-10-06",
+    "avg_price": 13737.43
+   },
+   {
+    "date": "2026-10-07",
+    "avg_price": 13676.71
+   },
+   {
+    "date": "2026-10-08",
+    "avg_price": 13656.93
+   },
+   {
+    "date": "2026-10-09",
+    "avg_price": 13624.21
+   },
+   {
+    "date": "2026-10-10",
+    "avg_price": 13652.57
+   },
+   {
+    "date": "2026-10-11",
+    "avg_price": 13664.07
+   },
+   {
+    "date": "2026-10-12",
+    "avg_price": 13657.43
+   },
+   {
+    "date": "2026-10-13",
+    "avg_price": 13604.82
+   },
+   {
+    "date": "2026-10-14",
+    "avg_price": 13628.57
+   },
+   {
+    "date": "2026-10-15",
+    "avg_price": 13588.61
+   },
+   {
+    "date": "2026-10-16",
+    "avg_price": 13576.07
+   },
+   {
+    "date": "2026-10-17",
+    "avg_price": 13564.64
+   },
+   {
+    "date": "2026-10-18",
+    "avg_price": 13745.18
+   },
+   {
+    "date": "2026-10-19",
+    "avg_price": 13786.07
+   },
+   {
+    "date": "2026-10-20",
+    "avg_price": 13786.89
+   },
+   {
+    "date": "2026-10-21",
+    "avg_price": 13726.5
+   },
+   {
+    "date": "2026-10-22",
+    "avg_price": 13725.18
+   },
+   {
+    "date": "2026-10-23",
+    "avg_price": 13736.86
+   },
+   {
+    "date": "2026-10-24",
+    "avg_price": 13726.96
+   },
+   {
+    "date": "2026-10-25",
+    "avg_price": 13682.93
+   },
+   {
+    "date": "2026-10-26",
+    "avg_price": 13657.21
+   },
+   {
+    "date": "2026-10-27",
+    "avg_price": 13654.07
+   },
+   {
+    "date": "2026-10-28",
+    "avg_price": 13659.71
+   },
+   {
+    "date": "2026-10-29",
+    "avg_price": 13654.71
+   },
+   {
+    "date": "2026-10-30",
+    "avg_price": 13639.64
+   },
+   {
+    "date": "2026-10-31",
+    "avg_price": 13730.36
+   }
+  ],
+  "categories": [
+   {
+    "category": "Vegetables",
+    "product_count": 3,
+    "avg_price": 6412,
+    "offer_count": 12
+   },
+   {
+    "category": "Grains",
+    "product_count": 2,
+    "avg_price": 10350,
+    "offer_count": 6
+   },
+   {
+    "category": "Oils & Fats",
+    "product_count": 1,
+    "avg_price": 21150,
+    "offer_count": 4
+   },
+   {
+    "category": "Dairy & Eggs",
+    "product_count": 1,
+    "avg_price": 42000,
+    "offer_count": 3
+   },
+   {
+    "category": "Pantry",
+    "product_count": 1,
+    "avg_price": 11800,
+    "offer_count": 3
+   }
+  ],
+  "price_changes": [
+   {
+    "product_id": 1,
+    "product_name": "Potatoes",
+    "category": "Vegetables",
+    "unit": "kg",
+    "old_price": 4021,
+    "new_price": 4000,
+    "change_pct": -0.52,
+    "supplier_name": "Tashkent Agro Trade",
+    "changed_at": "2026-10-31T09:00:00"
+   },
+   {
+    "product_id": 1,
+    "product_name": "Potatoes",
+    "category": "Vegetables",
+    "unit": "kg",
+    "old_price": 3504,
+    "new_price": 3500,
+    "change_pct": -0.11,
+    "supplier_name": "Fergana Fresh Produce",
+    "changed_at": "2026-10-31T09:00:00"
+   },
+   {
+    "product_id": 1,
+    "product_name": "Potatoes",
+    "category": "Vegetables",
+    "unit": "kg",
+    "old_price": 4168,
+    "new_price": 4200,
+    "change_pct": 0.77,
+    "supplier_name": "Bukhara Farm Direct",
+    "changed_at": "2026-10-31T09:00:00"
+   },
+   {
+    "product_id": 1,
+    "product_name": "Potatoes",
+    "category": "Vegetables",
+    "unit": "kg",
+    "old_price": 3306,
+    "new_price": 3300,
+    "change_pct": -0.18,
+    "supplier_name": "Namangan Food Supply",
+    "changed_at": "2026-10-31T09:00:00"
+   },
+   {
+    "product_id": 2,
+    "product_name": "Tomatoes",
+    "category": "Vegetables",
+    "unit": "kg",
+    "old_price": 12494,
+    "new_price": 12500,
+    "change_pct": 0.05,
+    "supplier_name": "Tashkent Agro Trade",
+    "changed_at": "2026-10-31T09:00:00"
+   },
+   {
+    "product_id": 2,
+    "product_name": "Tomatoes",
+    "category": "Vegetables",
+    "unit": "kg",
+    "old_price": 11792,
+    "new_price": 11800,
+    "change_pct": 0.07,
+    "supplier_name": "Fergana Fresh Produce",
+    "changed_at": "2026-10-31T09:00:00"
+   },
+   {
+    "product_id": 2,
+    "product_name": "Tomatoes",
+    "category": "Vegetables",
+    "unit": "kg",
+    "old_price": 13089,
+    "new_price": 13200,
+    "change_pct": 0.85,
+    "supplier_name": "Bukhara Farm Direct",
+    "changed_at": "2026-10-31T09:00:00"
+   },
+   {
+    "product_id": 2,
+    "product_name": "Tomatoes",
+    "category": "Vegetables",
+    "unit": "kg",
+    "old_price": 11097,
+    "new_price": 11200,
+    "change_pct": 0.93,
+    "supplier_name": "Samarkand Wholesale Hub",
+    "changed_at": "2026-10-31T09:00:00"
+   },
+   {
+    "product_id": 3,
+    "product_name": "Onions",
+    "category": "Vegetables",
+    "unit": "kg",
+    "old_price": 3152,
+    "new_price": 3200,
+    "change_pct": 1.52,
+    "supplier_name": "Tashkent Agro Trade",
+    "changed_at": "2026-10-31T09:00:00"
+   },
+   {
+    "product_id": 3,
+    "product_name": "Onions",
+    "category": "Vegetables",
+    "unit": "kg",
+    "old_price": 2917,
+    "new_price": 2950,
+    "change_pct": 1.13,
+    "supplier_name": "Fergana Fresh Produce",
+    "changed_at": "2026-10-31T09:00:00"
+   }
+  ],
+  "supply": {
+   "total_offers": 28,
+   "in_stock_offers": 24,
+   "low_stock_offers": 3,
+   "out_of_stock_offers": 1,
+   "stock_health_pct": 85.7,
+   "total_available_volume": 37170.0
+  },
+  "suppliers": {
+   "total_suppliers": 6,
+   "verified_suppliers": 4,
+   "verified_pct": 66.7,
+   "avg_rating": 4.35,
+   "avg_delivery_days": 2.3
+  },
+  "demand": [
+   {
+    "category": "Vegetables",
+    "offer_count": 12,
+    "avg_price": 6412,
+    "supply_status": "healthy"
+   },
+   {
+    "category": "Grains",
+    "offer_count": 6,
+    "avg_price": 10350,
+    "supply_status": "healthy"
+   },
+   {
+    "category": "Oils & Fats",
+    "offer_count": 4,
+    "avg_price": 21150,
+    "supply_status": "healthy"
+   },
+   {
+    "category": "Dairy & Eggs",
+    "offer_count": 3,
+    "avg_price": 42000,
+    "supply_status": "tight"
+   },
+   {
+    "category": "Pantry",
+    "offer_count": 3,
+    "avg_price": 11800,
+    "supply_status": "healthy"
+   }
+  ],
+  "data_source": "demo",
+  "disclaimer": "Demo dataset: prices, suppliers and trends are fictional and for product demonstration only - not real market data."
+ },
+ "history": {
+  "product_id": 1,
+  "product_name": "Potatoes",
+  "unit": "kg",
+  "days": 90,
+  "points": [
+   {
+    "date": "2026-08-03",
+    "price": 3669.25
+   },
+   {
+    "date": "2026-08-04",
+    "price": 3686.75
+   },
+   {
+    "date": "2026-08-05",
+    "price": 3656.75
+   },
+   {
+    "date": "2026-08-06",
+    "price": 3659.25
+   },
+   {
+    "date": "2026-08-07",
+    "price": 3673.0
+   },
+   {
+    "date": "2026-08-08",
+    "price": 3669.75
+   },
+   {
+    "date": "2026-08-09",
+    "price": 3709.25
+   },
+   {
+    "date": "2026-08-10",
+    "price": 3705.75
+   },
+   {
+    "date": "2026-08-11",
+    "price": 3698.5
+   },
+   {
+    "date": "2026-08-12",
+    "price": 3709.0
+   },
+   {
+    "date": "2026-08-13",
+    "price": 3717.25
+   },
+   {
+    "date": "2026-08-14",
+    "price": 3693.75
+   },
+   {
+    "date": "2026-08-15",
+    "price": 3695.0
+   },
+   {
+    "date": "2026-08-16",
+    "price": 3710.25
+   },
+   {
+    "date": "2026-08-17",
+    "price": 3699.5
+   },
+   {
+    "date": "2026-08-18",
+    "price": 3683.75
+   },
+   {
+    "date": "2026-08-19",
+    "price": 3678.75
+   },
+   {
+    "date": "2026-08-20",
+    "price": 3672.0
+   },
+   {
+    "date": "2026-08-21",
+    "price": 3674.75
+   },
+   {
+    "date": "2026-08-22",
+    "price": 3682.5
+   },
+   {
+    "date": "2026-08-23",
+    "price": 3746.5
+   },
+   {
+    "date": "2026-08-24",
+    "price": 3713.75
+   },
+   {
+    "date": "2026-08-25",
+    "price": 3702.0
+   },
+   {
+    "date": "2026-08-26",
+    "price": 3752.25
+   },
+   {
+    "date": "2026-08-27",
+    "price": 3707.5
+   },
+   {
+    "date": "2026-08-28",
+    "price": 3711.0
+   },
+   {
+    "date": "2026-08-29",
+    "price": 3700.25
+   },
+   {
+    "date": "2026-08-30",
+    "price": 3692.0
+   },
+   {
+    "date": "2026-08-31",
+    "price": 3684.25
+   },
+   {
+    "date": "2026-09-01",
+    "price": 3706.25
+   },
+   {
+    "date": "2026-09-02",
+    "price": 3677.75
+   },
+   {
+    "date": "2026-09-03",
+    "price": 3710.5
+   },
+   {
+    "date": "2026-09-04",
+    "price": 3675.75
+   },
+   {
+    "date": "2026-09-05",
+    "price": 3674.0
+   },
+   {
+    "date": "2026-09-06",
+    "price": 3739.75
+   },
+   {
+    "date": "2026-09-07",
+    "price": 3740.0
+   },
+   {
+    "date": "2026-09-08",
+    "price": 3728.75
+   },
+   {
+    "date": "2026-09-09",
+    "price": 3749.5
+   },
+   {
+    "date": "2026-09-10",
+    "price": 3716.5
+   },
+   {
+    "date": "2026-09-11",
+    "price": 3721.0
+   },
+   {
+    "date": "2026-09-12",
+    "price": 3720.25
+   },
+   {
+    "date": "2026-09-13",
+    "price": 3704.25
+   },
+   {
+    "date": "2026-09-14",
+    "price": 3719.25
+   },
+   {
+    "date": "2026-09-15",
+    "price": 3692.25
+   },
+   {
+    "date": "2026-09-16",
+    "price": 3688.75
+   },
+   {
+    "date": "2026-09-17",
+    "price": 3716.5
+   },
+   {
+    "date": "2026-09-18",
+    "price": 3684.75
+   },
+   {
+    "date": "2026-09-19",
+    "price": 3682.25
+   },
+   {
+    "date": "2026-09-20",
+    "price": 3742.75
+   },
+   {
+    "date": "2026-09-21",
+    "price": 3723.75
+   },
+   {
+    "date": "2026-09-22",
+    "price": 3756.75
+   },
+   {
+    "date": "2026-09-23",
+    "price": 3720.0
+   },
+   {
+    "date": "2026-09-24",
+    "price": 3742.0
+   },
+   {
+    "date": "2026-09-25",
+    "price": 3718.75
+   },
+   {
+    "date": "2026-09-26",
+    "price": 3731.75
+   },
+   {
+    "date": "2026-09-27",
+    "price": 3714.0
+   },
+   {
+    "date": "2026-09-28",
+    "price": 3717.0
+   },
+   {
+    "date": "2026-09-29",
+    "price": 3720.0
+   },
+   {
+    "date": "2026-09-30",
+    "price": 3699.0
+   },
+   {
+    "date": "2026-10-01",
+    "price": 3706.75
+   },
+   {
+    "date": "2026-10-02",
+    "price": 3715.75
+   },
+   {
+    "date": "2026-10-03",
+    "price": 3675.5
+   },
+   {
+    "date": "2026-10-04",
+    "price": 3764.75
+   },
+   {
+    "date": "2026-10-05",
+    "price": 3738.0
+   },
+   {
+    "date": "2026-10-06",
+    "price": 3731.5
+   },
+   {
+    "date": "2026-10-07",
+    "price": 3733.5
+   },
+   {
+    "date": "2026-10-08",
+    "price": 3736.5
+   },
+   {
+    "date": "2026-10-09",
+    "price": 3738.75
+   },
+   {
+    "date": "2026-10-10",
+    "price": 3716.0
+   },
+   {
+    "date": "2026-10-11",
+    "price": 3712.5
+   },
+   {
+    "date": "2026-10-12",
+    "price": 3708.5
+   },
+   {
+    "date": "2026-10-13",
+    "price": 3711.5
+   },
+   {
+    "date": "2026-10-14",
+    "price": 3723.75
+   },
+   {
+    "date": "2026-10-15",
+    "price": 3723.25
+   },
+   {
+    "date": "2026-10-16",
+    "price": 3710.0
+   },
+   {
+    "date": "2026-10-17",
+    "price": 3697.25
+   },
+   {
+    "date": "2026-10-18",
+    "price": 3780.0
+   },
+   {
+    "date": "2026-10-19",
+    "price": 3761.5
+   },
+   {
+    "date": "2026-10-20",
+    "price": 3754.25
+   },
+   {
+    "date": "2026-10-21",
+    "price": 3742.25
+   },
+   {
+    "date": "2026-10-22",
+    "price": 3771.5
+   },
+   {
+    "date": "2026-10-23",
+    "price": 3746.0
+   },
+   {
+    "date": "2026-10-24",
+    "price": 3756.0
+   },
+   {
+    "date": "2026-10-25",
+    "price": 3744.0
+   },
+   {
+    "date": "2026-10-26",
+    "price": 3718.0
+   },
+   {
+    "date": "2026-10-27",
+    "price": 3742.75
+   },
+   {
+    "date": "2026-10-28",
+    "price": 3728.5
+   },
+   {
+    "date": "2026-10-29",
+    "price": 3749.5
+   },
+   {
+    "date": "2026-10-30",
+    "price": 3749.75
+   },
+   {
+    "date": "2026-10-31",
+    "price": 3750.0
+   }
+  ],
+  "supplier_series": [
+   {
+    "supplier_id": 4,
+    "supplier_name": "Bukhara Farm Direct",
+    "points": [
+     {
+      "date": "2026-08-03",
+      "price": 4239.0
+     },
+     {
+      "date": "2026-08-04",
+      "price": 4238.0
+     },
+     {
+      "date": "2026-08-05",
+      "price": 4211.0
+     },
+     {
+      "date": "2026-08-06",
+      "price": 4170.0
+     },
+     {
+      "date": "2026-08-07",
+      "price": 4225.0
+     },
+     {
+      "date": "2026-08-08",
+      "price": 4218.0
+     },
+     {
+      "date": "2026-08-09",
+      "price": 4261.0
+     },
+     {
+      "date": "2026-08-10",
+      "price": 4298.0
+     },
+     {
+      "date": "2026-08-11",
+      "price": 4294.0
+     },
+     {
+      "date": "2026-08-12",
+      "price": 4287.0
+     },
+     {
+      "date": "2026-08-13",
+      "price": 4287.0
+     },
+     {
+      "date": "2026-08-14",
+      "price": 4282.0
+     },
+     {
+      "date": "2026-08-15",
+      "price": 4225.0
+     },
+     {
+      "date": "2026-08-16",
+      "price": 4230.0
+     },
+     {
+      "date": "2026-08-17",
+      "price": 4243.0
+     },
+     {
+      "date": "2026-08-18",
+      "price": 4176.0
+     },
+     {
+      "date": "2026-08-19",
+      "price": 4155.0
+     },
+     {
+      "date": "2026-08-20",
+      "price": 4159.0
+     },
+     {
+      "date": "2026-08-21",
+      "price": 4219.0
+     },
+     {
+      "date": "2026-08-22",
+      "price": 4159.0
+     },
+     {
+      "date": "2026-08-23",
+      "price": 4264.0
+     },
+     {
+      "date": "2026-08-24",
+      "price": 4236.0
+     },
+     {
+      "date": "2026-08-25",
+      "price": 4228.0
+     },
+     {
+      "date": "2026-08-26",
+      "price": 4305.0
+     },
+     {
+      "date": "2026-08-27",
+      "price": 4203.0
+     },
+     {
+      "date": "2026-08-28",
+      "price": 4289.0
+     },
+     {
+      "date": "2026-08-29",
+      "price": 4237.0
+     },
+     {
+      "date": "2026-08-30",
+      "price": 4197.0
+     },
+     {
+      "date": "2026-08-31",
+      "price": 4165.0
+     },
+     {
+      "date": "2026-09-01",
+      "price": 4243.0
+     },
+     {
+      "date": "2026-09-02",
+      "price": 4185.0
+     },
+     {
+      "date": "2026-09-03",
+      "price": 4232.0
+     },
+     {
+      "date": "2026-09-04",
+      "price": 4134.0
+     },
+     {
+      "date": "2026-09-05",
+      "price": 4199.0
+     },
+     {
+      "date": "2026-09-06",
+      "price": 4294.0
+     },
+     {
+      "date": "2026-09-07",
+      "price": 4300.0
+     },
+     {
+      "date": "2026-09-08",
+      "price": 4259.0
+     },
+     {
+      "date": "2026-09-09",
+      "price": 4273.0
+     },
+     {
+      "date": "2026-09-10",
+      "price": 4236.0
+     },
+     {
+      "date": "2026-09-11",
+      "price": 4206.0
+     },
+     {
+      "date": "2026-09-12",
+      "price": 4187.0
+     },
+     {
+      "date": "2026-09-13",
+      "price": 4213.0
+     },
+     {
+      "date": "2026-09-14",
+      "price": 4231.0
+     },
+     {
+      "date": "2026-09-15",
+      "price": 4150.0
+     },
+     {
+      "date": "2026-09-16",
+      "price": 4154.0
+     },
+     {
+      "date": "2026-09-17",
+      "price": 4222.0
+     },
+     {
+      "date": "2026-09-18",
+      "price": 4175.0
+     },
+     {
+      "date": "2026-09-19",
+      "price": 4168.0
+     },
+     {
+      "date": "2026-09-20",
+      "price": 4281.0
+     },
+     {
+      "date": "2026-09-21",
+      "price": 4225.0
+     },
+     {
+      "date": "2026-09-22",
+      "price": 4246.0
+     },
+     {
+      "date": "2026-09-23",
+      "price": 4232.0
+     },
+     {
+      "date": "2026-09-24",
+      "price": 4257.0
+     },
+     {
+      "date": "2026-09-25",
+      "price": 4225.0
+     },
+     {
+      "date": "2026-09-26",
+      "price": 4233.0
+     },
+     {
+      "date": "2026-09-27",
+      "price": 4251.0
+     },
+     {
+      "date": "2026-09-28",
+      "price": 4198.0
+     },
+     {
+      "date": "2026-09-29",
+      "price": 4221.0
+     },
+     {
+      "date": "2026-09-30",
+      "price": 4189.0
+     },
+     {
+      "date": "2026-10-01",
+      "price": 4220.0
+     },
+     {
+      "date": "2026-10-02",
+      "price": 4162.0
+     },
+     {
+      "date": "2026-10-03",
+      "price": 4131.0
+     },
+     {
+      "date": "2026-10-04",
+      "price": 4309.0
+     },
+     {
+      "date": "2026-10-05",
+      "price": 4279.0
+     },
+     {
+      "date": "2026-10-06",
+      "price": 4209.0
+     },
+     {
+      "date": "2026-10-07",
+      "price": 4222.0
+     },
+     {
+      "date": "2026-10-08",
+      "price": 4227.0
+     },
+     {
+      "date": "2026-10-09",
+      "price": 4174.0
+     },
+     {
+      "date": "2026-10-10",
+      "price": 4182.0
+     },
+     {
+      "date": "2026-10-11",
+      "price": 4162.0
+     },
+     {
+      "date": "2026-10-12",
+      "price": 4154.0
+     },
+     {
+      "date": "2026-10-13",
+      "price": 4142.0
+     },
+     {
+      "date": "2026-10-14",
+      "price": 4211.0
+     },
+     {
+      "date": "2026-10-15",
+      "price": 4200.0
+     },
+     {
+      "date": "2026-10-16",
+      "price": 4158.0
+     },
+     {
+      "date": "2026-10-17",
+      "price": 4133.0
+     },
+     {
+      "date": "2026-10-18",
+      "price": 4295.0
+     },
+     {
+      "date": "2026-10-19",
+      "price": 4275.0
+     },
+     {
+      "date": "2026-10-20",
+      "price": 4232.0
+     },
+     {
+      "date": "2026-10-21",
+      "price": 4216.0
+     },
+     {
+      "date": "2026-10-22",
+      "price": 4272.0
+     },
+     {
+      "date": "2026-10-23",
+      "price": 4163.0
+     },
+     {
+      "date": "2026-10-24",
+      "price": 4222.0
+     },
+     {
+      "date": "2026-10-25",
+      "price": 4203.0
+     },
+     {
+      "date": "2026-10-26",
+      "price": 4164.0
+     },
+     {
+      "date": "2026-10-27",
+      "price": 4180.0
+     },
+     {
+      "date": "2026-10-28",
+      "price": 4138.0
+     },
+     {
+      "date": "2026-10-29",
+      "price": 4179.0
+     },
+     {
+      "date": "2026-10-30",
+      "price": 4168.0
+     },
+     {
+      "date": "2026-10-31",
+      "price": 4200.0
+     }
+    ]
+   },
+   {
+    "supplier_id": 2,
+    "supplier_name": "Fergana Fresh Produce",
+    "points": [
+     {
+      "date": "2026-08-03",
+      "price": 3415.0
+     },
+     {
+      "date": "2026-08-04",
+      "price": 3404.0
+     },
+     {
+      "date": "2026-08-05",
+      "price": 3430.0
+     },
+     {
+      "date": "2026-08-06",
+      "price": 3439.0
+     },
+     {
+      "date": "2026-08-07",
+      "price": 3435.0
+     },
+     {
+      "date": "2026-08-08",
+      "price": 3439.0
+     },
+     {
+      "date": "2026-08-09",
+      "price": 3468.0
+     },
+     {
+      "date": "2026-08-10",
+      "price": 3432.0
+     },
+     {
+      "date": "2026-08-11",
+      "price": 3444.0
+     },
+     {
+      "date": "2026-08-12",
+      "price": 3487.0
+     },
+     {
+      "date": "2026-08-13",
+      "price": 3453.0
+     },
+     {
+      "date": "2026-08-14",
+      "price": 3462.0
+     },
+     {
+      "date": "2026-08-15",
+      "price": 3468.0
+     },
+     {
+      "date": "2026-08-16",
+      "price": 3471.0
+     },
+     {
+      "date": "2026-08-17",
+      "price": 3419.0
+     },
+     {
+      "date": "2026-08-18",
+      "price": 3441.0
+     },
+     {
+      "date": "2026-08-19",
+      "price": 3453.0
+     },
+     {
+      "date": "2026-08-20",
+      "price": 3473.0
+     },
+     {
+      "date": "2026-08-21",
+      "price": 3415.0
+     },
+     {
+      "date": "2026-08-22",
+      "price": 3463.0
+     },
+     {
+      "date": "2026-08-23",
+      "price": 3511.0
+     },
+     {
+      "date": "2026-08-24",
+      "price": 3480.0
+     },
+     {
+      "date": "2026-08-25",
+      "price": 3482.0
+     },
+     {
+      "date": "2026-08-26",
+      "price": 3508.0
+     },
+     {
+      "date": "2026-08-27",
+      "price": 3463.0
+     },
+     {
+      "date": "2026-08-28",
+      "price": 3448.0
+     },
+     {
+      "date": "2026-08-29",
+      "price": 3486.0
+     },
+     {
+      "date": "2026-08-30",
+      "price": 3425.0
+     },
+     {
+      "date": "2026-08-31",
+      "price": 3473.0
+     },
+     {
+      "date": "2026-09-01",
+      "price": 3464.0
+     },
+     {
+      "date": "2026-09-02",
+      "price": 3439.0
+     },
+     {
+      "date": "2026-09-03",
+      "price": 3481.0
+     },
+     {
+      "date": "2026-09-04",
+      "price": 3451.0
+     },
+     {
+      "date": "2026-09-05",
+      "price": 3410.0
+     },
+     {
+      "date": "2026-09-06",
+      "price": 3483.0
+     },
+     {
+      "date": "2026-09-07",
+      "price": 3525.0
+     },
+     {
+      "date": "2026-09-08",
+      "price": 3449.0
+     },
+     {
+      "date": "2026-09-09",
+      "price": 3506.0
+     },
+     {
+      "date": "2026-09-10",
+      "price": 3481.0
+     },
+     {
+      "date": "2026-09-11",
+      "price": 3498.0
+     },
+     {
+      "date": "2026-09-12",
+      "price": 3505.0
+     },
+     {
+      "date": "2026-09-13",
+      "price": 3432.0
+     },
+     {
+      "date": "2026-09-14",
+      "price": 3458.0
+     },
+     {
+      "date": "2026-09-15",
+      "price": 3459.0
+     },
+     {
+      "date": "2026-09-16",
+      "price": 3456.0
+     },
+     {
+      "date": "2026-09-17",
+      "price": 3482.0
+     },
+     {
+      "date": "2026-09-18",
+      "price": 3414.0
+     },
+     {
+      "date": "2026-09-19",
+      "price": 3420.0
+     },
+     {
+      "date": "2026-09-20",
+      "price": 3520.0
+     },
+     {
+      "date": "2026-09-21",
+      "price": 3522.0
+     },
+     {
+      "date": "2026-09-22",
+      "price": 3530.0
+     },
+     {
+      "date": "2026-09-23",
+      "price": 3455.0
+     },
+     {
+      "date": "2026-09-24",
+      "price": 3513.0
+     },
+     {
+      "date": "2026-09-25",
+      "price": 3441.0
+     },
+     {
+      "date": "2026-09-26",
+      "price": 3503.0
+     },
+     {
+      "date": "2026-09-27",
+      "price": 3453.0
+     },
+     {
+      "date": "2026-09-28",
+      "price": 3507.0
+     },
+     {
+      "date": "2026-09-29",
+      "price": 3480.0
+     },
+     {
+      "date": "2026-09-30",
+      "price": 3463.0
+     },
+     {
+      "date": "2026-10-01",
+      "price": 3434.0
+     },
+     {
+      "date": "2026-10-02",
+      "price": 3491.0
+     },
+     {
+      "date": "2026-10-03",
+      "price": 3447.0
+     },
+     {
+      "date": "2026-10-04",
+      "price": 3545.0
+     },
+     {
+      "date": "2026-10-05",
+      "price": 3464.0
+     },
+     {
+      "date": "2026-10-06",
+      "price": 3495.0
+     },
+     {
+      "date": "2026-10-07",
+      "price": 3459.0
+     },
+     {
+      "date": "2026-10-08",
+      "price": 3475.0
+     },
+     {
+      "date": "2026-10-09",
+      "price": 3529.0
+     },
+     {
+      "date": "2026-10-10",
+      "price": 3474.0
+     },
+     {
+      "date": "2026-10-11",
+      "price": 3446.0
+     },
+     {
+      "date": "2026-10-12",
+      "price": 3470.0
+     },
+     {
+      "date": "2026-10-13",
+      "price": 3495.0
+     },
+     {
+      "date": "2026-10-14",
+      "price": 3492.0
+     },
+     {
+      "date": "2026-10-15",
+      "price": 3497.0
+     },
+     {
+      "date": "2026-10-16",
+      "price": 3435.0
+     },
+     {
+      "date": "2026-10-17",
+      "price": 3465.0
+     },
+     {
+      "date": "2026-10-18",
+      "price": 3509.0
+     },
+     {
+      "date": "2026-10-19",
+      "price": 3506.0
+     },
+     {
+      "date": "2026-10-20",
+      "price": 3517.0
+     },
+     {
+      "date": "2026-10-21",
+      "price": 3472.0
+     },
+     {
+      "date": "2026-10-22",
+      "price": 3533.0
+     },
+     {
+      "date": "2026-10-23",
+      "price": 3526.0
+     },
+     {
+      "date": "2026-10-24",
+      "price": 3503.0
+     },
+     {
+      "date": "2026-10-25",
+      "price": 3476.0
+     },
+     {
+      "date": "2026-10-26",
+      "price": 3450.0
+     },
+     {
+      "date": "2026-10-27",
+      "price": 3492.0
+     },
+     {
+      "date": "2026-10-28",
+      "price": 3520.0
+     },
+     {
+      "date": "2026-10-29",
+      "price": 3518.0
+     },
+     {
+      "date": "2026-10-30",
+      "price": 3504.0
+     },
+     {
+      "date": "2026-10-31",
+      "price": 3500.0
+     }
+    ]
+   },
+   {
+    "supplier_id": 6,
+    "supplier_name": "Namangan Food Supply",
+    "points": [
+     {
+      "date": "2026-08-03",
+      "price": 3353.0
+     },
+     {
+      "date": "2026-08-04",
+      "price": 3424.0
+     },
+     {
+      "date": "2026-08-05",
+      "price": 3371.0
+     },
+     {
+      "date": "2026-08-06",
+      "price": 3340.0
+     },
+     {
+      "date": "2026-08-07",
+      "price": 3353.0
+     },
+     {
+      "date": "2026-08-08",
+      "price": 3374.0
+     },
+     {
+      "date": "2026-08-09",
+      "price": 3431.0
+     },
+     {
+      "date": "2026-08-10",
+      "price": 3390.0
+     },
+     {
+      "date": "2026-08-11",
+      "price": 3373.0
+     },
+     {
+      "date": "2026-08-12",
+      "price": 3362.0
+     },
+     {
+      "date": "2026-08-13",
+      "price": 3424.0
+     },
+     {
+      "date": "2026-08-14",
+      "price": 3374.0
+     },
+     {
+      "date": "2026-08-15",
+      "price": 3367.0
+     },
+     {
+      "date": "2026-08-16",
+      "price": 3421.0
+     },
+     {
+      "date": "2026-08-17",
+      "price": 3397.0
+     },
+     {
+      "date": "2026-08-18",
+      "price": 3395.0
+     },
+     {
+      "date": "2026-08-19",
+      "price": 3388.0
+     },
+     {
+      "date": "2026-08-20",
+      "price": 3328.0
+     },
+     {
+      "date": "2026-08-21",
+      "price": 3384.0
+     },
+     {
+      "date": "2026-08-22",
+      "price": 3397.0
+     },
+     {
+      "date": "2026-08-23",
+      "price": 3433.0
+     },
+     {
+      "date": "2026-08-24",
+      "price": 3356.0
+     },
+     {
+      "date": "2026-08-25",
+      "price": 3395.0
+     },
+     {
+      "date": "2026-08-26",
+      "price": 3414.0
+     },
+     {
+      "date": "2026-08-27",
+      "price": 3402.0
+     },
+     {
+      "date": "2026-08-28",
+      "price": 3364.0
+     },
+     {
+      "date": "2026-08-29",
+      "price": 3358.0
+     },
+     {
+      "date": "2026-08-30",
+      "price": 3358.0
+     },
+     {
+      "date": "2026-08-31",
+      "price": 3364.0
+     },
+     {
+      "date": "2026-09-01",
+      "price": 3351.0
+     },
+     {
+      "date": "2026-09-02",
+      "price": 3365.0
+     },
+     {
+      "date": "2026-09-03",
+      "price": 3362.0
+     },
+     {
+      "date": "2026-09-04",
+      "price": 3364.0
+     },
+     {
+      "date": "2026-09-05",
+      "price": 3339.0
+     },
+     {
+      "date": "2026-09-06",
+      "price": 3414.0
+     },
+     {
+      "date": "2026-09-07",
+      "price": 3378.0
+     },
+     {
+      "date": "2026-09-08",
+      "price": 3372.0
+     },
+     {
+      "date": "2026-09-09",
+      "price": 3406.0
+     },
+     {
+      "date": "2026-09-10",
+      "price": 3389.0
+     },
+     {
+      "date": "2026-09-11",
+      "price": 3366.0
+     },
+     {
+      "date": "2026-09-12",
+      "price": 3357.0
+     },
+     {
+      "date": "2026-09-13",
+      "price": 3390.0
+     },
+     {
+      "date": "2026-09-14",
+      "price": 3337.0
+     },
+     {
+      "date": "2026-09-15",
+      "price": 3316.0
+     },
+     {
+      "date": "2026-09-16",
+      "price": 3327.0
+     },
+     {
+      "date": "2026-09-17",
+      "price": 3301.0
+     },
+     {
+      "date": "2026-09-18",
+      "price": 3358.0
+     },
+     {
+      "date": "2026-09-19",
+      "price": 3364.0
+     },
+     {
+      "date": "2026-09-20",
+      "price": 3329.0
+     },
+     {
+      "date": "2026-09-21",
+      "price": 3323.0
+     },
+     {
+      "date": "2026-09-22",
+      "price": 3353.0
+     },
+     {
+      "date": "2026-09-23",
+      "price": 3371.0
+     },
+     {
+      "date": "2026-09-24",
+      "price": 3352.0
+     },
+     {
+      "date": "2026-09-25",
+      "price": 3314.0
+     },
+     {
+      "date": "2026-09-26",
+      "price": 3371.0
+     },
+     {
+      "date": "2026-09-27",
+      "price": 3326.0
+     },
+     {
+      "date": "2026-09-28",
+      "price": 3295.0
+     },
+     {
+      "date": "2026-09-29",
+      "price": 3324.0
+     },
+     {
+      "date": "2026-09-30",
+      "price": 3319.0
+     },
+     {
+      "date": "2026-10-01",
+      "price": 3286.0
+     },
+     {
+      "date": "2026-10-02",
+      "price": 3306.0
+     },
+     {
+      "date": "2026-10-03",
+      "price": 3291.0
+     },
+     {
+      "date": "2026-10-04",
+      "price": 3332.0
+     },
+     {
+      "date": "2026-10-05",
+      "price": 3335.0
+     },
+     {
+      "date": "2026-10-06",
+      "price": 3313.0
+     },
+     {
+      "date": "2026-10-07",
+      "price": 3326.0
+     },
+     {
+      "date": "2026-10-08",
+      "price": 3352.0
+     },
+     {
+      "date": "2026-10-09",
+      "price": 3305.0
+     },
+     {
+      "date": "2026-10-10",
+      "price": 3328.0
+     },
+     {
+      "date": "2026-10-11",
+      "price": 3285.0
+     },
+     {
+      "date": "2026-10-12",
+      "price": 3315.0
+     },
+     {
+      "date": "2026-10-13",
+      "price": 3323.0
+     },
+     {
+      "date": "2026-10-14",
+      "price": 3296.0
+     },
+     {
+      "date": "2026-10-15",
+      "price": 3265.0
+     },
+     {
+      "date": "2026-10-16",
+      "price": 3282.0
+     },
+     {
+      "date": "2026-10-17",
+      "price": 3299.0
+     },
+     {
+      "date": "2026-10-18",
+      "price": 3342.0
+     },
+     {
+      "date": "2026-10-19",
+      "price": 3298.0
+     },
+     {
+      "date": "2026-10-20",
+      "price": 3304.0
+     },
+     {
+      "date": "2026-10-21",
+      "price": 3286.0
+     },
+     {
+      "date": "2026-10-22",
+      "price": 3335.0
+     },
+     {
+      "date": "2026-10-23",
+      "price": 3286.0
+     },
+     {
+      "date": "2026-10-24",
+      "price": 3343.0
+     },
+     {
+      "date": "2026-10-25",
+      "price": 3333.0
+     },
+     {
+      "date": "2026-10-26",
+      "price": 3282.0
+     },
+     {
+      "date": "2026-10-27",
+      "price": 3318.0
+     },
+     {
+      "date": "2026-10-28",
+      "price": 3257.0
+     },
+     {
+      "date": "2026-10-29",
+      "price": 3290.0
+     },
+     {
+      "date": "2026-10-30",
+      "price": 3306.0
+     },
+     {
+      "date": "2026-10-31",
+      "price": 3300.0
+     }
+    ]
+   },
+   {
+    "supplier_id": 1,
+    "supplier_name": "Tashkent Agro Trade",
+    "points": [
+     {
+      "date": "2026-08-03",
+      "price": 3670.0
+     },
+     {
+      "date": "2026-08-04",
+      "price": 3681.0
+     },
+     {
+      "date": "2026-08-05",
+      "price": 3615.0
+     },
+     {
+      "date": "2026-08-06",
+      "price": 3688.0
+     },
+     {
+      "date": "2026-08-07",
+      "price": 3679.0
+     },
+     {
+      "date": "2026-08-08",
+      "price": 3648.0
+     },
+     {
+      "date": "2026-08-09",
+      "price": 3677.0
+     },
+     {
+      "date": "2026-08-10",
+      "price": 3703.0
+     },
+     {
+      "date": "2026-08-11",
+      "price": 3683.0
+     },
+     {
+      "date": "2026-08-12",
+      "price": 3700.0
+     },
+     {
+      "date": "2026-08-13",
+      "price": 3705.0
+     },
+     {
+      "date": "2026-08-14",
+      "price": 3657.0
+     },
+     {
+      "date": "2026-08-15",
+      "price": 3720.0
+     },
+     {
+      "date": "2026-08-16",
+      "price": 3719.0
+     },
+     {
+      "date": "2026-08-17",
+      "price": 3739.0
+     },
+     {
+      "date": "2026-08-18",
+      "price": 3723.0
+     },
+     {
+      "date": "2026-08-19",
+      "price": 3719.0
+     },
+     {
+      "date": "2026-08-20",
+      "price": 3728.0
+     },
+     {
+      "date": "2026-08-21",
+      "price": 3681.0
+     },
+     {
+      "date": "2026-08-22",
+      "price": 3711.0
+     },
+     {
+      "date": "2026-08-23",
+      "price": 3778.0
+     },
+     {
+      "date": "2026-08-24",
+      "price": 3783.0
+     },
+     {
+      "date": "2026-08-25",
+      "price": 3703.0
+     },
+     {
+      "date": "2026-08-26",
+      "price": 3782.0
+     },
+     {
+      "date": "2026-08-27",
+      "price": 3762.0
+     },
+     {
+      "date": "2026-08-28",
+      "price": 3743.0
+     },
+     {
+      "date": "2026-08-29",
+      "price": 3720.0
+     },
+     {
+      "date": "2026-08-30",
+      "price": 3788.0
+     },
+     {
+      "date": "2026-08-31",
+      "price": 3735.0
+     },
+     {
+      "date": "2026-09-01",
+      "price": 3767.0
+     },
+     {
+      "date": "2026-09-02",
+      "price": 3722.0
+     },
+     {
+      "date": "2026-09-03",
+      "price": 3767.0
+     },
+     {
+      "date": "2026-09-04",
+      "price": 3754.0
+     },
+     {
+      "date": "2026-09-05",
+      "price": 3748.0
+     },
+     {
+      "date": "2026-09-06",
+      "price": 3768.0
+     },
+     {
+      "date": "2026-09-07",
+      "price": 3757.0
+     },
+     {
+      "date": "2026-09-08",
+      "price": 3835.0
+     },
+     {
+      "date": "2026-09-09",
+      "price": 3813.0
+     },
+     {
+      "date": "2026-09-10",
+      "price": 3760.0
+     },
+     {
+      "date": "2026-09-11",
+      "price": 3814.0
+     },
+     {
+      "date": "2026-09-12",
+      "price": 3832.0
+     },
+     {
+      "date": "2026-09-13",
+      "price": 3782.0
+     },
+     {
+      "date": "2026-09-14",
+      "price": 3851.0
+     },
+     {
+      "date": "2026-09-15",
+      "price": 3844.0
+     },
+     {
+      "date": "2026-09-16",
+      "price": 3818.0
+     },
+     {
+      "date": "2026-09-17",
+      "price": 3861.0
+     },
+     {
+      "date": "2026-09-18",
+      "price": 3792.0
+     },
+     {
+      "date": "2026-09-19",
+      "price": 3777.0
+     },
+     {
+      "date": "2026-09-20",
+      "price": 3841.0
+     },
+     {
+      "date": "2026-09-21",
+      "price": 3825.0
+     },
+     {
+      "date": "2026-09-22",
+      "price": 3898.0
+     },
+     {
+      "date": "2026-09-23",
+      "price": 3822.0
+     },
+     {
+      "date": "2026-09-24",
+      "price": 3846.0
+     },
+     {
+      "date": "2026-09-25",
+      "price": 3895.0
+     },
+     {
+      "date": "2026-09-26",
+      "price": 3820.0
+     },
+     {
+      "date": "2026-09-27",
+      "price": 3826.0
+     },
+     {
+      "date": "2026-09-28",
+      "price": 3868.0
+     },
+     {
+      "date": "2026-09-29",
+      "price": 3855.0
+     },
+     {
+      "date": "2026-09-30",
+      "price": 3825.0
+     },
+     {
+      "date": "2026-10-01",
+      "price": 3887.0
+     },
+     {
+      "date": "2026-10-02",
+      "price": 3904.0
+     },
+     {
+      "date": "2026-10-03",
+      "price": 3833.0
+     },
+     {
+      "date": "2026-10-04",
+      "price": 3873.0
+     },
+     {
+      "date": "2026-10-05",
+      "price": 3874.0
+     },
+     {
+      "date": "2026-10-06",
+      "price": 3909.0
+     },
+     {
+      "date": "2026-10-07",
+      "price": 3927.0
+     },
+     {
+      "date": "2026-10-08",
+      "price": 3892.0
+     },
+     {
+      "date": "2026-10-09",
+      "price": 3947.0
+     },
+     {
+      "date": "2026-10-10",
+      "price": 3880.0
+     },
+     {
+      "date": "2026-10-11",
+      "price": 3957.0
+     },
+     {
+      "date": "2026-10-12",
+      "price": 3895.0
+     },
+     {
+      "date": "2026-10-13",
+      "price": 3886.0
+     },
+     {
+      "date": "2026-10-14",
+      "price": 3896.0
+     },
+     {
+      "date": "2026-10-15",
+      "price": 3931.0
+     },
+     {
+      "date": "2026-10-16",
+      "price": 3965.0
+     },
+     {
+      "date": "2026-10-17",
+      "price": 3892.0
+     },
+     {
+      "date": "2026-10-18",
+      "price": 3974.0
+     },
+     {
+      "date": "2026-10-19",
+      "price": 3967.0
+     },
+     {
+      "date": "2026-10-20",
+      "price": 3964.0
+     },
+     {
+      "date": "2026-10-21",
+      "price": 3995.0
+     },
+     {
+      "date": "2026-10-22",
+      "price": 3946.0
+     },
+     {
+      "date": "2026-10-23",
+      "price": 4009.0
+     },
+     {
+      "date": "2026-10-24",
+      "price": 3956.0
+     },
+     {
+      "date": "2026-10-25",
+      "price": 3964.0
+     },
+     {
+      "date": "2026-10-26",
+      "price": 3976.0
+     },
+     {
+      "date": "2026-10-27",
+      "price": 3981.0
+     },
+     {
+      "date": "2026-10-28",
+      "price": 3999.0
+     },
+     {
+      "date": "2026-10-29",
+      "price": 4011.0
+     },
+     {
+      "date": "2026-10-30",
+      "price": 4021.0
+     },
+     {
+      "date": "2026-10-31",
+      "price": 4000.0
+     }
+    ]
+   }
+  ],
+  "min_price": 3656.75,
+  "max_price": 3780.0,
+  "avg_price": 3714.73,
+  "change_pct": 2.2,
+  "data_source": "demo"
+ },
+ "suppliers": {
+  "items": [
+   {
+    "id": 4,
+    "name": "Bukhara Farm Direct",
+    "location": "Bukhara",
+    "phone": "+998 65 221 77 03",
+    "rating": 4.8,
+    "delivery_days": 2,
+    "is_verified": true,
+    "description": "Farm-direct supplier. Free delivery on orders above 250,000 UZS within Bukhara and Samarkand.",
+    "categories": [
+     "Vegetables",
+     "Pantry"
+    ],
+    "is_demo": true,
+    "offer_count": 3,
+    "product_count": 3,
+    "created_at": "2026-10-31T07:27:03.847241"
+   },
+   {
+    "id": 1,
+    "name": "Tashkent Agro Trade",
+    "location": "Tashkent",
+    "phone": "+998 71 200 41 20",
+    "rating": 4.6,
+    "delivery_days": 1,
+    "is_verified": true,
+    "description": "Wholesale distributor working with grocery chains and HoReCa across Tashkent region. Own fleet, next-day delivery.",
+    "categories": [
+     "Vegetables",
+     "Grains",
+     "Pantry"
+    ],
+    "is_demo": true,
+    "offer_count": 8,
+    "product_count": 8,
+    "created_at": "2026-10-31T07:27:03.847223"
+   },
+   {
+    "id": 2,
+    "name": "Fergana Fresh Produce",
+    "location": "Fergana",
+    "phone": "+998 73 244 18 65",
+    "rating": 4.4,
+    "delivery_days": 2,
+    "is_verified": true,
+    "description": "Farmer cooperative shipping produce from the Fergana valley in refrigerated trucks.",
+    "categories": [
+     "Vegetables",
+     "Dairy & Eggs"
+    ],
+    "is_demo": true,
+    "offer_count": 4,
+    "product_count": 4,
+    "created_at": "2026-10-31T07:27:03.847236"
+   },
+   {
+    "id": 5,
+    "name": "Andijan Grain Co.",
+    "location": "Andijan",
+    "phone": "+998 74 223 56 88",
+    "rating": 4.3,
+    "delivery_days": 4,
+    "is_verified": true,
+    "description": "Grain and flour specialist supplying bakeries and food producers since 2011.",
+    "categories": [
+     "Grains",
+     "Oils & Fats"
+    ],
+    "is_demo": true,
+    "offer_count": 3,
+    "product_count": 3,
+    "created_at": "2026-10-31T07:27:03.847243"
+   },
+   {
+    "id": 3,
+    "name": "Samarkand Wholesale Hub",
+    "location": "Samarkand",
+    "phone": "+998 66 233 90 14",
+    "rating": 4.1,
+    "delivery_days": 3,
+    "is_verified": false,
+    "description": "Large wholesale market operator with mixed dry goods and fresh produce inventory.",
+    "categories": [
+     "Vegetables",
+     "Grains",
+     "Oils & Fats",
+     "Pantry"
+    ],
+    "is_demo": true,
+    "offer_count": 6,
+    "product_count": 6,
+    "created_at": "2026-10-31T07:27:03.847238"
+   },
+   {
+    "id": 6,
+    "name": "Namangan Food Supply",
+    "location": "Namangan",
+    "phone": "+998 69 234 12 47",
+    "rating": 3.9,
+    "delivery_days": 2,
+    "is_verified": false,
+    "description": "Regional food supply company working with small retailers and canteens.",
+    "categories": [
+     "Pantry",
+     "Dairy & Eggs"
+    ],
+    "is_demo": true,
+    "offer_count": 4,
+    "product_count": 4,
+    "created_at": "2026-10-31T07:27:03.847246"
+   }
+  ],
+  "total": 6,
+  "page": 1,
+  "page_size": 9,
+  "pages": 1
+ },
+ "supplier": {
+  "id": 1,
+  "name": "Tashkent Agro Trade",
+  "location": "Tashkent",
+  "phone": "+998 71 200 41 20",
+  "rating": 4.6,
+  "delivery_days": 1,
+  "is_verified": true,
+  "description": "Wholesale distributor working with grocery chains and HoReCa across Tashkent region. Own fleet, next-day delivery.",
+  "categories": [
+   "Vegetables",
+   "Grains",
+   "Pantry"
+  ],
+  "is_demo": true,
+  "offer_count": 8,
+  "product_count": 8,
+  "created_at": "2026-10-31T07:27:03.847223"
+ },
+ "supplier_offers": [
+  {
+   "id": 1,
+   "product_id": 1,
+   "supplier_id": 1,
+   "unit_price": 4000,
+   "delivery_cost": 50000,
+   "minimum_order_quantity": 50.0,
+   "available_quantity": 800.0,
+   "status": "in_stock",
+   "is_demo": true,
+   "updated_at": "2026-10-31T05:27:03.848378",
+   "product": {
+    "id": 1,
+    "name": "Potatoes",
+    "category": "Vegetables",
+    "unit": "kg",
+    "image_url": "/products/potatoes.svg"
+   },
+   "supplier": {
+    "id": 1,
+    "name": "Tashkent Agro Trade",
+    "location": "Tashkent",
+    "phone": "+998 71 200 41 20",
+    "rating": 4.6,
+    "delivery_days": 1,
+    "is_verified": true
+   },
+   "product_cost": null,
+   "total_cost": null,
+   "cost_per_unit": null,
+   "eligible": null
+  },
+  {
+   "id": 5,
+   "product_id": 2,
+   "supplier_id": 1,
+   "unit_price": 12500,
+   "delivery_cost": 60000,
+   "minimum_order_quantity": 25.0,
+   "available_quantity": 300.0,
+   "status": "in_stock",
+   "is_demo": true,
+   "updated_at": "2026-10-30T19:27:03.848378",
+   "product": {
+    "id": 2,
+    "name": "Tomatoes",
+    "category": "Vegetables",
+    "unit": "kg",
+    "image_url": "/products/tomatoes.svg"
+   },
+   "supplier": {
+    "id": 1,
+    "name": "Tashkent Agro Trade",
+    "location": "Tashkent",
+    "phone": "+998 71 200 41 20",
+    "rating": 4.6,
+    "delivery_days": 1,
+    "is_verified": true
+   },
+   "product_cost": null,
+   "total_cost": null,
+   "cost_per_unit": null,
+   "eligible": null
+  },
+  {
+   "id": 9,
+   "product_id": 3,
+   "supplier_id": 1,
+   "unit_price": 3200,
+   "delivery_cost": 45000,
+   "minimum_order_quantity": 50.0,
+   "available_quantity": 900.0,
+   "status": "in_stock",
+   "is_demo": true,
+   "updated_at": "2026-10-30T13:27:03.848378",
+   "product": {
+    "id": 3,
+    "name": "Onions",
+    "category": "Vegetables",
+    "unit": "kg",
+    "image_url": "/products/onions.svg"
+   },
+   "supplier": {
+    "id": 1,
+    "name": "Tashkent Agro Trade",
+    "location": "Tashkent",
+    "phone": "+998 71 200 41 20",
+    "rating": 4.6,
+    "delivery_days": 1,
+    "is_verified": true
+   },
+   "product_cost": null,
+   "total_cost": null,
+   "cost_per_unit": null,
+   "eligible": null
+  },
+  {
+   "id": 14,
+   "product_id": 4,
+   "supplier_id": 1,
+   "unit_price": 15200,
+   "delivery_cost": 55000,
+   "minimum_order_quantity": 50.0,
+   "available_quantity": 700.0,
+   "status": "in_stock",
+   "is_demo": true,
+   "updated_at": "2026-10-30T19:27:03.848378",
+   "product": {
+    "id": 4,
+    "name": "Rice",
+    "category": "Grains",
+    "unit": "kg",
+    "image_url": "/products/rice.svg"
+   },
+   "supplier": {
+    "id": 1,
+    "name": "Tashkent Agro Trade",
+    "location": "Tashkent",
+    "phone": "+998 71 200 41 20",
+    "rating": 4.6,
+    "delivery_days": 1,
+    "is_verified": true
+   },
+   "product_cost": null,
+   "total_cost": null,
+   "cost_per_unit": null,
+   "eligible": null
+  },
+  {
+   "id": 18,
+   "product_id": 5,
+   "supplier_id": 1,
+   "unit_price": 6400,
+   "delivery_cost": 70000,
+   "minimum_order_quantity": 300.0,
+   "available_quantity": 1200.0,
+   "status": "low_stock",
+   "is_demo": true,
+   "updated_at": "2026-10-30T13:27:03.848378",
+   "product": {
+    "id": 5,
+    "name": "Flour",
+    "category": "Grains",
+    "unit": "kg",
+    "image_url": "/products/flour.svg"
+   },
+   "supplier": {
+    "id": 1,
+    "name": "Tashkent Agro Trade",
+    "location": "Tashkent",
+    "phone": "+998 71 200 41 20",
+    "rating": 4.6,
+    "delivery_days": 1,
+    "is_verified": true
+   },
+   "product_cost": null,
+   "total_cost": null,
+   "cost_per_unit": null,
+   "eligible": null
+  },
+  {
+   "id": 21,
+   "product_id": 6,
+   "supplier_id": 1,
+   "unit_price": 22400,
+   "delivery_cost": 40000,
+   "minimum_order_quantity": 20.0,
+   "available_quantity": 300.0,
+   "status": "in_stock",
+   "is_demo": true,
+   "updated_at": "2026-10-31T02:27:03.848378",
+   "product": {
+    "id": 6,
+    "name": "Cooking oil",
+    "category": "Oils & Fats",
+    "unit": "l",
+    "image_url": "/products/cooking-oil.svg"
+   },
+   "supplier": {
+    "id": 1,
+    "name": "Tashkent Agro Trade",
+    "location": "Tashkent",
+    "phone": "+998 71 200 41 20",
+    "rating": 4.6,
+    "delivery_days": 1,
+    "is_verified": true
+   },
+   "product_cost": null,
+   "total_cost": null,
+   "cost_per_unit": null,
+   "eligible": null
+  },
+  {
+   "id": 24,
+   "product_id": 7,
+   "supplier_id": 1,
+   "unit_price": 12200,
+   "delivery_cost": 45000,
+   "minimum_order_quantity": 50.0,
+   "available_quantity": 600.0,
+   "status": "in_stock",
+   "is_demo": true,
+   "updated_at": "2026-10-29T07:27:03.848378",
+   "product": {
+    "id": 7,
+    "name": "Sugar",
+    "category": "Pantry",
+    "unit": "kg",
+    "image_url": "/products/sugar.svg"
+   },
+   "supplier": {
+    "id": 1,
+    "name": "Tashkent Agro Trade",
+    "location": "Tashkent",
+    "phone": "+998 71 200 41 20",
+    "rating": 4.6,
+    "delivery_days": 1,
+    "is_verified": true
+   },
+   "product_cost": null,
+   "total_cost": null,
+   "cost_per_unit": null,
+   "eligible": null
+  },
+  {
+   "id": 28,
+   "product_id": 8,
+   "supplier_id": 1,
+   "unit_price": 43500,
+   "delivery_cost": 25000,
+   "minimum_order_quantity": 10.0,
+   "available_quantity": 60.0,
+   "status": "low_stock",
+   "is_demo": true,
+   "updated_at": "2026-10-31T05:27:03.848378",
+   "product": {
+    "id": 8,
+    "name": "Eggs",
+    "category": "Dairy & Eggs",
+    "unit": "tray",
+    "image_url": "/products/eggs.svg"
+   },
+   "supplier": {
+    "id": 1,
+    "name": "Tashkent Agro Trade",
+    "location": "Tashkent",
+    "phone": "+998 71 200 41 20",
+    "rating": 4.6,
+    "delivery_days": 1,
+    "is_verified": true
+   },
+   "product_cost": null,
+   "total_cost": null,
+   "cost_per_unit": null,
+   "eligible": null
+  }
+ ],
+ "locations": [
+  "Andijan",
+  "Bukhara",
+  "Fergana",
+  "Namangan",
+  "Samarkand",
+  "Tashkent"
+ ],
+ "offers": {
+  "items": [
+   {
+    "id": 10,
+    "product_id": 3,
+    "supplier_id": 2,
+    "unit_price": 2950,
+    "delivery_cost": 55000,
+    "minimum_order_quantity": 100.0,
+    "available_quantity": 1500.0,
+    "status": "in_stock",
+    "is_demo": true,
+    "updated_at": "2026-10-31T05:27:03.848378",
+    "product": {
+     "id": 3,
+     "name": "Onions",
+     "category": "Vegetables",
+     "unit": "kg",
+     "image_url": "/products/onions.svg"
+    },
+    "supplier": {
+     "id": 2,
+     "name": "Fergana Fresh Produce",
+     "location": "Fergana",
+     "phone": "+998 73 244 18 65",
+     "rating": 4.4,
+     "delivery_days": 2,
+     "is_verified": true
+    },
+    "product_cost": null,
+    "total_cost": null,
+    "cost_per_unit": null,
+    "eligible": null
+   },
+   {
+    "id": 11,
+    "product_id": 3,
+    "supplier_id": 3,
+    "unit_price": 3100,
+    "delivery_cost": 40000,
+    "minimum_order_quantity": 200.0,
+    "available_quantity": 2000.0,
+    "status": "in_stock",
+    "is_demo": true,
+    "updated_at": "2026-10-30T05:27:03.848378",
+    "product": {
+     "id": 3,
+     "name": "Onions",
+     "category": "Vegetables",
+     "unit": "kg",
+     "image_url": "/products/onions.svg"
+    },
+    "supplier": {
+     "id": 3,
+     "name": "Samarkand Wholesale Hub",
+     "location": "Samarkand",
+     "phone": "+998 66 233 90 14",
+     "rating": 4.1,
+     "delivery_days": 3,
+     "is_verified": false
+    },
+    "product_cost": null,
+    "total_cost": null,
+    "cost_per_unit": null,
+    "eligible": null
+   },
+   {
+    "id": 9,
+    "product_id": 3,
+    "supplier_id": 1,
+    "unit_price": 3200,
+    "delivery_cost": 45000,
+    "minimum_order_quantity": 50.0,
+    "available_quantity": 900.0,
+    "status": "in_stock",
+    "is_demo": true,
+    "updated_at": "2026-10-30T13:27:03.848378",
+    "product": {
+     "id": 3,
+     "name": "Onions",
+     "category": "Vegetables",
+     "unit": "kg",
+     "image_url": "/products/onions.svg"
+    },
+    "supplier": {
+     "id": 1,
+     "name": "Tashkent Agro Trade",
+     "location": "Tashkent",
+     "phone": "+998 71 200 41 20",
+     "rating": 4.6,
+     "delivery_days": 1,
+     "is_verified": true
+    },
+    "product_cost": null,
+    "total_cost": null,
+    "cost_per_unit": null,
+    "eligible": null
+   },
+   {
+    "id": 12,
+    "product_id": 3,
+    "supplier_id": 4,
+    "unit_price": 3400,
+    "delivery_cost": 0,
+    "minimum_order_quantity": 100.0,
+    "available_quantity": 600.0,
+    "status": "in_stock",
+    "is_demo": true,
+    "updated_at": "2026-10-31T02:27:03.848378",
+    "product": {
+     "id": 3,
+     "name": "Onions",
+     "category": "Vegetables",
+     "unit": "kg",
+     "image_url": "/products/onions.svg"
+    },
+    "supplier": {
+     "id": 4,
+     "name": "Bukhara Farm Direct",
+     "location": "Bukhara",
+     "phone": "+998 65 221 77 03",
+     "rating": 4.8,
+     "delivery_days": 2,
+     "is_verified": true
+    },
+    "product_cost": null,
+    "total_cost": null,
+    "cost_per_unit": null,
+    "eligible": null
+   },
+   {
+    "id": 2,
+    "product_id": 1,
+    "supplier_id": 2,
+    "unit_price": 3500,
+    "delivery_cost": 50000,
+    "minimum_order_quantity": 100.0,
+    "available_quantity": 1200.0,
+    "status": "in_stock",
+    "is_demo": true,
+    "updated_at": "2026-10-30T05:27:03.848378",
+    "product": {
+     "id": 1,
+     "name": "Potatoes",
+     "category": "Vegetables",
+     "unit": "kg",
+     "image_url": "/products/potatoes.svg"
+    },
+    "supplier": {
+     "id": 2,
+     "name": "Fergana Fresh Produce",
+     "location": "Fergana",
+     "phone": "+998 73 244 18 65",
+     "rating": 4.4,
+     "delivery_days": 2,
+     "is_verified": true
+    },
+    "product_cost": null,
+    "total_cost": null,
+    "cost_per_unit": null,
+    "eligible": null
+   },
+   {
+    "id": 1,
+    "product_id": 1,
+    "supplier_id": 1,
+    "unit_price": 4000,
+    "delivery_cost": 50000,
+    "minimum_order_quantity": 50.0,
+    "available_quantity": 800.0,
+    "status": "in_stock",
+    "is_demo": true,
+    "updated_at": "2026-10-31T05:27:03.848378",
+    "product": {
+     "id": 1,
+     "name": "Potatoes",
+     "category": "Vegetables",
+     "unit": "kg",
+     "image_url": "/products/potatoes.svg"
+    },
+    "supplier": {
+     "id": 1,
+     "name": "Tashkent Agro Trade",
+     "location": "Tashkent",
+     "phone": "+998 71 200 41 20",
+     "rating": 4.6,
+     "delivery_days": 1,
+     "is_verified": true
+    },
+    "product_cost": null,
+    "total_cost": null,
+    "cost_per_unit": null,
+    "eligible": null
+   },
+   {
+    "id": 3,
+    "product_id": 1,
+    "supplier_id": 4,
+    "unit_price": 4200,
+    "delivery_cost": 0,
+    "minimum_order_quantity": 20.0,
+    "available_quantity": 400.0,
+    "status": "in_stock",
+    "is_demo": true,
+    "updated_at": "2026-10-31T02:27:03.848378",
+    "product": {
+     "id": 1,
+     "name": "Potatoes",
+     "category": "Vegetables",
+     "unit": "kg",
+     "image_url": "/products/potatoes.svg"
+    },
+    "supplier": {
+     "id": 4,
+     "name": "Bukhara Farm Direct",
+     "location": "Bukhara",
+     "phone": "+998 65 221 77 03",
+     "rating": 4.8,
+     "delivery_days": 2,
+     "is_verified": true
+    },
+    "product_cost": null,
+    "total_cost": null,
+    "cost_per_unit": null,
+    "eligible": null
+   },
+   {
+    "id": 17,
+    "product_id": 5,
+    "supplier_id": 3,
+    "unit_price": 5900,
+    "delivery_cost": 110000,
+    "minimum_order_quantity": 500.0,
+    "available_quantity": 8000.0,
+    "status": "in_stock",
+    "is_demo": true,
+    "updated_at": "2026-10-27T07:27:03.848378",
+    "product": {
+     "id": 5,
+     "name": "Flour",
+     "category": "Grains",
+     "unit": "kg",
+     "image_url": "/products/flour.svg"
+    },
+    "supplier": {
+     "id": 3,
+     "name": "Samarkand Wholesale Hub",
+     "location": "Samarkand",
+     "phone": "+998 66 233 90 14",
+     "rating": 4.1,
+     "delivery_days": 3,
+     "is_verified": false
+    },
+    "product_cost": null,
+    "total_cost": null,
+    "cost_per_unit": null,
+    "eligible": null
+   },
+   {
+    "id": 16,
+    "product_id": 5,
+    "supplier_id": 5,
+    "unit_price": 6200,
+    "delivery_cost": 90000,
+    "minimum_order_quantity": 500.0,
+    "available_quantity": 6000.0,
+    "status": "in_stock",
+    "is_demo": true,
+    "updated_at": "2026-10-31T04:27:03.848378",
+    "product": {
+     "id": 5,
+     "name": "Flour",
+     "category": "Grains",
+     "unit": "kg",
+     "image_url": "/products/flour.svg"
+    },
+    "supplier": {
+     "id": 5,
+     "name": "Andijan Grain Co.",
+     "location": "Andijan",
+     "phone": "+998 74 223 56 88",
+     "rating": 4.3,
+     "delivery_days": 4,
+     "is_verified": true
+    },
+    "product_cost": null,
+    "total_cost": null,
+    "cost_per_unit": null,
+    "eligible": null
+   },
+   {
+    "id": 18,
+    "product_id": 5,
+    "supplier_id": 1,
+    "unit_price": 6400,
+    "delivery_cost": 70000,
+    "minimum_order_quantity": 300.0,
+    "available_quantity": 1200.0,
+    "status": "low_stock",
+    "is_demo": true,
+    "updated_at": "2026-10-30T13:27:03.848378",
+    "product": {
+     "id": 5,
+     "name": "Flour",
+     "category": "Grains",
+     "unit": "kg",
+     "image_url": "/products/flour.svg"
+    },
+    "supplier": {
+     "id": 1,
+     "name": "Tashkent Agro Trade",
+     "location": "Tashkent",
+     "phone": "+998 71 200 41 20",
+     "rating": 4.6,
+     "delivery_days": 1,
+     "is_verified": true
+    },
+    "product_cost": null,
+    "total_cost": null,
+    "cost_per_unit": null,
+    "eligible": null
+   },
+   {
+    "id": 8,
+    "product_id": 2,
+    "supplier_id": 3,
+    "unit_price": 11200,
+    "delivery_cost": 95000,
+    "minimum_order_quantity": 100.0,
+    "available_quantity": 500.0,
+    "status": "in_stock",
+    "is_demo": true,
+    "updated_at": "2026-10-27T07:27:03.848378",
+    "product": {
+     "id": 2,
+     "name": "Tomatoes",
+     "category": "Vegetables",
+     "unit": "kg",
+     "image_url": "/products/tomatoes.svg"
+    },
+    "supplier": {
+     "id": 3,
+     "name": "Samarkand Wholesale Hub",
+     "location": "Samarkand",
+     "phone": "+998 66 233 90 14",
+     "rating": 4.1,
+     "delivery_days": 3,
+     "is_verified": false
+    },
+    "product_cost": null,
+    "total_cost": null,
+    "cost_per_unit": null,
+    "eligible": null
+   },
+   {
+    "id": 25,
+    "product_id": 7,
+    "supplier_id": 6,
+    "unit_price": 11400,
+    "delivery_cost": 75000,
+    "minimum_order_quantity": 200.0,
+    "available_quantity": 900.0,
+    "status": "in_stock",
+    "is_demo": true,
+    "updated_at": "2026-10-31T04:27:03.848378",
+    "product": {
+     "id": 7,
+     "name": "Sugar",
+     "category": "Pantry",
+     "unit": "kg",
+     "image_url": "/products/sugar.svg"
+    },
+    "supplier": {
+     "id": 6,
+     "name": "Namangan Food Supply",
+     "location": "Namangan",
+     "phone": "+998 69 234 12 47",
+     "rating": 3.9,
+     "delivery_days": 2,
+     "is_verified": false
+    },
+    "product_cost": null,
+    "total_cost": null,
+    "cost_per_unit": null,
+    "eligible": null
+   },
+   {
+    "id": 6,
+    "product_id": 2,
+    "supplier_id": 2,
+    "unit_price": 11800,
+    "delivery_cost": 75000,
+    "minimum_order_quantity": 50.0,
+    "available_quantity": 220.0,
+    "status": "in_stock",
+    "is_demo": true,
+    "updated_at": "2026-10-29T07:27:03.848378",
+    "product": {
+     "id": 2,
+     "name": "Tomatoes",
+     "category": "Vegetables",
+     "unit": "kg",
+     "image_url": "/products/tomatoes.svg"
+    },
+    "supplier": {
+     "id": 2,
+     "name": "Fergana Fresh Produce",
+     "location": "Fergana",
+     "phone": "+998 73 244 18 65",
+     "rating": 4.4,
+     "delivery_days": 2,
+     "is_verified": true
+    },
+    "product_cost": null,
+    "total_cost": null,
+    "cost_per_unit": null,
+    "eligible": null
+   },
+   {
+    "id": 23,
+    "product_id": 7,
+    "supplier_id": 3,
+    "unit_price": 11800,
+    "delivery_cost": 60000,
+    "minimum_order_quantity": 100.0,
+    "available_quantity": 2200.0,
+    "status": "in_stock",
+    "is_demo": true,
+    "updated_at": "2026-10-30T19:27:03.848378",
+    "product": {
+     "id": 7,
+     "name": "Sugar",
+     "category": "Pantry",
+     "unit": "kg",
+     "image_url": "/products/sugar.svg"
+    },
+    "supplier": {
+     "id": 3,
+     "name": "Samarkand Wholesale Hub",
+     "location": "Samarkand",
+     "phone": "+998 66 233 90 14",
+     "rating": 4.1,
+     "delivery_days": 3,
+     "is_verified": false
+    },
+    "product_cost": null,
+    "total_cost": null,
+    "cost_per_unit": null,
+    "eligible": null
+   },
+   {
+    "id": 24,
+    "product_id": 7,
+    "supplier_id": 1,
+    "unit_price": 12200,
+    "delivery_cost": 45000,
+    "minimum_order_quantity": 50.0,
+    "available_quantity": 600.0,
+    "status": "in_stock",
+    "is_demo": true,
+    "updated_at": "2026-10-29T07:27:03.848378",
+    "product": {
+     "id": 7,
+     "name": "Sugar",
+     "category": "Pantry",
+     "unit": "kg",
+     "image_url": "/products/sugar.svg"
+    },
+    "supplier": {
+     "id": 1,
+     "name": "Tashkent Agro Trade",
+     "location": "Tashkent",
+     "phone": "+998 71 200 41 20",
+     "rating": 4.6,
+     "delivery_days": 1,
+     "is_verified": true
+    },
+    "product_cost": null,
+    "total_cost": null,
+    "cost_per_unit": null,
+    "eligible": null
+   },
+   {
+    "id": 5,
+    "product_id": 2,
+    "supplier_id": 1,
+    "unit_price": 12500,
+    "delivery_cost": 60000,
+    "minimum_order_quantity": 25.0,
+    "available_quantity": 300.0,
+    "status": "in_stock",
+    "is_demo": true,
+    "updated_at": "2026-10-30T19:27:03.848378",
+    "product": {
+     "id": 2,
+     "name": "Tomatoes",
+     "category": "Vegetables",
+     "unit": "kg",
+     "image_url": "/products/tomatoes.svg"
+    },
+    "supplier": {
+     "id": 1,
+     "name": "Tashkent Agro Trade",
+     "location": "Tashkent",
+     "phone": "+998 71 200 41 20",
+     "rating": 4.6,
+     "delivery_days": 1,
+     "is_verified": true
+    },
+    "product_cost": null,
+    "total_cost": null,
+    "cost_per_unit": null,
+    "eligible": null
+   },
+   {
+    "id": 7,
+    "product_id": 2,
+    "supplier_id": 4,
+    "unit_price": 13200,
+    "delivery_cost": 0,
+    "minimum_order_quantity": 30.0,
+    "available_quantity": 150.0,
+    "status": "low_stock",
+    "is_demo": true,
+    "updated_at": "2026-10-31T04:27:03.848378",
+    "product": {
+     "id": 2,
+     "name": "Tomatoes",
+     "category": "Vegetables",
+     "unit": "kg",
+     "image_url": "/products/tomatoes.svg"
+    },
+    "supplier": {
+     "id": 4,
+     "name": "Bukhara Farm Direct",
+     "location": "Bukhara",
+     "phone": "+998 65 221 77 03",
+     "rating": 4.8,
+     "delivery_days": 2,
+     "is_verified": true
+    },
+    "product_cost": null,
+    "total_cost": null,
+    "cost_per_unit": null,
+    "eligible": null
+   },
+   {
+    "id": 15,
+    "product_id": 4,
+    "supplier_id": 3,
+    "unit_price": 13900,
+    "delivery_cost": 120000,
+    "minimum_order_quantity": 250.0,
+    "available_quantity": 3000.0,
+    "status": "in_stock",
+    "is_demo": true,
+    "updated_at": "2026-10-29T07:27:03.848378",
+    "product": {
+     "id": 4,
+     "name": "Rice",
+     "category": "Grains",
+     "unit": "kg",
+     "image_url": "/products/rice.svg"
+    },
+    "supplier": {
+     "id": 3,
+     "name": "Samarkand Wholesale Hub",
+     "location": "Samarkand",
+     "phone": "+998 66 233 90 14",
+     "rating": 4.1,
+     "delivery_days": 3,
+     "is_verified": false
+    },
+    "product_cost": null,
+    "total_cost": null,
+    "cost_per_unit": null,
+    "eligible": null
+   },
+   {
+    "id": 13,
+    "product_id": 4,
+    "supplier_id": 5,
+    "unit_price": 14500,
+    "delivery_cost": 80000,
+    "minimum_order_quantity": 100.0,
+    "available_quantity": 2500.0,
+    "status": "in_stock",
+    "is_demo": true,
+    "updated_at": "2026-10-28T08:27:03.848378",
+    "product": {
+     "id": 4,
+     "name": "Rice",
+     "category": "Grains",
+     "unit": "kg",
+     "image_url": "/products/rice.svg"
+    },
+    "supplier": {
+     "id": 5,
+     "name": "Andijan Grain Co.",
+     "location": "Andijan",
+     "phone": "+998 74 223 56 88",
+     "rating": 4.3,
+     "delivery_days": 4,
+     "is_verified": true
+    },
+    "product_cost": null,
+    "total_cost": null,
+    "cost_per_unit": null,
+    "eligible": null
+   },
+   {
+    "id": 14,
+    "product_id": 4,
+    "supplier_id": 1,
+    "unit_price": 15200,
+    "delivery_cost": 55000,
+    "minimum_order_quantity": 50.0,
+    "available_quantity": 700.0,
+    "status": "in_stock",
+    "is_demo": true,
+    "updated_at": "2026-10-30T19:27:03.848378",
+    "product": {
+     "id": 4,
+     "name": "Rice",
+     "category": "Grains",
+     "unit": "kg",
+     "image_url": "/products/rice.svg"
+    },
+    "supplier": {
+     "id": 1,
+     "name": "Tashkent Agro Trade",
+     "location": "Tashkent",
+     "phone": "+998 71 200 41 20",
+     "rating": 4.6,
+     "delivery_days": 1,
+     "is_verified": true
+    },
+    "product_cost": null,
+    "total_cost": null,
+    "cost_per_unit": null,
+    "eligible": null
+   },
+   {
+    "id": 22,
+    "product_id": 6,
+    "supplier_id": 6,
+    "unit_price": 19900,
+    "delivery_cost": 95000,
+    "minimum_order_quantity": 200.0,
+    "available_quantity": 400.0,
+    "status": "in_stock",
+    "is_demo": true,
+    "updated_at": "2026-10-28T08:27:03.848378",
+    "product": {
+     "id": 6,
+     "name": "Cooking oil",
+     "category": "Oils & Fats",
+     "unit": "l",
+     "image_url": "/products/cooking-oil.svg"
+    },
+    "supplier": {
+     "id": 6,
+     "name": "Namangan Food Supply",
+     "location": "Namangan",
+     "phone": "+998 69 234 12 47",
+     "rating": 3.9,
+     "delivery_days": 2,
+     "is_verified": false
+    },
+    "product_cost": null,
+    "total_cost": null,
+    "cost_per_unit": null,
+    "eligible": null
+   },
+   {
+    "id": 20,
+    "product_id": 6,
+    "supplier_id": 3,
+    "unit_price": 20800,
+    "delivery_cost": 85000,
+    "minimum_order_quantity": 100.0,
+    "available_quantity": 1500.0,
+    "status": "in_stock",
+    "is_demo": true,
+    "updated_at": "2026-10-30T05:27:03.848378",
+    "product": {
+     "id": 6,
+     "name": "Cooking oil",
+     "category": "Oils & Fats",
+     "unit": "l",
+     "image_url": "/products/cooking-oil.svg"
+    },
+    "supplier": {
+     "id": 3,
+     "name": "Samarkand Wholesale Hub",
+     "location": "Samarkand",
+     "phone": "+998 66 233 90 14",
+     "rating": 4.1,
+     "delivery_days": 3,
+     "is_verified": false
+    },
+    "product_cost": null,
+    "total_cost": null,
+    "cost_per_unit": null,
+    "eligible": null
+   },
+   {
+    "id": 19,
+    "product_id": 6,
+    "supplier_id": 5,
+    "unit_price": 21500,
+    "delivery_cost": 65000,
+    "minimum_order_quantity": 50.0,
+    "available_quantity": 900.0,
+    "status": "in_stock",
+    "is_demo": true,
+    "updated_at": "2026-10-31T05:27:03.848378",
+    "product": {
+     "id": 6,
+     "name": "Cooking oil",
+     "category": "Oils & Fats",
+     "unit": "l",
+     "image_url": "/products/cooking-oil.svg"
+    },
+    "supplier": {
+     "id": 5,
+     "name": "Andijan Grain Co.",
+     "location": "Andijan",
+     "phone": "+998 74 223 56 88",
+     "rating": 4.3,
+     "delivery_days": 4,
+     "is_verified": true
+    },
+    "product_cost": null,
+    "total_cost": null,
+    "cost_per_unit": null,
+    "eligible": null
+   },
+   {
+    "id": 21,
+    "product_id": 6,
+    "supplier_id": 1,
+    "unit_price": 22400,
+    "delivery_cost": 40000,
+    "minimum_order_quantity": 20.0,
+    "available_quantity": 300.0,
+    "status": "in_stock",
+    "is_demo": true,
+    "updated_at": "2026-10-31T02:27:03.848378",
+    "product": {
+     "id": 6,
+     "name": "Cooking oil",
+     "category": "Oils & Fats",
+     "unit": "l",
+     "image_url": "/products/cooking-oil.svg"
+    },
+    "supplier": {
+     "id": 1,
+     "name": "Tashkent Agro Trade",
+     "location": "Tashkent",
+     "phone": "+998 71 200 41 20",
+     "rating": 4.6,
+     "delivery_days": 1,
+     "is_verified": true
+    },
+    "product_cost": null,
+    "total_cost": null,
+    "cost_per_unit": null,
+    "eligible": null
+   },
+   {
+    "id": 27,
+    "product_id": 8,
+    "supplier_id": 6,
+    "unit_price": 40500,
+    "delivery_cost": 45000,
+    "minimum_order_quantity": 20.0,
+    "available_quantity": 120.0,
+    "status": "in_stock",
+    "is_demo": true,
+    "updated_at": "2026-10-30T13:27:03.848378",
+    "product": {
+     "id": 8,
+     "name": "Eggs",
+     "category": "Dairy & Eggs",
+     "unit": "tray",
+     "image_url": "/products/eggs.svg"
+    },
+    "supplier": {
+     "id": 6,
+     "name": "Namangan Food Supply",
+     "location": "Namangan",
+     "phone": "+998 69 234 12 47",
+     "rating": 3.9,
+     "delivery_days": 2,
+     "is_verified": false
+    },
+    "product_cost": null,
+    "total_cost": null,
+    "cost_per_unit": null,
+    "eligible": null
+   },
+   {
+    "id": 26,
+    "product_id": 8,
+    "supplier_id": 2,
+    "unit_price": 42000,
+    "delivery_cost": 35000,
+    "minimum_order_quantity": 10.0,
+    "available_quantity": 180.0,
+    "status": "in_stock",
+    "is_demo": true,
+    "updated_at": "2026-10-27T07:27:03.848378",
+    "product": {
+     "id": 8,
+     "name": "Eggs",
+     "category": "Dairy & Eggs",
+     "unit": "tray",
+     "image_url": "/products/eggs.svg"
+    },
+    "supplier": {
+     "id": 2,
+     "name": "Fergana Fresh Produce",
+     "location": "Fergana",
+     "phone": "+998 73 244 18 65",
+     "rating": 4.4,
+     "delivery_days": 2,
+     "is_verified": true
+    },
+    "product_cost": null,
+    "total_cost": null,
+    "cost_per_unit": null,
+    "eligible": null
+   },
+   {
+    "id": 28,
+    "product_id": 8,
+    "supplier_id": 1,
+    "unit_price": 43500,
+    "delivery_cost": 25000,
+    "minimum_order_quantity": 10.0,
+    "available_quantity": 60.0,
+    "status": "low_stock",
+    "is_demo": true,
+    "updated_at": "2026-10-31T05:27:03.848378",
+    "product": {
+     "id": 8,
+     "name": "Eggs",
+     "category": "Dairy & Eggs",
+     "unit": "tray",
+     "image_url": "/products/eggs.svg"
+    },
+    "supplier": {
+     "id": 1,
+     "name": "Tashkent Agro Trade",
+     "location": "Tashkent",
+     "phone": "+998 71 200 41 20",
+     "rating": 4.6,
+     "delivery_days": 1,
+     "is_verified": true
+    },
+    "product_cost": null,
+    "total_cost": null,
+    "cost_per_unit": null,
+    "eligible": null
+   },
+   {
+    "id": 4,
+    "product_id": 1,
+    "supplier_id": 6,
+    "unit_price": 3300,
+    "delivery_cost": 30000,
+    "minimum_order_quantity": 100.0,
+    "available_quantity": 40.0,
+    "status": "out_of_stock",
+    "is_demo": true,
+    "updated_at": "2026-10-28T08:27:03.848378",
+    "product": {
+     "id": 1,
+     "name": "Potatoes",
+     "category": "Vegetables",
+     "unit": "kg",
+     "image_url": "/products/potatoes.svg"
+    },
+    "supplier": {
+     "id": 6,
+     "name": "Namangan Food Supply",
+     "location": "Namangan",
+     "phone": "+998 69 234 12 47",
+     "rating": 3.9,
+     "delivery_days": 2,
+     "is_verified": false
+    },
+    "product_cost": null,
+    "total_cost": null,
+    "cost_per_unit": null,
+    "eligible": null
+   }
+  ],
+  "total": 28,
+  "page": 1,
+  "page_size": 100,
+  "pages": 1
+ },
+ "saved": [
+  {
+   "id": 2,
+   "offer_id": 1,
+   "created_at": "2026-10-31T07:27:23.684317",
+   "price_at_save": 4000,
+   "status_at_save": "in_stock",
+   "price_change": 0,
+   "price_change_pct": 0.0,
+   "status_changed": false,
+   "offer": {
+    "id": 1,
+    "product_id": 1,
+    "supplier_id": 1,
+    "unit_price": 4000,
+    "delivery_cost": 50000,
+    "minimum_order_quantity": 50.0,
+    "available_quantity": 800.0,
+    "status": "in_stock",
+    "is_demo": true,
+    "updated_at": "2026-10-31T05:27:03.848378",
+    "product": {
+     "id": 1,
+     "name": "Potatoes",
+     "category": "Vegetables",
+     "unit": "kg",
+     "image_url": "/products/potatoes.svg"
+    },
+    "supplier": {
+     "id": 1,
+     "name": "Tashkent Agro Trade",
+     "location": "Tashkent",
+     "phone": "+998 71 200 41 20",
+     "rating": 4.6,
+     "delivery_days": 1,
+     "is_verified": true
+    },
+    "product_cost": null,
+    "total_cost": null,
+    "cost_per_unit": null,
+    "eligible": null
+   }
+  },
+  {
+   "id": 1,
+   "offer_id": 2,
+   "created_at": "2026-10-31T07:27:23.671020",
+   "price_at_save": 3500,
+   "status_at_save": "in_stock",
+   "price_change": 0,
+   "price_change_pct": 0.0,
+   "status_changed": false,
+   "offer": {
+    "id": 2,
+    "product_id": 1,
+    "supplier_id": 2,
+    "unit_price": 3500,
+    "delivery_cost": 50000,
+    "minimum_order_quantity": 100.0,
+    "available_quantity": 1200.0,
+    "status": "in_stock",
+    "is_demo": true,
+    "updated_at": "2026-10-30T05:27:03.848378",
+    "product": {
+     "id": 1,
+     "name": "Potatoes",
+     "category": "Vegetables",
+     "unit": "kg",
+     "image_url": "/products/potatoes.svg"
+    },
+    "supplier": {
+     "id": 2,
+     "name": "Fergana Fresh Produce",
+     "location": "Fergana",
+     "phone": "+998 73 244 18 65",
+     "rating": 4.4,
+     "delivery_days": 2,
+     "is_verified": true
+    },
+    "product_cost": null,
+    "total_cost": null,
+    "cost_per_unit": null,
+    "eligible": null
+   }
+  }
+ ],
+ "assistant": {
+  "answer": "For 100 kg of Potatoes, the lowest total cost is 400 000 UZS from Fergana Fresh Produce (3 500 UZS/kg x 100 = 350 000 UZS + 50 000 UZS delivery). \n\nRecommended: Fergana Fresh Produce - 100 kg x 3 500 UZS = 350 000 UZS product cost + 50 000 UZS delivery = 400 000 UZS total (4 000 UZS per kg delivered). It is 20 000 UZS (4.8%) cheaper than the next option, Bukhara Farm Direct (420 000 UZS). Other eligible options: Bukhara Farm Direct - 420 000 UZS (free delivery); Tashkent Agro Trade - 450 000 UZS (50 000 UZS delivery). Compared with the most expensive eligible option (Tashkent Agro Trade, 450 000 UZS), choosing Fergana Fresh Produce saves 50 000 UZS on this order. 1 offer(s) were excluded because they cannot fulfil the requested quantity or are out of stock.",
+  "intent": "compare",
+  "suggestions": [
+   "Show the price trend for potatoes",
+   "What if I order 250 kg?",
+   "Save the cheapest offer"
+  ],
+  "referenced_offers": [
+   {
+    "offer_id": 2,
+    "supplier_id": 2,
+    "supplier_name": "Fergana Fresh Produce",
+    "location": "Fergana",
+    "phone": "+998 73 244 18 65",
+    "rating": 4.4,
+    "delivery_days": 2,
+    "is_verified": true,
+    "unit_price": 3500,
+    "delivery_cost": 50000,
+    "minimum_order_quantity": 100.0,
+    "available_quantity": 1200.0,
+    "status": "in_stock",
+    "quantity": 100.0,
+    "product_cost": 350000,
+    "total_cost": 400000,
+    "cost_per_unit": 4000.0,
+    "eligible": true,
+    "reason": "Eligible - in stock",
+    "updated_at": "2026-10-30T05:27:03.848378",
+    "score": 407925.0,
+    "rank": 1,
+    "is_cheapest": true,
+    "is_best_overall": true,
+    "difference_vs_best": 0
+   },
+   {
+    "offer_id": 3,
+    "supplier_id": 4,
+    "supplier_name": "Bukhara Farm Direct",
+    "location": "Bukhara",
+    "phone": "+998 65 221 77 03",
+    "rating": 4.8,
+    "delivery_days": 2,
+    "is_verified": true,
+    "unit_price": 4200,
+    "delivery_cost": 0,
+    "minimum_order_quantity": 20.0,
+    "available_quantity": 400.0,
+    "status": "in_stock",
+    "quantity": 100.0,
+    "product_cost": 420000,
+    "total_cost": 420000,
+    "cost_per_unit": 4200.0,
+    "eligible": true,
+    "reason": "Eligible - in stock",
+    "updated_at": "2026-10-31T02:27:03.848378",
+    "score": 424620.0,
+    "rank": 2,
+    "is_cheapest": false,
+    "is_best_overall": false,
+    "difference_vs_best": 20000
+   },
+   {
+    "offer_id": 1,
+    "supplier_id": 1,
+    "supplier_name": "Tashkent Agro Trade",
+    "location": "Tashkent",
+    "phone": "+998 71 200 41 20",
+    "rating": 4.6,
+    "delivery_days": 1,
+    "is_verified": true,
+    "unit_price": 4000,
+    "delivery_cost": 50000,
+    "minimum_order_quantity": 50.0,
+    "available_quantity": 800.0,
+    "status": "in_stock",
+    "quantity": 100.0,
+    "product_cost": 400000,
+    "total_cost": 450000,
+    "cost_per_unit": 4500.0,
+    "eligible": true,
+    "reason": "Eligible - in stock",
+    "updated_at": "2026-10-31T05:27:03.848378",
+    "score": 455611.11,
+    "rank": 3,
+    "is_cheapest": false,
+    "is_best_overall": false,
+    "difference_vs_best": 50000
+   }
+  ],
+  "engine": "rule-based",
+  "disclaimer": "Answers are generated by a transparent rule-based engine using the PriceRadar demo dataset. No external AI model is connected."
+ }
+}
